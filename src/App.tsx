@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import './App.css'
-import { IconButton, Menu, setDarkModeActivation } from 'nes-ui-react'
-import { Outlet } from 'react-router'
+import { IconButton, setDarkModeActivation } from 'nes-ui-react'
+import { NavLink, Outlet } from 'react-router'
 import { Sun, Moon, MenuIcon } from './components/Icons'
 
 function App() {
@@ -18,8 +18,9 @@ function App() {
 
   const NavigatorItems = () => (
     <>
-      <a href="/" className="text-lg">主页</a>
-      <a href="/gallery" className="text-lg">画廊</a>
+      <NavLink to="/" className="text-lg">主页</NavLink>
+      <NavLink to="/gallery" className="text-lg">画廊</NavLink>
+      <NavLink to="/settings" className="text-lg">设置</NavLink>
     </>
   )
 

@@ -2,3 +2,9 @@
   width: 100vw;
   height: 100vh;
 }
+
+a.active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2.5px;
+}
