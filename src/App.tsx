@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { Button, setDarkModeActivation } from 'nes-ui-react'
+import gallery from './gallery'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,21 +16,22 @@ function App() {
 
   return (
     <>
-      <h1 className="text-purple-300 text-8xl">Vite + React</h1>
-      <div className="card">
-        <Button onClick={() => setCount((count) => count + 1)}>
+      <h1 className="text-5xl sm:text-8xl">CatLin</h1>
+      <h2 className="text-2xl py-3">=＾● ⋏ ●＾=</h2>
+      <div className="flex gap-3 items-center justify-center flex-col">
+        <Button onClick={() => setCount((count) => count + 1)} className="text-xl">
           count is {count}
         </Button>
         <Button color="warning" borderInverted onClick={toggleDarkMode}>
-          Dark Mode Toggle
+          Dark Mode
         </Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+        <p className="text-3xl">
+          Welcome to CatLin Demo!
+          <br />
+          Here is the component gallery.
         </p>
+        {gallery()}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }

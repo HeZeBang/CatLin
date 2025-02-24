@@ -12,7 +12,19 @@
 
 html.nes-ui * {
   font-family: 'Unifont', serif !important;
-  /* font-size: x-large; */
+}
+
+html {
+  font-size: 20px;
+}
+
+/* Fix Badge */
+
+.nes-ui-badge span.nes-ui-is-warning:first-child,
+.nes-ui-badge span.nes-ui-is-primary:first-child,
+.nes-ui-badge span.nes-ui-is-error:first-child,
+.nes-ui-badge span.nes-ui-is-success:first-child {
+  left: 0;
 }
 
 @layer base {
@@ -39,18 +51,9 @@ html.nes-ui * {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
-  display: flex;
+  /* display: flex; */
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
