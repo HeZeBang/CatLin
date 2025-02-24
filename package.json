@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "nes-ui-react": "file:package\\nes-ui-react-v0.3.1.tgz",
+    "pixelarticons": "1.8.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

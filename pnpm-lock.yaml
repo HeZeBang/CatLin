@@ -11,6 +11,9 @@ importers:
       nes-ui-react:
         specifier: file:package\nes-ui-react-v0.3.1.tgz
         version: file:package/nes-ui-react-v0.3.1.tgz(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      pixelarticons:
+        specifier: 1.8.0
+        version: 1.8.0
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -1235,6 +1238,9 @@ packages:
   pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
+
+  pixelarticons@1.8.0:
+    resolution: {integrity: sha512-BJ/F5JQROW3t2ktTeBvaGndKhlRCaMpDauT26AzHsY6HX1FOs09aY4LMUH7f61lSI+1+QfNf98IvC4aeiCYfvA==}
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -2565,6 +2571,8 @@ snapshots:
   pify@2.3.0: {}
 
   pirates@4.0.6: {}
+
+  pixelarticons@1.8.0: {}
 
   postcss-import@15.1.0(postcss@8.5.3):
     dependencies:
