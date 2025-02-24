@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import { Button, setDarkModeActivation } from 'nes-ui-react'
-import gallery from './gallery'
+import gallery from './pages/Gallery'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -20,10 +20,10 @@ function App() {
       <h2 className="text-2xl py-3">=＾● ⋏ ●＾=</h2>
       <div className="flex gap-3 items-center justify-center flex-col">
         <Button onClick={() => setCount((count) => count + 1)} className="text-xl">
-          count is {count}
+          COUNT IS {count}
         </Button>
         <Button color="warning" borderInverted onClick={toggleDarkMode}>
-          Dark Mode
+          Dark Mode / 暗黑模式
         </Button>
         <p className="text-3xl">
           Welcome to CatLin Demo!
