@@ -1,4 +1,4 @@
-import { A, Badge, BadgeSplitted, BlockText, Button, Checkbox, IconButton, Input, Radio } from "nes-ui-react";
+import { A, Badge, BadgeSplitted, Button, Checkbox, IconButton, Input, Radio } from "nes-ui-react";
 import { SVGProps } from "react";
 
 
