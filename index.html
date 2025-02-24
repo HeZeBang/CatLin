@@ -10,38 +10,6 @@
         src: url('/fonts/unifont.otf') format('opentype');
       }
     </style>
-    <script>
-    window.onload = function() {
-    for (let i = 0; i < document.styleSheets.length; i++) {
-        const styleSheet = document.styleSheets[i];
-        
-        try {
-            // 遍历样式表中的每个规则
-            for (let j = 0; j < styleSheet.cssRules.length; j++) {
-                const rule = styleSheet.cssRules[j];
-                
-                // 检查规则是否匹配
-                if (rule.selectorText === 'html.nes-ui *') {
-                    // 删除匹配的规则
-                    styleSheet.deleteRule(j);
-                }
-            }
-        } catch (e) {
-            console.error(`无法访问样式表: ${styleSheet.href}`, e);
-        }
-    }
-
-    // 添加自定义样式
-    const customStyle = document.createElement('style');
-    customStyle.innerHTML = `
-        html.nes-ui * {
-          font-family: 'Unifont';
-        }
-    `;
-    document.head.appendChild(customStyle);
-};
-
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
   </head>
