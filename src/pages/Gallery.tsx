@@ -2,26 +2,22 @@ import { A, Badge, BadgeSplitted, Button, Checkbox, IconButton, Input, Radio } f
 import { SVGProps } from "react";
 
 
-export default function gallery() {
+export default function Gallery() {
   return (
     <div className="flex gap-3 items-center justify-center flex-col">
       <Button className="text-xl">Button / 按钮</Button>
       <A className="text-xl text-inherit" href="#">Link</A>
-      <Badge text="Badge - SmallText" backgroundColor="warning" className="m-auto w-[200px]"/>
-      <BadgeSplitted textLeft="Badge" text="Splitted" backgroundColor="success" className="text-xl m-3"/>
+      <Badge text="Badge - SmallText" backgroundColor="warning" className="m-auto w-[200px]" />
+      <BadgeSplitted textLeft="Badge" text="Splitted" backgroundColor="success" className="text-xl m-3" />
       <IconButton color="success">
-        <Android className="w-10 h-10"/>
+        <Android className="w-10 h-10" />
         <span className="text-2xl">Android</span>
       </IconButton>
-      <div className="flex gap-3 text-lg">
-        <Radio name="radio" value="1" label="Radio Checked" checked={true}/>
-        <Radio name="radio" value="2" label="Radio Uncheked"/>
-      </div>
-      <div className="flex gap-3 text-lg">
-        <Checkbox label="Checkbox Checked" checked={true}/>
-        <Checkbox label="Checkbox Unchecked"/>
-      </div>
-      <Input type="text" color="warning" className="text-md bg-inherit" value="Input"/>
+      <Radio name="radio" value="1" label="Radio Checked" checked={true} />
+      <Radio name="radio" value="2" label="Radio Uncheked" />
+      <Checkbox label="Checkbox Checked" checked={true} />
+      <Checkbox label="Checkbox Unchecked" />
+      <Input type="text" color="warning" className="text-md bg-inherit" value="Input" />
     </div>
   )
 }
