@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HomeworkItem, HwItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, LoadUsername } from "../components/Utils";
 import { Link } from "react-router";
+import { Button } from "nes-ui-react";
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<HomeworkItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
+  const [dueSplit, setDueSplit] = useState(0);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     var hwTemp = [] as HomeworkItem[]
@@ -15,13 +18,16 @@ export default function Landing() {
     })
     hwTemp.sort((a, b) => a.due - b.due)
     setHomeworks(hwTemp)
+    setDueSplit(Date.now() / 1000 - 7 * 24 * 60 * 60)
   }, [])
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [dueSplit])
 
   return (
     <div className="flex gap-3 items-center justify-center flex-col w-full max-w-md">
-      {homeworks
-        .filter(item => item.due == Date.now() / 1000 - 7 * 24 * 60 * 60)
-        .length == 0 && firstUse ? (
+      {firstUse ? (
         <div className="flex flex-col gap-3 mt-5 items-center justify-center">
           <h1 className="text-6xl">=^·.·^=</h1>
           <span className="text-2xl">欢迎来到 CatLin ！</span>
@@ -34,24 +40,40 @@ export default function Landing() {
             关联作业账户吧！</span>
         </div>
       ) : (
-        <div className="flex flex-col gap-5 mt-5 items-center justify-center">
-          <h1 className="text-6xl">{'¯\\_(ツ)_/¯'}</h1>
-          <span className="text-xl">你似乎已经把作业全写完了呢！</span>
-        </div>
-      )
-      }
-      {homeworks
-        .filter(item => item.due == Date.now() / 1000 - 7 * 24 * 60 * 60)
-        .map((hw, index) => (
-          <HwItem
-            key={index}
-            course={hw.course}
-            title={hw.title}
-            submitted={hw.submitted}
-            due={hw.due}
-            url={hw.url}
-          />
-        ))}
+        <>
+          {homeworks
+            .filter(item => item.due >= dueSplit)
+            .length == 0 ? (
+            <div className="flex flex-col gap-5 mt-5 items-center justify-center">
+              <h1 className="text-6xl">{'¯\\_(ツ)_/¯'}</h1>
+              <span className="text-xl">你似乎已经把作业全写完了呢！</span>
+            </div>
+          ) : (
+            homeworks
+              .filter(item => item.due >= dueSplit)
+              .map((hw, _) => (
+                <HwItem
+                  key={`${hw.course}-s${hw.title}`}
+                  course={hw.course}
+                  title={hw.title}
+                  submitted={hw.submitted}
+                  due={hw.due}
+                  url={hw.url}
+                />
+              ))
+          )}
+          <div className="flex gap-3 items-center justify-center">
+            <Button onClick={() => { setDueSplit(due => due - 7 * 24 * 60 * 60) }}>
+              -↓-
+            </Button>
+            <span>截至 {new Date(dueSplit * 1000).toLocaleString()}</span>
+            <Button onClick={() => { setDueSplit(due => Math.min(Date.now() / 1000, due + 7 * 24 * 60 * 60)) }}>
+              -↑-
+            </Button>
+          </div>
+          <div ref={bottomRef} />
+        </>
+      )}
     </div>
   )
 }

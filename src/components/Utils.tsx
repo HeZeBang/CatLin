@@ -66,7 +66,25 @@ export function LoginAndSave(type: AccountType | null, username: string, passwor
           return error
         }))
     case AccountType.Blackboard:
-      return new Error("Not Implemented")
+      return fetch(WrapUrl("/api/blackboard"), {
+        method: 'POST',
+        body: JSON.stringify({ studentid: username, password }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status !== "success") {
+            return new Error(data.message)
+          }
+          SaveAccount(type, username, password)
+          return data.data
+        })
+        .catch((error => {
+          // console.error('Error:', error);
+          return error
+        }))
     case AccountType.ACM_OJ:
       return new Error("Not Implemented")
     default:
