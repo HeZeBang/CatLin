@@ -1,18 +1,29 @@
-import { PixelBorder } from "nes-ui-react";
-import Nyan from "../assets/nyan.webp";
+import { Button, Container } from "nes-ui-react";
 import "../App.css";
 
 export default function Settings() {
   return (
-    <div className="flex gap-3 items-center justify-center flex-col">
-      <h1 className="text-5xl sm:text-8xl">CatLin</h1>
-      <h2 className="text-2xl py-3">=＾● ⋏ ●＾=</h2>
-      <PixelBorder doubleSize doubleRoundCorners>
-        <img src={Nyan} alt="Nyan Cat" className="w-full h-full" />
-      </PixelBorder>
-      <span className="text-2xl scale-50">
-        Made by C4TL1N with <i className="align-middle inline-block nes-icon is-medium heart" />.
-      </span>
+    <div className="flex gap-1 items-center justify-center flex-col w-full max-w-md">
+      <h2 className="text-2xl">设置</h2>
+      <Container title="" className="w-full">
+        <span>嗯，也许这里可以放点用户头像什么的～</span>
+      </Container>
+      <Container title="关联账户" className="w-full">
+        <div className="flex items-center">
+          <span className="text-base flex-1 overflow-hidden text-ellipsis">Gradescope: 未关联</span>
+          <Button className="text-sm scale-90" borderInverted>登录</Button>
+        </div>
+        <br />
+        <div className="flex items-center">
+          <span className="text-base flex-1 overflow-hidden text-ellipsis">Blackboard: 未关联</span>
+          <Button className="text-sm scale-90" borderInverted>登录</Button>
+        </div>
+        <br />
+        <div className="flex items-center">
+          <span className="text-base flex-1 overflow-hidden text-ellipsis">ACM OJ: 未关联</span>
+          <Button className="text-sm scale-90" borderInverted>登录</Button>
+        </div>
+      </Container>
     </div>
   )
 }

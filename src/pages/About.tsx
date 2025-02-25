@@ -11,8 +11,9 @@ export default function About() {
       <PixelBorder doubleSize doubleRoundCorners>
         <img src={Nyan} alt="Nyan Cat" className="w-full h-full" />
       </PixelBorder>
-      <span className="text-2xl scale-50">
-        Made by C4TL1N with <i className="align-middle inline-block nes-icon is-medium heart" />.
+      <span className="text-2xl scale-50 text-center">
+        <span>Made by C4TL1N</span>{' '}
+        <span className="text-nowrap">with <i className="align-middle inline-block nes-icon is-medium heart" />.</span>
       </span>
     </div>
   )
