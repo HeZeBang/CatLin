@@ -1,7 +1,7 @@
 import { Button, Container, Footer, Header, Input, Modal, Spacer } from "nes-ui-react";
 import "../App.css";
 import { useCallback, useState } from "react";
-import { AccountType, LoginAndSave, SaveHomework } from "../components/Utils";
+import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { Hourglass } from "../components/Icons";
 
 export default function Settings() {
@@ -48,40 +48,28 @@ export default function Settings() {
         <span>嗯，也许这里可以放点用户头像什么的～</span>
       </Container>
       <Container title="关联账户" className="w-full">
-        <div className="flex items-center">
-          <span className="text-base flex-1 overflow-hidden text-ellipsis">Gradescope: 未关联</span>
-          <Button className="text-sm scale-90" borderInverted
-            onClick={() => {
-              setModalType(AccountType.Gradescope)
-              setModalOpen(true)
-            }}
-          >
-            登录
-          </Button>
-        </div>
-        <br />
-        <div className="flex items-center">
-          <span className="text-base flex-1 overflow-hidden text-ellipsis">Blackboard: 未关联</span>
-          <Button className="text-sm scale-90" borderInverted
-            onClick={() => {
-              setModalType(AccountType.Blackboard)
-              setModalOpen(true)
-            }}
-          >
-            登录
-          </Button>
-        </div>
-        <br />
-        <div className="flex items-center">
-          <span className="text-base flex-1 overflow-hidden text-ellipsis">ACM OJ: 未关联</span>
-          <Button className="text-sm scale-90" borderInverted
-            onClick={() => {
-              setModalType(AccountType.ACM_OJ)
-              setModalOpen(true)
-            }}
-          >
-            登录
-          </Button>
+        {Object.values(AccountType).map((item) => (
+          <div className="flex items-center" key={item}>
+            <span className="text-base flex-1 overflow-hidden text-ellipsis">{item}: {LoadUsername(item)}</span>
+            <Button className="text-sm scale-90" borderInverted
+              onClick={() => {
+                setModalType(item)
+                setErrMsg("")
+                setUsername("")
+                setPassword("")
+                setModalOpen(true)
+              }}
+            >
+              登录
+            </Button>
+          </div>
+        ))}
+      </Container>
+      <Container title="缓存" className="w-full">
+        <div className="flex flex-col gap-1">
+          <Button color="error" className="w-fit"
+            onClick={() => { localStorage.clear(); location.reload() }}>清除缓存</Button>
+          <span className="text-red-500">清除缓存将清除所有的登录和作业数据。</span>
         </div>
       </Container>
       <Modal open={modalOpen} title="登录账户" className="max-w-sm">
@@ -93,7 +81,7 @@ export default function Settings() {
             className="text-md bg-inherit"
             label="账号" value={username}
             onChange={(e) => setUsername(e)}
-            // onKeyUp={(e) => e.key === "Enter" && Login()}
+          // onKeyUp={(e) => e.key === "Enter" && Login()}
           />
           <Input type="password"
             className="text-md bg-inherit"

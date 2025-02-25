@@ -29,6 +29,10 @@ export function LoadHomework(type: AccountType) {
   return JSON.parse(localStorage.getItem(`${type.replace(" ", "_")}`) || "[]") as HomeworkItem[]
 }
 
+export function LoadUsername(type: AccountType) {
+  return localStorage.getItem(`${type.replace(" ", "_")}_username`)
+}
+
 export function LoadAccount(type: AccountType | null) {
   if (type === null) return null
   const username = localStorage.getItem(`${type.replace(" ", "_")}_username`)
