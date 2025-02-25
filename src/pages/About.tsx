@@ -3,6 +3,7 @@ import { PixelBorder } from "nes-ui-react";
 import Nyan from "../assets/nyan.webp";
 import "../App.css";
 import { useEffect, useState } from "react";
+import HeroImage from "../assets/avatar-50x50.png";
 
 export default function About() {
   const [meowText, setMeowText] = useState("=^·.·^=")
@@ -21,8 +22,11 @@ export default function About() {
 
   return (
     <div className="flex gap-3 items-center justify-center flex-col">
-      <h1 className="text-5xl sm:text-8xl">CatLin</h1>
-      <h2 className="text-2xl py-3">{meowText}</h2>
+      <div className="flex items-center gap-1 flex-wrap justify-center">
+      <img src={HeroImage} alt="CatLin" className="w-24 h-24 hero-avatar" />
+      <h1 className="text-5xl mt-0">CatLin</h1>
+      </div>
+      <h2 className="text-2xl pb-3">{meowText}</h2>
       <PixelBorder doubleSize doubleRoundCorners>
         <img src={Nyan} alt="Nyan Cat" className="w-full h-full" />
       </PixelBorder>
