@@ -30,7 +30,6 @@ export default function Landing() {
       {firstUse ? (
         <div className="flex flex-col gap-3 mt-5 items-center justify-center">
           <h1 className="text-5xl sm:text-6xl flex">=<span className="animate-bounce">^</span>·.·<span className="animate-bounce">^</span>=</h1>
-          <span className="animate-pulse">·</span>
           <span className="text-2xl">欢迎来到 CatLin ！</span>
           <span className="text-base mb-5">完成作业也可如此有趣！</span>
           <span className="text-base">
