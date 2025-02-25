@@ -1,4 +1,4 @@
-import { PixelBorder } from "nes-ui-react";
+import { PixelBorder, Spacer } from "nes-ui-react";
 import { useState, useEffect } from "react";
 
 interface HomeworkItemProps {
@@ -52,11 +52,12 @@ export function HwItem(props: HomeworkItemProps) {
   return (
     <PixelBorder doubleRoundCorners className="w-full">
       <button className={`nes-ui-icon-btn nes-ui-btn-${randomColor(simpleHash(`${props.course} - ${props.title}`))} nes-ui-is-size-medium w-full`}>
-        <div className="p-2 flex gap-3 items-center w-full">
-          <div className="flex-1 flex flex-col items-start">
+        <div className="p-2 flex gap-3 items-center w-full flex-wrap">
+          <div className="flex flex-col items-start">
             <span className="text-2xl">{props.title}</span>
             <span className="text-sm">{props.course}</span>
           </div>
+          <Spacer />
           <div className="flex items-end flex-col">
             <div className="flex gap-1">
               <span className="text-4xl">{difference.days}<sup className="text-sm">d</sup></span>
@@ -72,4 +73,15 @@ export function HwItem(props: HomeworkItemProps) {
       </button>
     </PixelBorder>
   )
+}
+
+export interface HomeworkItem {
+  course: string,
+  due: number,
+  submitted: boolean,
+  title: string,
+  url: string,
+  latedute?: number,
+  raw?: any,
+  status: string,
 }

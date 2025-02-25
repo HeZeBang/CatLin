@@ -1,16 +1,44 @@
 import { Button, Container, Footer, Header, Input, Modal, Spacer } from "nes-ui-react";
 import "../App.css";
 import { useCallback, useState } from "react";
-import { AccountType, LoginAndSave } from "../components/Utils";
+import { AccountType, LoginAndSave, SaveHomework } from "../components/Utils";
+import { Hourglass } from "../components/Icons";
 
 export default function Settings() {
   const [modalType, setModalType] = useState<AccountType | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [errMsg, setErrMsg] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
-  const Login = useCallback(() => {
-    LoginAndSave(modalType, username, password)
+  const Login = useCallback(async () => {
+    setIsLoggingIn(true)
+    setErrMsg("")
+    try {
+      const LoginPromise = LoginAndSave(modalType, username, password)
+      if (LoginPromise instanceof Error) {
+        throw LoginPromise
+      }
+      const data = await LoginPromise
+      if (data instanceof Error) {
+        throw data
+      }
+      if (modalType === null) {
+        throw Error("Empty Account Type")
+      }
+      SaveHomework(modalType, data)
+      setModalOpen(false)
+    } catch (error) {
+      console.error(error)
+      if (error instanceof Error) {
+        setErrMsg(error.message)
+      } else {
+        setErrMsg(`An unknown error occurred: ${JSON.stringify(error)}`)
+      }
+    } finally {
+      setIsLoggingIn(false)
+    }
   }, [modalType, username, password])
 
   return (
@@ -65,7 +93,7 @@ export default function Settings() {
             className="text-md bg-inherit"
             label="账号" value={username}
             onChange={(e) => setUsername(e)}
-            onKeyUp={(e) => e.key === "Enter" && Login()}
+            // onKeyUp={(e) => e.key === "Enter" && Login()}
           />
           <Input type="password"
             className="text-md bg-inherit"
@@ -73,6 +101,8 @@ export default function Settings() {
             onChange={(e) => setPassword(e)}
             onKeyUp={(e) => e.key === "Enter" && Login()}
           />
+          {isLoggingIn && <Hourglass className="mx-auto animate-pulse h-5 w-5" />}
+          {errMsg && <span className="text-red-500">{errMsg}</span>}
         </div>
         <Footer>
           <Spacer />

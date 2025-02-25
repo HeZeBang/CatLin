@@ -27,7 +27,7 @@ function App() {
 
   return (
     <>
-      <div className="sticky w-screen left-0 top-0 z-50 bg-inherit p-3"
+      <div className="sticky w-screen left-0 top-0 z-50 p-3 bg-gray-50 bg-inherit"
         style={{
           borderBottom: "4px solid #D3D3D3"
         }}
