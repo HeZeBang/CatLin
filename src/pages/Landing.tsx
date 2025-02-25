@@ -16,7 +16,10 @@ export default function Landing() {
                 <span className="text-4xl">2<sup className="text-sm">h</sup></span>
                 <span className="text-4xl">1<sup className="text-sm">m</sup></span>
               </div>
-              <span>Due: 2025/02/14 00:00</span>
+              <span className="flex gap-1">
+                <span>Due:</span>
+                <span>2025/02/14 00:00</span>
+              </span>
             </div>
           </div>
         </button>

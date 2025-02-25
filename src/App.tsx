@@ -26,7 +26,11 @@ function App() {
 
   return (
     <>
-      <div className="sticky w-screen left-0 top-0 z-50 bg-inherit p-3 shadow-md">
+      <div className="sticky w-screen left-0 top-0 z-50 bg-inherit p-3"
+        style={{
+          borderBottom: "4px solid #D3D3D3"
+        }}
+      >
         <div className="max-w-lg flex mx-auto items-center">
           <span className="text-lg flex-1">CatLin <sup className="text-lg">=^·.·^=</sup></span>
           <nav className="md:flex gap-3 hidden mr-3">

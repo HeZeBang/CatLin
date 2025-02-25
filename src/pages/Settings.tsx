@@ -8,11 +8,11 @@ export default function Settings() {
       <h1 className="text-5xl sm:text-8xl">CatLin</h1>
       <h2 className="text-2xl py-3">=＾● ⋏ ●＾=</h2>
       <PixelBorder doubleSize doubleRoundCorners>
-        <img src={Nyan} alt="Nyan Cat" className="w-full h-full"/>
+        <img src={Nyan} alt="Nyan Cat" className="w-full h-full" />
       </PixelBorder>
-      <p className="text-2xl items-center flex gap-3">
-        Made by C4TL1N with <i className="nes-icon is-medium heart"/>
-      </p>
+      <span className="text-2xl scale-50">
+        Made by C4TL1N with <i className="align-middle inline-block nes-icon is-medium heart" />.
+      </span>
     </div>
   )
 }
