@@ -44,10 +44,10 @@ export default function Settings() {
   return (
     <div className="flex gap-1 items-center justify-center flex-col w-full max-w-md">
       <h2 className="text-2xl">设置</h2>
-      <Container title="" className="w-full">
+      <Container title="" className="w-full delay-75">
         <span>嗯，也许这里可以放点用户头像什么的～</span>
       </Container>
-      <Container title="关联账户" className="w-full">
+      <Container title="关联账户" className="w-full delay-100">
         {Object.values(AccountType).map((item) => (
           <div className="flex items-center" key={item}>
             <span className="text-base flex-1 overflow-hidden text-ellipsis">{item}: {LoadUsername(item) || '未绑定'}</span>
@@ -65,7 +65,7 @@ export default function Settings() {
           </div>
         ))}
       </Container>
-      <Container title="缓存" className="w-full">
+      <Container title="缓存" className="w-full delay-150">
         <div className="flex flex-col gap-1">
           <Button color="error" className="w-fit"
             onClick={() => { localStorage.clear(); location.reload() }}>清除缓存</Button>
