@@ -50,7 +50,7 @@ export default function Settings() {
       <Container title="关联账户" className="w-full">
         {Object.values(AccountType).map((item) => (
           <div className="flex items-center" key={item}>
-            <span className="text-base flex-1 overflow-hidden text-ellipsis">{item}: {LoadUsername(item)}</span>
+            <span className="text-base flex-1 overflow-hidden text-ellipsis">{item}: {LoadUsername(item) || '未绑定'}</span>
             <Button className="text-sm scale-90" borderInverted
               onClick={() => {
                 setModalType(item)
@@ -60,7 +60,7 @@ export default function Settings() {
                 setModalOpen(true)
               }}
             >
-              登录
+              {LoadUsername(item) ? '重新登录' : '登录'}
             </Button>
           </div>
         ))}
