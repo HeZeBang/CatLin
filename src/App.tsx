@@ -18,9 +18,10 @@ function App() {
 
   const NavigatorItems = () => (
     <>
-      <NavLink to="/" className="text-lg">主页</NavLink>
-      <NavLink to="/gallery" className="text-lg">画廊</NavLink>
-      <NavLink to="/settings" className="text-lg">设置</NavLink>
+      <NavLink to="/" className="text-base">主页</NavLink>
+      {/* <NavLink to="/gallery" className="text-base">画廊</NavLink> */}
+      <NavLink to="/settings" className="text-base">设置</NavLink>
+      <NavLink to="/about" className="text-base">关于</NavLink>
     </>
   )
 
@@ -32,7 +33,7 @@ function App() {
         }}
       >
         <div className="max-w-lg flex mx-auto items-center">
-          <span className="text-lg flex-1">CatLin <sup className="text-lg">=^·.·^=</sup></span>
+          <span className="text-xl flex-1">CatLin <sup className="text-sm">=^·.·^=</sup></span>
           <nav className="md:flex gap-3 hidden mr-3">
             <NavigatorItems />
           </nav>
