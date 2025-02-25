@@ -29,7 +29,8 @@ export default function Landing() {
     <div className="flex gap-3 items-center justify-center flex-col w-full max-w-md">
       {firstUse ? (
         <div className="flex flex-col gap-3 mt-5 items-center justify-center">
-          <h1 className="text-6xl">=^·.·^=</h1>
+          <h1 className="text-6xl flex">=<span className="animate-bounce">^</span>·.·<span className="animate-bounce">^</span>=</h1>
+          <span className="animate-pulse">·</span>
           <span className="text-2xl">欢迎来到 CatLin ！</span>
           <span className="text-base mb-5">完成作业也可如此有趣！</span>
           <span className="text-base">
@@ -45,7 +46,7 @@ export default function Landing() {
             .filter(item => item.due >= dueSplit)
             .length == 0 ? (
             <div className="flex flex-col gap-5 mt-5 items-center justify-center">
-              <h1 className="text-6xl">{'¯\\_(ツ)_/¯'}</h1>
+              <h1 className="text-6xl flex"><span className="animate-bounce">¯\_</span>(ツ)<span className="animate-bounce">_/¯</span></h1>
               <span className="text-xl">你似乎已经把作业全写完了呢！</span>
             </div>
           ) : (
