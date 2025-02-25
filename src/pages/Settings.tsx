@@ -1,7 +1,18 @@
-import { Button, Container } from "nes-ui-react";
+import { Button, Container, Footer, Header, Input, Modal, Spacer } from "nes-ui-react";
 import "../App.css";
+import { useCallback, useState } from "react";
+import { AccountType, LoginAndSave } from "../components/Utils";
 
 export default function Settings() {
+  const [modalType, setModalType] = useState<AccountType | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+
+  const Login = useCallback(() => {
+    LoginAndSave(modalType, username, password)
+  }, [modalType, username, password])
+
   return (
     <div className="flex gap-1 items-center justify-center flex-col w-full max-w-md">
       <h2 className="text-2xl">设置</h2>
@@ -11,19 +22,64 @@ export default function Settings() {
       <Container title="关联账户" className="w-full">
         <div className="flex items-center">
           <span className="text-base flex-1 overflow-hidden text-ellipsis">Gradescope: 未关联</span>
-          <Button className="text-sm scale-90" borderInverted>登录</Button>
+          <Button className="text-sm scale-90" borderInverted
+            onClick={() => {
+              setModalType(AccountType.Gradescope)
+              setModalOpen(true)
+            }}
+          >
+            登录
+          </Button>
         </div>
         <br />
         <div className="flex items-center">
           <span className="text-base flex-1 overflow-hidden text-ellipsis">Blackboard: 未关联</span>
-          <Button className="text-sm scale-90" borderInverted>登录</Button>
+          <Button className="text-sm scale-90" borderInverted
+            onClick={() => {
+              setModalType(AccountType.Blackboard)
+              setModalOpen(true)
+            }}
+          >
+            登录
+          </Button>
         </div>
         <br />
         <div className="flex items-center">
           <span className="text-base flex-1 overflow-hidden text-ellipsis">ACM OJ: 未关联</span>
-          <Button className="text-sm scale-90" borderInverted>登录</Button>
+          <Button className="text-sm scale-90" borderInverted
+            onClick={() => {
+              setModalType(AccountType.ACM_OJ)
+              setModalOpen(true)
+            }}
+          >
+            登录
+          </Button>
         </div>
       </Container>
+      <Modal open={modalOpen} title="登录账户" className="max-w-sm">
+        <Header>
+          <span className="text-lg">登录 {modalType}</span>
+        </Header>
+        <div className="px-3">
+          <Input type="text"
+            className="text-md bg-inherit"
+            label="账号" value={username}
+            onChange={(e) => setUsername(e)}
+            onKeyUp={(e) => e.key === "Enter" && Login()}
+          />
+          <Input type="password"
+            className="text-md bg-inherit"
+            label="密码" value={password}
+            onChange={(e) => setPassword(e)}
+            onKeyUp={(e) => e.key === "Enter" && Login()}
+          />
+        </div>
+        <Footer>
+          <Spacer />
+          <Button color="white" className="mx-1" onClick={() => setModalOpen(false)}>取消</Button>
+          <Button color="primary" className="mx-1" onClick={Login}>登录</Button>
+        </Footer>
+      </Modal>
     </div>
   )
 }

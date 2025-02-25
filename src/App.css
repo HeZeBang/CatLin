@@ -19,3 +19,7 @@ a.active {
 .nes-ui-container.nes-ui-with-title > .nes-ui-title {
   margin-bottom: 0px;
 }
+
+.nes-ui-input {
+  border-radius: 0 !important;
+}
