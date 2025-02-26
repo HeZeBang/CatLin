@@ -43,14 +43,17 @@ export default function Landing() {
         <>
           {homeworks
             .filter(item => item.due >= dueSplit)
-            .length == 0 ? (
-            <div className="flex flex-col gap-5 mt-5 items-center justify-center">
-              <h1 className="text-4xl sm:text-6xl flex"><span className="animate-bounce">¯\_</span>(ツ)<span className="animate-bounce">_/¯</span></h1>
-              <span className="text-base sm:text-xl">你似乎已经把作业全写完了呢！</span>
-            </div>
-          ) : (
+            .filter(item => !item.submitted)
+            .length == 0 && (
+              <div className="flex flex-col gap-5 mt-5 items-center justify-center">
+                <h1 className="text-4xl sm:text-6xl flex"><span className="animate-bounce">¯\_</span>(ツ)<span className="animate-bounce">_/¯</span></h1>
+                <span className="text-base sm:text-xl">你似乎已经把作业全写完了呢！</span>
+              </div>
+            )}
+          {(
             homeworks
               .filter(item => item.due >= dueSplit)
+              // .filter(item => !item.submitted)
               .map((hw, _) => (
                 <HwItem
                   key={`${hw.course}-s${hw.title}`}
