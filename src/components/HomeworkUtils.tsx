@@ -10,52 +10,52 @@ interface HomeworkItemProps {
 }
 
 function randomColor(seed: number = 0) {
-  return `hsl(${seed % 360}, 90%, 75%)`
+  return `hsl(${seed % 360}, 90%, 60%)`
 }
 
 function hslToRgb(h: number, s: number, l: number) {
-    h /= 360;
-    s /= 100;
-    l /= 100;
+  h /= 360;
+  s /= 100;
+  l /= 100;
 
-    let r, g, b;
-    if (s === 0) {
-        r = g = b = l; // 灰色
-    } else {
-        const hue2rgb = (p: number, q: number, t: number) => {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1 / 6) return p + (q - p) * 6 * t;
-            if (t < 1 / 2) return q;
-            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-            return p;
-        };
-        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        const p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1 / 3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1 / 3);
-    }
-    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  let r, g, b;
+  if (s === 0) {
+    r = g = b = l; // 灰色
+  } else {
+    const hue2rgb = (p: number, q: number, t: number) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
 function getRelativeLuminance(r: number, g: number, b: number) {
-    const normalize = (x: number) => {
-        x /= 255;
-        return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
-    };
-    return 0.2126 * normalize(r) + 0.7152 * normalize(g) + 0.0722 * normalize(b);
+  const normalize = (x: number) => {
+    x /= 255;
+    return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * normalize(r) + 0.7152 * normalize(g) + 0.0722 * normalize(b);
 }
 
 function getContrastRatio(l1: number, l2: number) {
-    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 }
 
 function randomTextColor(seed: number = 0) {
   // black or white based on WCAG
   const h = seed % 360;
   const s = 90;
-  const l = 75;
+  const l = 30;
   const [r, g, b] = hslToRgb(h, s, l);
   const bgLum = getRelativeLuminance(r, g, b);
   const blackLum = getRelativeLuminance(0, 0, 0);
@@ -106,14 +106,15 @@ export function HwItem(props: HomeworkItemProps) {
 
   return (
     <PixelBorder doubleRoundCorners className="w-full">
-      <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full ${props.submitted? "":""}`}
-        style={{
-          backgroundColor: randColor,
-          color: randTextColor
-        }}>
+      <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full ${props.submitted ? "" : ""}`}
+        style={
+          props.submitted ? {} : {
+            backgroundColor: randColor,
+            color: randTextColor
+          }}>
         <div className="p-2 flex gap-3 items-center w-full flex-wrap">
           <div className="flex flex-col items-start flex-1">
-            <span className={`text-2xl text-left`}>{props.submitted? "☑":"☐"}{props.title}</span>
+            <span className={`text-2xl text-left`}>{props.submitted ? "☑" : "☐"}{props.title}</span>
             <span className="text-sm text-left opacity-70">{props.course}</span>
           </div>
           <div className="flex items-end flex-col">

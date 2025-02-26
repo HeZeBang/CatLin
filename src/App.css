@@ -50,3 +50,8 @@ a.active {
   box-shadow: inset -4px -4px;
   opacity: 50%;
 }
+
+.nes-ui-icon-btn.homework::after:hover {
+  box-shadow: inset 4px 4px;
+  opacity: 40%;
+}
