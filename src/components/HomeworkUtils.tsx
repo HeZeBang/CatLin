@@ -114,7 +114,7 @@ export function HwItem(props: HomeworkItemProps) {
           }}>
         <div className="p-2 flex gap-3 items-center w-full flex-wrap">
           <div className="flex flex-col items-start flex-1">
-            <span className={`text-2xl text-left`}>{props.submitted ? "☑" : "☐"}{props.title}</span>
+            <span className={`text-2xl text-left`}>{props.submitted ? <span>{"☑"}</span> : <span className="flex">{"☐"}</span>}{props.title}</span>
             <span className="text-sm text-left opacity-70">{props.course}</span>
           </div>
           <div className="flex items-end flex-col">

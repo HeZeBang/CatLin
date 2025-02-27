@@ -16,7 +16,7 @@ export default function Landing() {
       if (LoadUsername(type)) setFirstUse(false)
       hwTemp = [...hwTemp, ...LoadHomework(type)]
     })
-    hwTemp.sort((a, b) => a.due - b.due)
+    hwTemp.sort((a, b) => b.due - a.due)
     setHomeworks(hwTemp)
     setDueSplit(Date.now() / 1000 - 7 * 24 * 60 * 60)
   }, [])
