@@ -106,6 +106,13 @@ export function HwItem(props: HomeworkItemProps) {
 
   return (
     <PixelBorder doubleRoundCorners className="w-full">
+      {/* <span className="text-xl block text-right w-full text-red-500" style={{
+        top: "-0.2rem",
+        right: "-0.5em",
+        position: "relative",
+        lineHeight: "0",
+        zIndex: 1,
+      }}>●</span> */}
       <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full ${props.submitted ? "" : ""}`}
         style={
           props.submitted ? {} : {
