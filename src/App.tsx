@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import './App.css'
-import { IconButton, setDarkModeActivation } from 'nes-ui-react'
+import { IconButton, Progress, setDarkModeActivation } from 'nes-ui-react'
 import { NavLink, Outlet } from 'react-router'
 import { Sun, Moon, MenuIcon } from './components/Icons'
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
-
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const [progressVal, setProgressVal] = useState(0)
 
   const toggleDarkMode = useCallback(
     () => setDarkMode((darkMode) => !darkMode),
@@ -15,6 +16,20 @@ function App() {
   )
 
   useEffect(() => setDarkModeActivation(darkMode), [darkMode])
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setProgressVal((prev) => {
+  //     if (prev >= 100) {
+  //       // clearInterval(interval);
+  //       return 0;
+  //     }
+  //     return prev + 1;
+  //     });
+  //   }, 100);
+
+  //   return () => clearInterval(interval);
+  // })
 
   const NavigatorItems = () => (
     <>
@@ -26,7 +41,7 @@ function App() {
   )
 
   return (
-    <>
+    <div>
       <div className="sticky w-screen left-0 top-0 z-50 p-3 bg-inherit"
         style={{
           borderBottom: "4px solid #D3D3D3"
@@ -48,10 +63,19 @@ function App() {
           <NavigatorItems />
         </div>
       </div>
+      <Progress value={progressVal} max="100" color="primary"
+        style={{
+          margin: "0",
+          height: "8px",
+          display: "flex",
+          opacity: progressVal === 0? '0%':'100%',
+          transition: "opacity 200ms ease",
+        }}
+      />
       <div className="flex gap-3 items-center justify-center flex-col m-3">
         <Outlet />
       </div>
-    </>
+    </div>
   )
 }
 
