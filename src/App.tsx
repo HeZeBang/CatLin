@@ -34,7 +34,7 @@ function App() {
   const NavigatorItems = () => (
     <>
       <NavLink to="/" className="text-base">主页</NavLink>
-      {/* <NavLink to="/gallery" className="text-base">画廊</NavLink> */}
+      <NavLink to="/gallery" className="text-base">猫窝</NavLink>
       <NavLink to="/settings" className="text-base">设置</NavLink>
       <NavLink to="/about" className="text-base">关于</NavLink>
     </>
