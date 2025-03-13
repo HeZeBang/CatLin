@@ -37,6 +37,14 @@ html {
   }
 }
 
+.toolbar {
+  background-color: #fff;
+}
+
+.nes-ui-dark-mode .toolbar {
+  background-color: #404045;
+}
+
 :root {
   /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
   font-family: "Unifont" !important;
