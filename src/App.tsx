@@ -9,7 +9,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
 
-  const [progressVal, setProgressVal] = useState(0)
+  const [progressVal] = useState(0)
 
   const toggleDarkMode = useCallback(
     () => setDarkMode((darkMode) => !darkMode),

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { HomeworkItem, HwItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, LoadUsername } from "../components/Utils";
 import { Link } from "react-router";
-import { Button, Spacer, Toolbar } from "nes-ui-react";
+import { Button } from "nes-ui-react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 
 export default function Landing() {
@@ -11,7 +11,7 @@ export default function Landing() {
   const [dueSplit, setDueSplit] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { unityProvider, sendMessage } = useUnityContext({
+  const { unityProvider } = useUnityContext({
     loaderUrl: "unity/demo/demo.loader.js",
     dataUrl: "unity/demo/demo.data.br",
     frameworkUrl: "unity/demo/demo.framework.js.br",
