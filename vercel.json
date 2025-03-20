@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/:uri",
       "dest": "/api/index.py"
     },
     {
-      "src": "/[^.]+",
+      "src": "/:uri",
       "dest": "/"
     }
   ],
