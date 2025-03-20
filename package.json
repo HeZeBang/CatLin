@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.0.0",
     "nes-ui-react": "file:package\\nes-ui-react-v0.3.1.tgz",
     "pixelarticons": "1.8.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.2.0",
-    "react-router-dom": "^7.2.0"
+    "react-router-dom": "^7.2.0",
+    "react-unity-webgl": "^9.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

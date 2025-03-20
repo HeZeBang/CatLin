@@ -8,6 +8,7 @@ import Landing from './pages/Landing.tsx'
 import Settings from './pages/Settings.tsx'
 import About from './pages/About.tsx'
 import NotFound from './pages/404.tsx'
+import Gallery from './pages/Gallery.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,7 +16,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Landing />} />
-          {/* <Route path="gallery" element={<Gallery />} /> */}
+          <Route path="gallery" element={<Gallery />} />
           <Route path="settings" element={<Settings />} />
           <Route path="about" element={<About />} />
           <Route path="*" element={<NotFound />} />

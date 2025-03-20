@@ -115,25 +115,28 @@ export function HwItem(props: HomeworkItemProps) {
       }}>●</span> */}
       <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full ${props.submitted ? "" : ""}`}
         style={
-          props.submitted ? {} : {
+          props.submitted ? {} : 
+          {
             backgroundColor: randColor,
             color: randTextColor
-          }}>
-        <div className="p-2 flex gap-3 items-center w-full flex-wrap">
+          }}
+      >
+        <div className="p-2 flex gap-1 items-center w-full flex-wrap">
+          <span className={`text-2xl text-left`}>{props.submitted ? <span>{"☑"}</span> : <span className="box">{"☐"}</span>}</span>
           <div className="flex flex-col items-start flex-1">
-            <span className={`text-2xl text-left`}>{props.submitted ? <span>{"☑"}</span> : <span className="flex">{"☐"}</span>}{props.title}</span>
+            <span className={`text-2xl text-left`}>{props.title}</span>
             <span className="text-sm text-left opacity-70">{props.course}</span>
           </div>
           <div className="flex items-end flex-col">
-            <div className={`flex gap-1 ${isPasted ? "text-xl" : "text-4xl"}`}>
+            <div className={`flex gap-1`}>
               {props.submitted ?
-                (<span>SUBMITTED</span>) : (
-                  <>
+                (<span className="text-xl">SUBMITTED</span>) : (
+                  <div className={isPasted ? "text-xl" : "text-4xl"}>
                     {isPasted ? <span className="text-2xl">PAST</span> : null}
                     <span>{difference.days}<sup className="text-sm">d</sup></span>
                     <span>{difference.hours}<sup className="text-sm">h</sup></span>
                     <span>{difference.minutes}<sup className="text-sm">m</sup></span>
-                  </>
+                  </div>
                 )}
             </div>
             <span className="flex gap-1">
