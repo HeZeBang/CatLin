@@ -55,3 +55,19 @@ a.active {
   box-shadow: inset 4px 4px;
   opacity: 40%;
 }
+
+.drawer {
+  background-color: #fff;
+}
+
+.nes-ui-dark-mode .drawer {
+  background-color: #000000;
+}
+
+.toolbar {
+  background-color: #fff;
+}
+
+.nes-ui-dark-mode .toolbar {
+  background-color: #404045;
+}
