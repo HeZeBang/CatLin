@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { HomeworkItem, HwItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, LoadUsername } from "../components/Utils";
 import { Link } from "react-router";
@@ -9,14 +9,27 @@ export default function Landing() {
   const [homeworks, setHomeworks] = useState<HomeworkItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
   const [dueSplit, setDueSplit] = useState(0);
+  const [drawerTop, setDrawerTop] = useState("0em")
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { unityProvider } = useUnityContext({
+  const { unityProvider, isLoaded } = useUnityContext({
     loaderUrl: "unity/demo/demo.loader.js",
     dataUrl: "unity/demo/demo.data.br",
     frameworkUrl: "unity/demo/demo.framework.js.br",
     codeUrl: "unity/demo/demo.wasm.br",
   })
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      console.log("Unity loaded")
+      setDrawerTop("calc(-9em + 100vh)")
+      window.scrollTo(0, 0)
+    }
+  }, [isLoaded])
 
   useEffect(() => {
     var hwTemp = [] as HomeworkItem[]
@@ -38,8 +51,10 @@ export default function Landing() {
       <Unity unityProvider={unityProvider} className='fixed w-full h-full m-0 top-0 left-0 z-0' />
       <div className="w-full h-auto overflow-scroll drawer flex items-center justify-start flex-col z-10 px-5"
         style={{
-          marginTop: "calc(-9em + 100vh)",
+          // marginTop: "calc(-9em + 100vh)",
+          marginTop: drawerTop,
           minHeight: "100vh",
+          transition: "margin-top 1s cubic-bezier(0.3, 0, 0.5, 1)",
         }}
       >
         <div className="nes-ui-toolbar -mx-5 w-full mb-5 mt-2"
