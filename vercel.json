@@ -2,12 +2,27 @@
   "version": 2,
   "rewrites": [
     {
-      "src": "/api/:uri",
-      "dest": "/api/index.py"
+      "source": "/api/:uri",
+      "destination": "/api/index.py"
     },
     {
-      "src": "/:uri",
-      "dest": "/"
+      "source": "/:uri",
+      "destination": "/"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*).br",
+      "headers": [
+        {
+          "key": "Content-Encoding",
+          "value": "br"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/octet-stream"
+        }
+      ]
     }
   ]
 }
