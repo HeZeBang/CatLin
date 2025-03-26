@@ -1,5 +1,8 @@
 # Python
 
+Library/*
+Temp/*
+
 .venv/
 __pycache__/
 
