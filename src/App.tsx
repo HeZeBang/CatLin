@@ -22,17 +22,15 @@ function App() {
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
-  //     setProgressVal((prev) => {
-  //     if (prev >= 100) {
-  //       // clearInterval(interval);
-  //       return 0;
-  //     }
-  //     return prev + 1;
-  //     });
+  //     setProgressVal((prev) => (prev + (100 - prev) / 2));
   //   }, 100);
 
-  //   return () => clearInterval(interval);
-  // })
+  //   return () => {
+  //     setProgressVal(0);
+  //     clearInterval(interval);
+  //   }
+  // }, [isLoading])
+
   useEffect(() => {
     console.log(location)
   }, [location])

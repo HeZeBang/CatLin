@@ -89,13 +89,14 @@ export default function Settings() {
             onChange={(e) => setPassword(e)}
             onKeyUp={(e) => e.key === "Enter" && Login()}
           />
-          {isLoggingIn && <Hourglass className="mx-auto animate-pulse h-5 w-5" />}
+          {/* {isLoggingIn && <Hourglass className="mx-auto animate-pulse h-5 w-5" />} */}
+          {isLoggingIn && <img src="/public/cats/gray_loading.gif" alt="loading" className="mx-auto h-10" />}
           {errMsg && <span className="text-red-500">{errMsg}</span>}
         </div>
         <Footer>
           <Spacer />
           <Button color="white" className="mx-1" onClick={() => setModalOpen(false)}>取消</Button>
-          <Button color="primary" className="mx-1" onClick={Login}>登录</Button>
+          <Button color="primary" className="mx-1" disabled={isLoggingIn} onClick={Login}>登录</Button>
         </Footer>
       </Modal>
     </div>
