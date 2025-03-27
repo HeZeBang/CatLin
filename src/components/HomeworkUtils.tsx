@@ -1,6 +1,6 @@
 import { Colors, PixelBorder } from "nes-ui-react";
 import { useState, useEffect } from "react";
-import { redirect, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 interface HomeworkItemProps {
   course: string,
