@@ -1,8 +1,7 @@
-import { Button, Container, Footer, Header, Input, Modal, Spacer } from "nes-ui-react";
+import { Button, Container, Footer, Header, Input, Modal, Progress, Spacer } from "nes-ui-react";
 import "../App.css";
 import { useCallback, useState } from "react";
 import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
-import { Hourglass } from "../components/Icons";
 
 export default function Settings() {
   const [modalType, setModalType] = useState<AccountType | null>(null)
@@ -45,7 +44,49 @@ export default function Settings() {
     <div className="flex gap-1 items-center justify-center flex-col w-full max-w-md">
       <h2 className="text-2xl">设置</h2>
       <Container title="" className="w-full">
-        <span>嗯，也许这里可以放点用户头像什么的～</span>
+        <div className="flex-col items-center w-full">
+          <div className="flex gap-3">
+            <i className="nes-icon github scale-[6] mr-20 mb-20"
+            />
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-1">
+                <span className="text-2xl">{'测试用户'}</span>
+                <span>Lv.1</span>
+              </div>
+              <div className="flex gap-1 items-center">
+                <div className="nes-badge">
+                  <span className="is-success">新人出道</span>
+                </div>
+                {/* <span>共 1 个徽章</span> */}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-1 flex-col">
+            <span className="text-md">距离下个等级还需 {1000} 经验值</span>
+            <div className="text-md flex justify-center items-center">
+              <span className="flex-auto min-w-[4em] text-nowrap">成就收集</span>
+              <Progress value={0.1}
+                style={{
+                  maxHeight: "10px"
+                }} />
+            </div>
+            <div className="text-md flex justify-center items-center">
+              <span className="flex-auto min-w-[4em] text-nowrap">完成速度</span>
+              <Progress value={0.5}
+                style={{
+                  maxHeight: "10px"
+                }} />
+            </div>
+            <div className="text-md flex justify-center items-center">
+              <span className="flex-auto min-w-[4em] text-nowrap">完成质量</span>
+              <Progress value={0.8}
+                style={{
+                  maxHeight: "10px"
+                }} />
+            </div>
+          </div>
+        </div>
       </Container>
       <Container title="关联账户" className="w-full">
         {Object.values(AccountType).map((item) => (
