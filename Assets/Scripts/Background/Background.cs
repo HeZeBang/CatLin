@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Background : MonoBehaviour
@@ -8,13 +9,17 @@ public class Background : MonoBehaviour
     private bool isDragging = false;
     private float dragStartTime;
     private const float longPressDuration = 0.1f;
-    private Vector3 previousPosition;
+    private Vector2 previousPosition;
     private bool clickThis;
+    private float width;
+    private RectTransform rectTransform;
 
     void Start()
     {
         clickThis = false;
-        previousPosition = transform.position; // 初始化上一帧的位置
+        rectTransform = GetComponent<RectTransform>();
+        previousPosition = rectTransform.anchoredPosition; // 初始化上一帧的位置
+        width = rectTransform.rect.width;
     }
 
     void Update()
@@ -71,14 +76,16 @@ public class Background : MonoBehaviour
                 Vector3 direction = currentMousePos - dragStartPos; // 计算拖动方向
 
                 // 仅更新 x 轴位置，保持 y 轴不变
-                Vector3 newPosition = new Vector3(transform.position.x + direction.x, transform.position.y, transform.position.z);
+                // Vector3 newPosition = new Vector3(transform.position.x + direction.x, transform.position.y, transform.position.z);
+                Vector3 newPosition = rectTransform.anchoredPosition + new Vector2(direction.x, 0);
 
                 // 限制左右边界
                 float screenWidth = Camera.main.orthographicSize * Screen.width / Screen.height;
-                newPosition.x = Mathf.Clamp(newPosition.x, -screenWidth / 2, screenWidth / 2);
+                newPosition.x = Mathf.Clamp(newPosition.x, -width / 2 - screenWidth, width / 2 + screenWidth);
 
                 // 更新位置
-                transform.position = newPosition;
+                // transform.position = newPosition;
+                rectTransform.anchoredPosition = newPosition;
 
                 // 更新拖动起始位置
                 dragStartPos = currentMousePos;
@@ -100,7 +107,7 @@ public class Background : MonoBehaviour
     public Vector3 GetPositionChange()
     {
         // 计算当前帧与上一帧的位置差
-        Vector3 positionChange = transform.position - previousPosition;
+        Vector3 positionChange = rectTransform.anchoredPosition - previousPosition;
 
         // 更新上一帧位置为当前帧位置
         previousPosition = transform.position;
