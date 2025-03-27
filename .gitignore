@@ -2,6 +2,7 @@
 
 Library/*
 Temp/*
+output/*
 
 .venv/
 __pycache__/
