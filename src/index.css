@@ -29,6 +29,10 @@ html {
   left: 0;
 }
 
+.nes-balloon, .nes-icon {
+  border-image-repeat: initial !important;
+}
+
 @layer base {
   @font-face
   {

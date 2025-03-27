@@ -1,36 +1,107 @@
 // import { A, Badge, BadgeSplitted, Button, Checkbox, IconButton, Input, Radio } from "nes-ui-react";
-import { Button } from "nes-ui-react";
+import { PixelBorder, Progress } from "nes-ui-react";
 import { SVGProps } from "react";
-import { Unity, useUnityContext } from "react-unity-webgl";
 
+interface Cat {
+  avatar: string,
+  name: string,
+  happiness: number,
+  hunger: number,
+  owned: boolean
+}
+
+const dummyCats = [
+  {
+    avatar: "black",
+    name: "黑猫",
+    happiness: 0.5,
+    hunger: 0.2,
+    owned: true,
+  },
+  {
+    avatar: "xl",
+    name: "暹罗猫",
+    happiness: 0.8,
+    hunger: 0.6,
+    owned: false,
+  },
+  {
+    avatar: "orange",
+    name: "橘猫",
+    happiness: 0.8,
+    hunger: 0.1,
+    owned: true,
+  },
+  {
+    avatar: "blue",
+    name: "蓝猫",
+    happiness: 0.1,
+    hunger: 0.9,
+  },
+  {
+    avatar: "pattern",
+    name: "花纹猫",
+    happiness: 0.7,
+    hunger: 0.3,
+    owned: false,
+  },
+  {
+    avatar: "white",
+    name: "白猫",
+    happiness: 0.9,
+    hunger: 0.4,
+    owned: true,
+  },
+  {
+    avatar: "gray",
+    name: "灰猫",
+    happiness: 0.6,
+    hunger: 0.5,
+    owned: false,
+  },
+  {
+    avatar: "yellow",
+    name: "黄猫",
+    happiness: 0.8,
+    hunger: 0.2,
+    owned: true,
+  }
+] as Cat[]
 
 export default function Gallery() {
-  const { unityProvider, sendMessage } = useUnityContext({
-    loaderUrl: "unity/demo/demo.loader.js",
-    dataUrl: "unity/demo/demo.data.br",
-    frameworkUrl: "unity/demo/demo.framework.js.br",
-    codeUrl: "unity/demo/demo.wasm.br",
-  })
   return (
-    <>
-      <Unity unityProvider={unityProvider} className='w-full h-full m-0' />
-      <Button onClick={() => {sendMessage("Text (Legacy)", "UpdateText", "Clicked From Outside!")}}>Click Me</Button>
-    </>
-    // <div className="flex gap-3 items-center justify-center flex-col">
-    //   <Button className="text-xl">Button / 按钮</Button>
-    //   <A className="text-xl text-inherit" href="#">Link</A>
-    //   <Badge text="Badge - SmallText" backgroundColor="warning" className="m-auto w-[200px]" />
-    //   <BadgeSplitted textLeft="Badge" text="Splitted" backgroundColor="success" className="text-xl m-3" />
-    //   <IconButton color="success">
-    //     <Android className="w-10 h-10" />
-    //     <span className="text-2xl">Android</span>
-    //   </IconButton>
-    //   <Radio name="radio" value="1" label="Radio Checked" checked={true} />
-    //   <Radio name="radio" value="2" label="Radio Uncheked" />
-    //   <Checkbox label="Checkbox Checked" checked={true} />
-    //   <Checkbox label="Checkbox Unchecked" />
-    //   <Input type="text" color="warning" className="text-md bg-inherit" value="Input" />
-    // </div>
+    <div className="columns-1 sm:columns-2 md:columns-4 justify-center gap-4 p-4 min-h-fit">
+      {dummyCats.map((item, index) =>
+        <PixelBorder doubleRoundCorners className="w-full mb-2 break-inside-avoid" index={index}
+          style={{
+            opacity: item.owned ? 1 : 0.4
+          }}
+        >
+          <div className="flex flex-row sm:flex-col justify-center items-center">
+            <img src={`/avatars/${item.avatar}.png`} className="max-w-28 m-5"
+            />
+            <div className="flex flex-col mx-2 my-2">
+              <p className="text-2xl flex align-middle">{item.name}{item.owned ? "" : "（未获得）"}</p>
+              <div className="text-md flex justify-center items-center">
+                <span className="flex-auto min-w-[3.5em] text-nowrap">心情</span>
+                <Progress value={item.happiness}
+                  style={{
+                    maxHeight: "10px"
+                  }} />
+              </div>
+              <div className="text-md flex justify-center items-center">
+                <span className="flex-auto min-w-[3.5em] text-nowrap">饱食度</span>
+                <Progress value={item.happiness}
+                  style={{
+                    maxHeight: "10px"
+                  }} />
+              </div>
+            </div>
+          </div>
+        </PixelBorder>
+      )
+      }
+    </div>
   )
 }
 

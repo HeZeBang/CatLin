@@ -45,7 +45,7 @@ function App() {
   )
 
   return (
-    <div className="h-screen">
+    <div className="min-h-screen">
       <div className="sticky w-screen left-0 top-0 z-50">
         <div className="w-screen left-0 top-0 z-50 p-3 bg-auto toolbar">
           <div className="max-w-lg flex mx-auto items-center">

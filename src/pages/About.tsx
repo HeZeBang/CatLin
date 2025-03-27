@@ -23,8 +23,8 @@ export default function About() {
   return (
     <div className="flex gap-3 items-center justify-center flex-col">
       <div className="flex items-center gap-1 flex-wrap justify-center">
-      <img src={HeroImage} alt="CatLin" className="w-24 h-24 hero-avatar" />
-      <h1 className="text-5xl mt-0">CatLin</h1>
+        <img src={HeroImage} alt="CatLin" className="w-24 h-24 hero-avatar" />
+        <h1 className="text-5xl mt-0">CatLin</h1>
       </div>
       <h2 className="text-2xl pb-3">{meowText}</h2>
       <PixelBorder doubleSize doubleRoundCorners>
@@ -34,6 +34,17 @@ export default function About() {
         <span>Made by C4TL1N</span>{' '}
         <span className="text-nowrap">with <i className="align-middle inline-block nes-icon is-medium heart" />.</span>
       </span>
+      <div className="flex flex-col gap-3 items-center justify-center"
+      style={{
+        borderImageWidth: "2",
+        borderImageRepeat: "initial",
+      }}
+      >
+        <span className="text-xl">留言版</span>
+        <div className="nes-balloon from-left">
+          <p>太几把好用了！</p>
+        </div>
+      </div>
     </div>
   )
 }
