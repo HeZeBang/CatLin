@@ -9,6 +9,7 @@ import Settings from './pages/Settings.tsx'
 import About from './pages/About.tsx'
 import NotFound from './pages/404.tsx'
 import Gallery from './pages/Gallery.tsx'
+import { HomeworkDetails } from './pages/Details.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="gallery" element={<Gallery />} />
           <Route path="settings" element={<Settings />} />
           <Route path="about" element={<About />} />
+          <Route path="details/:id" element={<HomeworkDetails />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

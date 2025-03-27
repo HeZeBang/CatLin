@@ -91,7 +91,7 @@ export default function Landing() {
                 homeworks
                   .filter(item => item.due >= dueSplit)
                   // .filter(item => !item.submitted)
-                  .map((hw, _) => (
+                  .map((hw, index) => (
                     <HwItem
                       key={`${hw.course}-s${hw.title}`}
                       course={hw.course}
@@ -99,6 +99,7 @@ export default function Landing() {
                       submitted={hw.submitted}
                       due={hw.due}
                       url={hw.url}
+                      index={index}
                     />
                   ))
               )}

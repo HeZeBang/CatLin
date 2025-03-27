@@ -35,6 +35,15 @@ html {
     font-family: 'Unifont';
     src: url('/fonts/unifont.otf');
   }
+
+  @font-face {
+    font-family: 'UnifontEX';
+    src: url('/fonts/unifontex.ttf');
+  }
+}
+
+.font-ex {
+  font-family: 'UnifontEX' !important;
 }
 
 :root {

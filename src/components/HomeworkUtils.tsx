@@ -1,5 +1,6 @@
 import { Colors, PixelBorder } from "nes-ui-react";
 import { useState, useEffect } from "react";
+import { redirect, useNavigate } from "react-router";
 
 interface HomeworkItemProps {
   course: string,
@@ -7,6 +8,7 @@ interface HomeworkItemProps {
   submitted: boolean,
   title: string,
   url: string,
+  index: number,
 }
 
 function randomColor(seed: number = 0) {
@@ -65,7 +67,7 @@ function randomTextColor(seed: number = 0) {
   return blackRatio > whiteRatio ? Colors.black : Colors.white;
 }
 
-function simpleHash(str: string) {
+export function simpleHash(str: string) {
   return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
 }
 
@@ -95,6 +97,7 @@ export function HwItem(props: HomeworkItemProps) {
   const randColor = randomColor(simpleHash(`${props.course}`))
   const randTextColor = randomTextColor(simpleHash(`${props.course}`))
   const isPasted = !difference.sign
+  const navigate = useNavigate()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -120,6 +123,9 @@ export function HwItem(props: HomeworkItemProps) {
             backgroundColor: randColor,
             color: randTextColor
           }}
+        onClick={() => {
+          navigate(`/details/${props.index}`)
+        }}
       >
         <div className="p-2 flex gap-1 items-center w-full flex-wrap">
           <span className={`text-2xl text-left`}>{props.submitted ? <span>{"☑"}</span> : <span className="box">{"☐"}</span>}</span>
