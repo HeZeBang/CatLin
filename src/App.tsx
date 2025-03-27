@@ -3,11 +3,13 @@ import './App.css'
 import { IconButton, Progress, setDarkModeActivation } from 'nes-ui-react'
 import { NavLink, Outlet, useLocation } from 'react-router'
 import { Sun, Moon, MenuIcon } from './components/Icons'
+import { useLoading } from './context/LoadingContext'
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  const { isLoading } = useLoading()
 
   const [progressVal] = useState(0)
 
@@ -37,10 +39,10 @@ function App() {
 
   const NavigatorItems = () => (
     <>
-      <NavLink to="/" className="text-base">主页</NavLink>
-      <NavLink to="/gallery" className="text-base">猫窝</NavLink>
-      <NavLink to="/settings" className="text-base">设置</NavLink>
-      <NavLink to="/about" className="text-base">关于</NavLink>
+      <NavLink to="/" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`} >主页</NavLink>
+      <NavLink to="/gallery" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`}>猫窝</NavLink>
+      <NavLink to="/settings" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`}>设置</NavLink>
+      <NavLink to="/about" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`}>关于</NavLink>
     </>
   )
 

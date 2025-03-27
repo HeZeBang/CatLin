@@ -4,6 +4,7 @@ import { AccountType, LoadHomework, LoadUsername } from "../components/Utils";
 import { Link } from "react-router";
 import { Button } from "nes-ui-react";
 import { Unity, useUnityContext } from "react-unity-webgl";
+import { useLoading } from "../context/LoadingContext";
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<HomeworkItem[]>([])
@@ -11,6 +12,8 @@ export default function Landing() {
   const [dueSplit, setDueSplit] = useState(0);
   const [drawerTop, setDrawerTop] = useState("0em")
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const { setIsLoading } = useLoading()
 
   const { unityProvider, isLoaded } = useUnityContext({
     loaderUrl: "unity/demo/demo.loader.js",
@@ -29,6 +32,7 @@ export default function Landing() {
       setDrawerTop("calc(-9em + 100vh)")
       window.scrollTo(0, 0)
     }
+    setIsLoading(!isLoaded)
   }, [isLoaded])
 
   useEffect(() => {

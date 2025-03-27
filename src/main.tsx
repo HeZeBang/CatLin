@@ -10,10 +10,12 @@ import About from './pages/About.tsx'
 import NotFound from './pages/404.tsx'
 import Gallery from './pages/Gallery.tsx'
 import { HomeworkDetails } from './pages/Details.tsx'
+import { LoadingProvider } from './context/LoadingContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
+    <LoadingProvider>
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Landing />} />
@@ -24,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+      </LoadingProvider>
     </BrowserRouter>
   </StrictMode>
 )
