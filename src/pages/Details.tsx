@@ -8,6 +8,7 @@ interface ReplyItem {
   message: string,
   name: string,
   badge: string,
+  rating?: number
 }
 
 const bgColor = ["primary", "success", "warning", "error"] as NamedColor[]
@@ -30,12 +31,13 @@ export function HomeworkDetails() {
     {
       message: "好难不想写了TT",
       name: "赶作业的土豆泥",
-      badge: "评论家"
+      badge: "评论家",
+      rating: 1,
     },
     {
       message: "你这么在意这个评分干嘛？这会把作业给异化掉的！",
       name: "红烧鸡翅",
-      badge: "从未超时"
+      badge: "准点达人"
     }
   ] as ReplyItem[]
 
@@ -63,15 +65,18 @@ export function HomeworkDetails() {
             </div>
             <div className="flex gap-3 flex-rows md:flex-col justify-end align-middle">
               {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
-              {/* <p className="text-md md:text-3xl text-right">多半好评</p> */}
-              <Badge backgroundColor="success" text="多半好评"
+              <div className="flex gap-1">
+                <i className="nes-icon like is-medium" style={{ marginRight: "40px" }} />
+                <p className="text-xl md:text-2xl text-right items-center flex">多半好评</p>
+              </div>
+              {/* <Badge backgroundColor="success" text="多半好评"
                 className="text-sm"
                 style={{
                   margin: 0,
                   alignSelf: "flex-end"
-                }} />
-              <div className="flex flex-row justify-end gap-3">
-                <span>5.0</span>
+                }} /> */}
+              <div className="flex flex-row justify-end gap-3 items-center">
+                <span className="flex text-base">5.0</span>
                 <div>
                   <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
                   <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />

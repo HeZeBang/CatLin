@@ -131,7 +131,15 @@ export default function Settings() {
             onKeyUp={(e) => e.key === "Enter" && Login()}
           />
           {/* {isLoggingIn && <Hourglass className="mx-auto animate-pulse h-5 w-5" />} */}
-          {isLoggingIn && <img src="/public/cats/gray_loading.gif" alt="loading" className="mx-auto h-10" />}
+          {isLoggingIn &&
+            <img
+              src={`/public/cats/${["white", "blue", "gray"].at(Math.random() * 100 % 3)}_loading.gif`}
+              alt="loading"
+              className="mx-auto w-2/3"
+              style={{
+                imageRendering: "pixelated"
+              }}
+            />}
           {errMsg && <span className="text-red-500">{errMsg}</span>}
         </div>
         <Footer>

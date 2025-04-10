@@ -1,5 +1,5 @@
 
-import { PixelBorder } from "nes-ui-react";
+import { Input, PixelBorder } from "nes-ui-react";
 import Nyan from "../assets/nyan.webp";
 import "../App.css";
 import { useEffect, useState } from "react";
@@ -34,17 +34,29 @@ export default function About() {
         <span>Made by C4TL1N</span>{' '}
         <span className="text-nowrap">with <i className="align-middle inline-block nes-icon is-medium heart" />.</span>
       </span>
-      <div className="flex flex-col gap-3 items-center justify-center"
-      style={{
-        borderImageWidth: "2",
-        borderImageRepeat: "initial",
-      }}
-      >
-        <span className="text-xl">留言版</span>
-        <div className="nes-balloon from-left">
-          <p>太几把好用了！</p>
+      <PixelBorder doubleRoundCorners className="w-full p-1 mx-3 mb-3">
+        <div className="flex flex-col gap-3 items-center justify-center"
+          style={{
+            borderImageWidth: "2",
+            borderImageRepeat: "initial",
+          }}
+        >
+          <span className="text-xl">留言版</span>
+          <div className="nes-balloon from-left self-start">
+            <p>非常好 CatLin，使我的 DDL 旋转！爱来自上海</p>
+          </div>
+          <div className="nes-balloon from-right self-end">
+            <p>姐妹们快入手，敏感肌也能用！！！！</p>
+          </div>
+
+          <a className="nes-balloon from-left self-start">
+            <input
+              className="text-md bg-inherit"
+              placeholder="我也要说……"
+            />
+          </a>
         </div>
-      </div>
+      </PixelBorder>
     </div>
   )
 }
