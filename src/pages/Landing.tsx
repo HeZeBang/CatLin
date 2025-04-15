@@ -12,6 +12,7 @@ export default function Landing() {
   const [dueSplit, setDueSplit] = useState(0);
   const [drawerTop, setDrawerTop] = useState("unset")
   const bottomRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
 
   const { setIsLoading } = useLoading()
 
@@ -67,6 +68,7 @@ export default function Landing() {
           }}>
           <span className="text-xl w-full justify-center">TODOs</span>
         </div>
+        <div ref={topRef} />
         <div className="flex gap-3 items-center justify-center flex-col w-full max-w-md">
           {firstUse ? (
             <div className="flex flex-col gap-3 mt-5 items-center justify-center">

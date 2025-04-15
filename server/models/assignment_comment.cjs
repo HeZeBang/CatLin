@@ -1,0 +1,12 @@
+const mongoose = require("mongoose");
+
+const AssignmentCommentSchema = new mongoose.Schema({
+  creator_id: String,
+  creator_name: String,
+  parent: String, // links to the _id of a parent assignment
+  content: String,
+  rating: Number,
+});
+
+// compile model from schema
+module.exports = mongoose.model("assignment_comment", AssignmentCommentSchema);
