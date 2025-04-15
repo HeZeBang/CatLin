@@ -11,22 +11,27 @@ import NotFound from './pages/404.tsx'
 import Gallery from './pages/Gallery.tsx'
 import { HomeworkDetails } from './pages/Details.tsx'
 import { LoadingProvider } from './context/LoadingContext.tsx'
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-    <LoadingProvider>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route index element={<Landing />} />
-          <Route path="gallery" element={<Gallery />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="about" element={<About />} />
-          <Route path="details/:id" element={<HomeworkDetails />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-      </LoadingProvider>
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <LoadingProvider>
+          <Routes>
+            <Route path="/" element={<App />}>
+              <Route index element={<Landing />} />
+              <Route path="gallery" element={<Gallery />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="about" element={<About />} />
+              <Route path="details/:id" element={<HomeworkDetails />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </LoadingProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   </StrictMode>
 )

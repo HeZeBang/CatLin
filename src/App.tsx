@@ -1,15 +1,60 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, createContext } from 'react'
 import './App.css'
 import { IconButton, Progress, setDarkModeActivation } from 'nes-ui-react'
 import { NavLink, Outlet, useLocation } from 'react-router'
 import { Sun, Moon, MenuIcon } from './components/Icons'
 import { useLoading } from './context/LoadingContext'
+import { get, post } from './lib/reqUtils'
+import jwt_decode from "jwt-decode";
+import { socket } from './lib/clientSocket'
+import { UserContextType } from './lib/models/context'
+
+export const UserContext = createContext({} as UserContextType);
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const { isLoading } = useLoading()
+  const [userId, setUserId] = useState(undefined);
+  const [userName, setUserName] = useState(undefined);
+
+  useEffect(() => {
+    get("/api/whoami").then((user:any) => {
+      if (user._id) {
+        // they are registed in the database, and currently logged in.
+        setUserId(user._id);
+        setUserName(user.name);
+      }
+    });
+  }, []);
+
+  const handleLogin = (credentialResponse: { credential?: any }) => {
+    if (!credentialResponse.credential) {
+      console.error("No credential found");
+      return;
+    }
+    const userToken = credentialResponse.credential;
+    const decodedCredential = jwt_decode(userToken) as { name: string };
+    console.log(`Logged in as ${decodedCredential.name}`);
+    post("/api/login", { token: userToken }).then((user:any) => {
+      setUserId(user._id);
+      setUserName(user.name);
+      post("/api/initsocket", { socketid: socket.id });
+    });
+  };
+
+  const handleLogout = () => {
+    setUserId(undefined);
+    post("/api/logout");
+  };
+
+  const authContextValue = {
+    userId,
+    userName,
+    handleLogin,
+    handleLogout,
+  };
 
   const [progressVal] = useState(0)
 
@@ -45,6 +90,7 @@ function App() {
   )
 
   return (
+    <UserContext.Provider value={authContextValue}>
     <div className="min-h-screen">
       <div className="sticky w-screen left-0 top-0 z-50">
         <div className="w-screen left-0 top-0 z-50 p-3 bg-auto toolbar">
@@ -78,6 +124,7 @@ function App() {
         <Outlet />
       </div>
     </div>
+    </UserContext.Provider>
   )
 }
 

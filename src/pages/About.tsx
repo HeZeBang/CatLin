@@ -1,5 +1,5 @@
 
-import { Input, PixelBorder } from "nes-ui-react";
+import { PixelBorder } from "nes-ui-react";
 import Nyan from "../assets/nyan.webp";
 import "../App.css";
 import { useEffect, useState } from "react";
