@@ -7,7 +7,7 @@ import { useLoading } from './context/LoadingContext'
 import { get, post } from './lib/reqUtils'
 import jwt_decode from "jwt-decode";
 import { socket } from './lib/clientSocket'
-import { UserContextType } from './lib/models/context'
+import { UserContextType } from './models/context'
 import { Toaster } from 'sonner'
 
 export const UserContext = createContext({} as UserContextType);

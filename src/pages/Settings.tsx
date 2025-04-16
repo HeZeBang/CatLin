@@ -3,9 +3,9 @@ import "../App.css";
 import { useCallback, useState, useContext } from "react";
 import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { UserContext } from "../App";
-import { UserContextType } from "../lib/models/context";
+import { UserContextType } from "../models/context";
 import { googleLogout } from "@react-oauth/google";
-import { availableBadges } from "../lib/models/badges";
+import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
 
 export default function Settings() {

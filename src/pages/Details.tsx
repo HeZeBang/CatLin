@@ -5,10 +5,10 @@ import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../
 import { Button, Container, Toast } from "nes-ui-react";
 import { get, post } from "../lib/reqUtils";
 import { UserContext } from "../App";
-import { Assignment, AssignmentComment, AssignmentCommentArray } from "../lib/models/assignment";
-import { availableBadges } from "../lib/models/badges";
+import { Assignment, AssignmentComment, AssignmentCommentArray } from "../models/assignment";
+import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
-import { Homework } from "../lib/models/homework";
+import { Homework } from "../models/homework";
 import { GithubIcon } from "../components/Icons";
 
 export function HomeworkDetails() {

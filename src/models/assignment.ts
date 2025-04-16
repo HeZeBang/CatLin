@@ -1,5 +1,21 @@
 import * as z from "zod";
+import mongoose from "mongoose";
 
+const assignmentSchema = new mongoose.Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  platform: String,
+  course: String,
+  title: String,
+  due: Date,
+  submitted: Boolean,
+  url: String,
+  create: Number,
+  rating: Number,
+  catType: String,
+  parent: { type: mongoose.Schema.Types.ObjectId, ref: "Homework" },
+});
+
+export default mongoose.models.Assignment || mongoose.model("Assignment", assignmentSchema);
 
 export const AssignmentSchema = z.object({
     "__v": z.number(),

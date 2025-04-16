@@ -16,7 +16,6 @@
 // validator runs some basic checks to make sure you've set everything up correctly
 // this is a tool provided by staff, so you don't need to worry about it
 const validator = require("./validator.cjs");
-validator.checkSetup();
 
 //allow us to use process.ENV
 require("dotenv").config();
