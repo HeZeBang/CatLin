@@ -12,7 +12,7 @@
 
 html.nes-ui * {
   font-family: 'Fusion', 'Unifont', serif !important;
-  transition-property: color, background-color;
+  transition-property: all;
   transition-duration: 200ms;
 }
 

@@ -1,5 +1,6 @@
 # Python
 
+.env
 .venv/
 __pycache__/
 
@@ -27,3 +28,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.vercel

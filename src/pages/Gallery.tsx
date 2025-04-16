@@ -5,6 +5,7 @@ import { SVGProps } from "react";
 interface Cat {
   avatar: string,
   name: string,
+  description?: string,
   happiness: number,
   hunger: number,
   owned: boolean
@@ -13,21 +14,23 @@ interface Cat {
 const dummyCats = [
   {
     avatar: "black",
-    name: "黑猫",
+    name: "煤炭",
     happiness: 0.5,
     hunger: 0.2,
     owned: true,
+    description: "好黑啊，像煤炭一样"
   },
   {
     avatar: "xl",
-    name: "暹罗猫",
+    name: "豆沙包",
     happiness: 0.8,
     hunger: 0.6,
     owned: false,
+    description: "味道怎么样呢～"
   },
   {
     avatar: "orange",
-    name: "橘猫",
+    name: "胖橘",
     happiness: 0.8,
     hunger: 0.1,
     owned: true,
@@ -40,7 +43,7 @@ const dummyCats = [
   },
   {
     avatar: "pattern",
-    name: "花纹猫",
+    name: "花岗岩",
     happiness: 0.7,
     hunger: 0.3,
     owned: false,
@@ -61,10 +64,11 @@ const dummyCats = [
   },
   {
     avatar: "yellow",
-    name: "黄猫",
+    name: "罗勒",
     happiness: 0.8,
     hunger: 0.2,
     owned: true,
+    description: "是男孩子哦"
   }
 ] as Cat[]
 
@@ -77,11 +81,12 @@ export default function Gallery() {
             opacity: item.owned ? 1 : 0.4
           }}
         >
-          <div className="flex flex-row sm:flex-col justify-center items-center">
+          <div className="flex flex-row sm:flex-col justify-center items-center active:scale-95">
             <img src={`/avatars/${item.avatar}.png`} className="max-w-28 m-5"
             />
             <div className="flex flex-col mx-2 my-2">
               <p className="text-2xl flex align-middle">{item.name}{item.owned ? "" : "（未获得）"}</p>
+              {item.description && <span className="text-base opacity-80">{item.description}</span>}
               <div className="text-md flex justify-center items-center">
                 <span className="flex-auto min-w-[3.5em] text-nowrap">心情</span>
                 <Progress value={item.happiness}
@@ -91,7 +96,7 @@ export default function Gallery() {
               </div>
               <div className="text-md flex justify-center items-center">
                 <span className="flex-auto min-w-[3.5em] text-nowrap">饱食度</span>
-                <Progress value={item.happiness}
+                <Progress value={item.hunger}
                   style={{
                     maxHeight: "10px"
                   }} />

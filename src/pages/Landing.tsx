@@ -5,17 +5,20 @@ import { Link } from "react-router";
 import { Button } from "nes-ui-react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useLoading } from "../context/LoadingContext";
+import { toast } from "sonner";
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<HomeworkItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
   const [dueSplit, setDueSplit] = useState(0);
+  //@ts-ignore
   const [drawerTop, setDrawerTop] = useState("unset")
   const bottomRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
 
   const { setIsLoading } = useLoading()
 
-  const { unityProvider, isLoaded } = useUnityContext({
+  const { unityProvider, isLoaded, unload } = useUnityContext({
     loaderUrl: "unity/demo/demo.loader.js",
     dataUrl: "unity/demo/demo.data.br",
     frameworkUrl: "unity/demo/demo.framework.js.br",
@@ -29,11 +32,18 @@ export default function Landing() {
   useEffect(() => {
     if (isLoaded) {
       console.log("Unity loaded")
-      setDrawerTop("calc(-9em + 100vh)")
-      window.scrollTo(0, 0)
+      // window.scrollTo(0, 0)
+      // setDrawerTop("calc(-9em + 100vh)")
+      toast.success("Unity loaded")
     }
     setIsLoading(!isLoaded)
   }, [isLoaded])
+
+  useEffect(() => {
+    return () => {
+      unload();
+    };
+  }, [unload]);
 
   useEffect(() => {
     var hwTemp = [] as HomeworkItem[]
@@ -67,6 +77,7 @@ export default function Landing() {
           }}>
           <span className="text-xl w-full justify-center">TODOs</span>
         </div>
+        <div ref={topRef} />
         <div className="flex gap-3 items-center justify-center flex-col w-full max-w-md">
           {firstUse ? (
             <div className="flex flex-col gap-3 mt-5 items-center justify-center">
@@ -104,6 +115,7 @@ export default function Landing() {
                       due={hw.due}
                       url={hw.url}
                       index={index}
+                      linked={!!hw.rawAssignment}
                     />
                   ))
               )}
@@ -112,14 +124,14 @@ export default function Landing() {
                   onClick={() => { setDueSplit(due => due - 7 * 24 * 60 * 60) }}
                   className="text-nowrap"
                 >
-                  -↓-
+                  ▼ 显示更早
                 </Button>
                 <span>截至 {new Date(dueSplit * 1000).toLocaleString()}</span>
                 <Button
                   onClick={() => { setDueSplit(due => Math.min(Date.now() / 1000, due + 7 * 24 * 60 * 60)) }}
                   className="text-nowrap"
                 >
-                  -↑-
+                  显示更晚 ▲
                 </Button>
               </div>
               <div ref={bottomRef} />

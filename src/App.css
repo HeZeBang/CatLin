@@ -28,6 +28,11 @@ a.active {
   filter: opacity(0.7);
 }
 
+.nes-ui-btn {
+  width: 100%;
+  height: 100%;
+}
+
 .hero-avatar {
   filter: invert(0);
   transition-property: filter !important;

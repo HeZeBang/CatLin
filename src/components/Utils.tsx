@@ -8,10 +8,23 @@ export function WrapUrl(path: string) {
   return `${URL_BASE}${path.startsWith("/") ? path : "/" + path}`
 }
 
+export function SaveUserInfo(loginResponse: any) {
+  localStorage.setItem('userInfo', JSON.stringify(loginResponse));
+}
+
+export function LoadUserInfo(){
+  const userInfo = localStorage.getItem('userInfo');
+  if (userInfo) {
+    return JSON.parse(userInfo);
+  }
+  return null;
+}
+
 export enum AccountType {
   Gradescope = "Gradescope",
   Blackboard = "Blackboard",
   ACM_OJ = "ACM OJ",
+  Custom = "Custom"
 }
 
 function SaveAccount(type: AccountType | null, username: string, password: string) {
@@ -25,8 +38,31 @@ export function SaveHomework(type: AccountType, hwList: HomeworkItem[]) {
   localStorage.setItem(`${type.replace(" ", "_")}`, JSON.stringify(hwList))
 }
 
+export function SaveAssignment(type: AccountType, assignment: HomeworkItem) {
+  const homework = LoadHomework(type)
+  const index = homework.findIndex(hw => hw.course === assignment.course && hw.title === assignment.title)
+  if (index !== -1) {
+    homework[index] = assignment
+  } else {
+    homework.push(assignment)
+  }
+  console.log(homework)
+  SaveHomework(type, homework)
+}
+
+export function RemoveAssignment(type: AccountType, assignment: HomeworkItem) {
+  const homework = LoadHomework(type)
+  const index = homework.findIndex(hw => hw.course === assignment.course && hw.title === assignment.title && hw.id === assignment.id)
+  if (index !== -1) {
+    homework.splice(index, 1)
+  }
+  SaveHomework(type, homework)
+}
+
 export function LoadHomework(type: AccountType) {
-  return JSON.parse(localStorage.getItem(`${type.replace(" ", "_")}`) || "[]") as HomeworkItem[]
+  const items = JSON.parse(localStorage.getItem(`${type.replace(" ", "_")}`) || "[]") as HomeworkItem[]
+  items.forEach(item => { item.platform = `${type}` })
+  return items
 }
 
 export function LoadUsername(type: AccountType) {
