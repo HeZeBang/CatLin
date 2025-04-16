@@ -96,10 +96,10 @@ function App() {
 
   const NavigatorItems = () => (
     <>
-      <NavLink to="/" className={`text-base `} >主页</NavLink>
-      <NavLink to="/gallery" className={`text-base `}>猫窝</NavLink>
-      <NavLink to="/settings" className={`text-base `}>设置</NavLink>
-      <NavLink to="/about" className={`text-base `}>关于</NavLink>
+      <NavLink to="/" className={`text-base text-current`} >主页</NavLink>
+      <NavLink to="/gallery" className={`text-base text-current`}>猫窝</NavLink>
+      <NavLink to="/settings" className={`text-base text-current`}>设置</NavLink>
+      <NavLink to="/about" className={`text-base text-current`}>关于</NavLink>
     </>
   )
 

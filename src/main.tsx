@@ -14,7 +14,7 @@ import { LoadingProvider } from './context/LoadingContext'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react'
 
-const GOOGLE_CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id';
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 'your-google-client-id';
 
 // createRoot(document.getElementById('root')!).render(
 export default function Index(){

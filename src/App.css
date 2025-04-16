@@ -8,7 +8,6 @@ a.active {
   text-underline-offset: 4px;
   text-decoration-thickness: 2.5px;
 }
-
 .nes-icon.heart::before {
   width: 1px;
   height: 1px;
