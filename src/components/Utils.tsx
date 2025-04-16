@@ -4,7 +4,7 @@
 import { HomeworkItem } from "./HomeworkUtils"
 
 export function WrapUrl(path: string) {
-  const URL_BASE = import.meta.env.MODE === "production" ? "" : "http://localhost:5000"
+  const URL_BASE = process.env.NODE_ENV === "production" ? "" : "http://localhost:5000"
   return `${URL_BASE}${path.startsWith("/") ? path : "/" + path}`
 }
 
