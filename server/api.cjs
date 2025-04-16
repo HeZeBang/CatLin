@@ -156,12 +156,26 @@ router.post("/assignment/comment", auth.ensureLoggedIn, (req, res) => {
     created_at: Date.now() / 1000,
   });
 
+  
   if (newComment.parent === null) {
     throw new Error("Should link to a parent homework");
   }
-
+  
+  if (newComment.is_annonymous) {
+    newComment.creator_name = "Anonymous";
+    newComment.creator_badge = -1;
+    newComment.creator_id = null;
+  }
   newComment.save().then((comment) => {
-    res.send(comment);
+    // update the homework rating
+    Homework.findOne({ _id: comment.parent }).then((homework) => {
+      homework.ratingSum += comment.rating;
+      homework.ratingNumber += 1;
+      homework.rating = homework.ratingSum / homework.ratingNumber;
+      homework.save();
+    }).finally(() => {
+      res.send(comment);
+    });
   });
 });
 

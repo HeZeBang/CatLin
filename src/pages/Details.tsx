@@ -25,6 +25,7 @@ export function HomeworkDetails() {
   const [_, setHomeworks] = useState<HomeworkItem[]>([])
   const [currentHomework, setCurrentHomework] = useState<HomeworkItem>()
   const [comment, setComment] = useState("")
+  const [rate, setRate] = useState(5)
   const [comments, setComments] = useState([] as AssignmentCommentArray)
   const dateOptions = {
     year: 'numeric',
@@ -114,6 +115,7 @@ export function HomeworkDetails() {
   const submitComment = useCallback(() => {
     post<AssignmentComment>("/api/assignment/comment", {
       content: comment,
+      rating: rate,
       parent: currentHomework?.rawAssignment?.parent,
     }).then((res) => {
       setComment("")
@@ -185,7 +187,7 @@ export function HomeworkDetails() {
                   <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
                   <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
                   <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
-                  <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
+                  <i className="nes-icon star is-transparent scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
                 </div>
               </div>
             </div>
@@ -194,7 +196,7 @@ export function HomeworkDetails() {
             <div className="flex-grow">
               <p>截止日期：{currentHomework?.due ? new Date(currentHomework.due * 1000).toLocaleDateString('zh-cn', dateOptions) : ""}</p>
               <p>平台：{currentHomework?.platform}</p>
-              <p>5 人评分 / 5 人评论</p>
+              {/* <p>5 人评分 / 5 人评论</p> */}
             </div>
             <div className="max-w-24">
               {
@@ -209,7 +211,7 @@ export function HomeworkDetails() {
             {comments.length == 0 ? (
               <span className="block w-full text-lg text-center py-5 opacity-50">还没有评论</span>
             ) :
-              comments.map((item, index) =>
+              comments.filter((item) => item.content !== "").map((item, index) =>
                 <Toast bubblePostion={index % 2 ? "right" : "left"} className="w-full">
                   <div className="w-full text-left">
                     <div className="w-full flex gap-3">
@@ -221,6 +223,22 @@ export function HomeworkDetails() {
                           {availableBadges.at(item.creator_badge)?.name || ""}
                         </span>
                       </div>
+                      {item.rating &&
+                        <div className="flex flex-grow justify-end gap-3 items-center">
+                          <span className="flex text-base">{item.rating.toFixed(1)}</span>
+                          <div>
+                            {
+                              [1, 2, 3, 4, 5].map((star) => (
+                                <i
+                                  key={star}
+                                  className={`nes-icon star scale-125 ${star <= item.rating ? "" : "is-transparent"}`}
+                                  style={{ marginRight: "8px", marginBottom: 0 }}
+                                />
+                              ))
+                            }
+                          </div>
+                        </div>
+                      }
                     </div>
                     <p>{item.content}</p>
                     <p className="content-center w-full text-end opacity-50">
@@ -253,6 +271,21 @@ export function HomeworkDetails() {
                   }
                 </div>
 
+                <div className="flex flex-row gap-3 items-center">
+                  <span className="flex text-base">{rate.toFixed(1)}</span>
+                  <div>
+                    {
+                      [1, 2, 3, 4, 5].map((star) => (
+                        <i
+                          key={star}
+                          className={`nes-icon star scale-125 ${star <= rate ? "" : "is-transparent"}`}
+                          style={{ marginRight: "8px", marginBottom: 0 }}
+                          onMouseEnter={() => setRate(star)}
+                        />
+                      ))
+                    }
+                  </div>
+                </div>
                 <input
                   className="text-md bg-inherit"
                   placeholder="我也要说……"
