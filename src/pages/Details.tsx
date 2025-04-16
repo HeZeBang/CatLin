@@ -9,6 +9,7 @@ import { Assignment, AssignmentComment, AssignmentCommentArray } from "../lib/mo
 import { availableBadges } from "../lib/models/badges";
 import { LoginButton } from "../components/LoginButton";
 import { Homework } from "../lib/models/homework";
+import { GithubIcon } from "../components/Icons";
 
 export function HomeworkDetails() {
   const { userName, user, userId } = useContext(UserContext);
@@ -212,12 +213,26 @@ export function HomeworkDetails() {
           </div>
           <Container title="" className="w-full my-3 flex">
             <div className="flex-grow">
+              {
+                currentHomework &&
+                <span className="text-lg flex gap-3 mb-2">
+                  <span className="flex items-center gap-1">
+                    <span>{currentHomework.submitted ? "☑" : "☐"}</span>
+                    {currentHomework.submitted ? "已提交" : "未提交"}
+                  </span>
+                  {/* <span>{linkedHomework ? <span>{"☑Catlin 已收录"}</span> : <span className="box">{"☐Catlin 未收录"}</span>}</span> */}
+                  <span className="flex items-center gap-1">
+                    <GithubIcon className={`${currentHomework.id ? "" : "opacity-20"}`} />
+                    {currentHomework.id ? "已认领" : "未认领"}
+                  </span>
+                </span>
+              }
               <p>截止日期：{currentHomework?.due ? new Date(currentHomework.due * 1000).toLocaleDateString('zh-cn', dateOptions) : ""}</p>
               <p>平台：{currentHomework?.platform}</p>
               {linkedHomework && <p>共有 {linkedHomework.users.length} 人一起参与</p>}
               {linkedHomework && comments && <p>已有 {comments.length} 条评论和评分</p>}
             </div>
-            <div className="max-w-24">
+            <div className={`max-w-24 ${currentHomework?.id ? "" : "opacity-0"}`}>
               {
                 currentHomework?.id &&
                 <img src={`/avatars/white.png`} /> // TODO: replace with real cat
