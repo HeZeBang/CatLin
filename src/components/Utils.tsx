@@ -38,8 +38,19 @@ export function SaveAssignment(type: AccountType, assignment: HomeworkItem) {
   SaveHomework(type, homework)
 }
 
+export function RemoveAssignment(type: AccountType, assignment: HomeworkItem) {
+  const homework = LoadHomework(type)
+  const index = homework.findIndex(hw => hw.course === assignment.course && hw.title === assignment.title && hw.id === assignment.id)
+  if (index !== -1) {
+    homework.splice(index, 1)
+  }
+  SaveHomework(type, homework)
+}
+
 export function LoadHomework(type: AccountType) {
-  return JSON.parse(localStorage.getItem(`${type.replace(" ", "_")}`) || "[]") as HomeworkItem[]
+  const items = JSON.parse(localStorage.getItem(`${type.replace(" ", "_")}`) || "[]") as HomeworkItem[]
+  items.forEach(item => { item.platform = `${type}` })
+  return items
 }
 
 export function LoadUsername(type: AccountType) {

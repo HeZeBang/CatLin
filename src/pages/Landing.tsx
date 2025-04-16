@@ -30,8 +30,8 @@ export default function Landing() {
   useEffect(() => {
     if (isLoaded) {
       console.log("Unity loaded")
-      setDrawerTop("calc(-9em + 100vh)")
-      window.scrollTo(0, 0)
+      // window.scrollTo(0, 0)
+      // setDrawerTop("calc(-9em + 100vh)")
     }
     setIsLoading(!isLoaded)
   }, [isLoaded])

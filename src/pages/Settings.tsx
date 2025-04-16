@@ -63,7 +63,7 @@ export default function Settings() {
                   <div className="nes-badge top-0.5">
                     <span className={`${availableBadges.at(user?.currentBadge || 0)?.color}`}>
                       {availableBadges.at(user?.currentBadge || 0)?.name}
-                      </span>
+                    </span>
                   </div>
                   <span>共 {user?.badges.length || 0} 个徽章</span>
                 </div>
@@ -111,7 +111,7 @@ export default function Settings() {
         </Container>
       )}
       <Container title="关联账户" className="w-full">
-        {Object.values(AccountType).map((item) => (
+        {Object.values(AccountType).filter(item => item !== AccountType.Custom).map((item) => (
           <div className="flex items-center" key={item}>
             <span className="text-base flex-1 overflow-hidden text-ellipsis">{item}: {LoadUsername(item) || '未绑定'}</span>
             <Button className="text-sm scale-90" borderInverted

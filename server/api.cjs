@@ -138,6 +138,32 @@ router.post("/assignment/claim", auth.ensureLoggedIn, (req, res) => {
   })
 });
 
+router.get("/assignment/comment/:homeworkid", (req, res) => {
+  AssignmentComment.find({ parent: req.params.homeworkid }).then((comments) => {
+    res.send(comments);
+  });
+});
+
+router.post("/assignment/comment", auth.ensureLoggedIn, (req, res) => {
+  const newComment = new AssignmentComment({
+    creator_id: req.user._id,
+    creator_name: req.user.name,
+    creator_badge: req.user.currentBadge,
+    is_annonymous: req.body.is_annonymous,
+    content: req.body.content,
+    parent: req.body.parent,
+    rating: req.body.rating,
+  });
+
+  if (newComment.parent === null) {
+    throw new Error("Should link to a parent homework");
+  }
+
+  newComment.save().then((comment) => {
+    res.send(comment);
+  });
+});
+
 router.get("/assignments", (req, res) => {
   Assignment.find({ user_id: req.user._id }).then((assignments) => {
     res.send(assignments);

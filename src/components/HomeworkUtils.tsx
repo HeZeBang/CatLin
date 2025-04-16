@@ -1,6 +1,7 @@
 import { Colors, PixelBorder } from "nes-ui-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { Assignment } from "../lib/models/assignment";
 
 interface HomeworkItemProps {
   course: string,
@@ -168,4 +169,5 @@ export interface HomeworkItem {
   status: string,
   platform: string,
   catType: number,
+  rawAssignment?: Assignment,
 }

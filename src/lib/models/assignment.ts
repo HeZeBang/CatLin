@@ -17,3 +17,17 @@ export const AssignmentSchema = z.object({
     "user_id": z.string(),
 });
 export type Assignment = z.infer<typeof AssignmentSchema>;
+
+export const AssignmentCommentSchema = z.object({
+    "content": z.string(),
+    "creator_badge": z.number(),
+    "creator_id": z.string(),
+    "creator_name": z.string(),
+    "is_annonymous": z.boolean(),
+    "parent": z.string(),
+    "rating": z.number(),
+});
+
+export type AssignmentComment = z.infer<typeof AssignmentCommentSchema>;
+
+export type AssignmentCommentArray = AssignmentComment[];
