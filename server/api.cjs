@@ -97,7 +97,9 @@ router.post("/assignment/claim", auth.ensureLoggedIn, (req, res) => {
         parent: existingHomework._id,
       })
 
-      existingHomework.users.push(req.user._id);
+      if (!existingHomework.users.includes(req.user._id)) {
+        existingHomework.users.push(req.user._id);
+      }
       existingHomework.save().then(() =>
         newAssignment.save().then((assignment) => {
           res.send(assignment);
@@ -138,6 +140,41 @@ router.post("/assignment/claim", auth.ensureLoggedIn, (req, res) => {
   })
 });
 
+router.post("/assignment/reject", auth.ensureLoggedIn, (req, res) => {
+  // check if homework already exists
+  Homework.findOne({
+    title: req.body.title,
+    course: req.body.course,
+    platform: req.body.platform,
+  }).then((existingHomework) => {
+    if (existingHomework) {
+      // remove user from homework
+      const index = existingHomework.users.indexOf(req.user._id);
+      if (index !== -1) {
+        existingHomework.users.splice(index, 1);
+      }
+      existingHomework.save().then(() => {
+        // remove assignment
+        Assignment.findOneAndDelete({
+          user_id: req.user._id,
+          platform: req.body.platform,
+          course: req.body.course,
+          title: req.body.title,
+        }).then((assignment) => {
+          if (assignment) {
+            res.send(assignment);
+          } else {
+            res.status(404).send({ msg: "Assignment not found" });
+          }
+        }
+        );
+      });
+    } else {
+      res.status(404).send({ msg: "Homework not found" });
+    }
+  });
+});
+
 router.get("/assignment/comment/:homeworkid", (req, res) => {
   AssignmentComment.find({ parent: req.params.homeworkid }).then((comments) => {
     res.send(comments);
@@ -156,11 +193,11 @@ router.post("/assignment/comment", auth.ensureLoggedIn, (req, res) => {
     created_at: Date.now() / 1000,
   });
 
-  
+
   if (newComment.parent === null) {
     throw new Error("Should link to a parent homework");
   }
-  
+
   if (newComment.is_annonymous) {
     newComment.creator_name = "Anonymous";
     newComment.creator_badge = -1;
