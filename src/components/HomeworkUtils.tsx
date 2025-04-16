@@ -132,7 +132,7 @@ export function HwItem(props: HomeworkItemProps) {
       >
         <div className="p-2 flex gap-1 items-center w-full">
           <div className="text-2xl flex flex-col gap-0 max-w-[1em]">
-            <p className={`text-2xl text-left max-w-[1em] text-wrap`}>
+            <p className={`text-2xl m-0 text-left max-w-[1em] text-wrap`}>
               {props.submitted ? <span>{"☑"}</span> : <span className="box">{"☐"}</span>}
             </p>
             <GithubIcon className={`${props.linked ? "" : "opacity-20"}`} />
