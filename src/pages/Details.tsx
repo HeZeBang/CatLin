@@ -88,6 +88,8 @@ export function HomeworkDetails() {
       rawAssignment: undefined,
     } as HomeworkItem
     setCurrentHomework(newHomework)
+    setLinkedHomework(undefined)
+    setComments([])
     SaveAssignment(currentHomework?.platform as AccountType || AccountType.Custom, newHomework)
   }
 
@@ -159,7 +161,7 @@ export function HomeworkDetails() {
             </div>
             {
               linkedHomework &&
-              <div className="flex gap-3 flex-rows md:flex-col justify-end align-middle">
+              <div className="flex gap-1 flex-rows md:flex-col justify-end align-middle">
                 {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
                 <div className="flex gap-1">
                   <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4? "":"is-empty"}`} style={{ marginRight: "35px" }} />
@@ -190,7 +192,8 @@ export function HomeworkDetails() {
             <div className="flex-grow">
               <p>截止日期：{currentHomework?.due ? new Date(currentHomework.due * 1000).toLocaleDateString('zh-cn', dateOptions) : ""}</p>
               <p>平台：{currentHomework?.platform}</p>
-              {/* <p>5 人评分 / 5 人评论</p> */}
+              {linkedHomework && <p>共有 {linkedHomework.users.length} 人一起参与</p>}
+              {linkedHomework && comments && <p>已有 {comments.length} 条评论和评分</p>}
             </div>
             <div className="max-w-24">
               {
