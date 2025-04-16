@@ -3,10 +3,15 @@ const mongoose = require("mongoose");
 const AssignmentSchema = new mongoose.Schema({
   user_id: String,
   platform: String,
+  course: String,
   title: String,
-  createDate: Date,
-  dueDate: Date,
-  rating: Number,
+  due: Number,
+  submitted: Boolean,
+  url: String,
+  create: Number,
+  ratingSum: Number,
+  ratingNumber: Number,
+  catType: String,
 });
 
 // compile model from schema

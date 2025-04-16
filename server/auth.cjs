@@ -26,6 +26,8 @@ function getOrCreateUser(user) {
     const newUser = new User({
       name: user.name,
       googleid: user.sub,
+      level: 1,
+      exp: 0,
     });
 
     return newUser.save();
@@ -59,7 +61,7 @@ function populateCurrentUser(req, res, next) {
 
 function ensureLoggedIn(req, res, next) {
   if (!req.user) {
-    return res.status(401).send({ err: "not logged in" });
+    return res.status(401).send({ err: "Not logged in" });
   }
 
   next();

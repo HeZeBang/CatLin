@@ -47,14 +47,45 @@ router.post("/initsocket", (req, res) => {
 // | write your API methods below!|
 // |------------------------------|
 
-router.post("/assignment", auth.ensureLoggedIn, (req, res) => {
+router.get("/user/:userid", (req, res) => {
+  User.findOne({ _id: req.params.userid }).then((user) => {
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send({ msg: "User not found" });
+    }
+  });
+});
+
+router.post("/user/:userid", (req, res) => {
+  User.findOne({ _id: req.params.userid }).then((user) => {
+    if (user) {
+      let newUser = user;
+      if (req.body.level) user.level = req.body.level;
+      if (req.body.exp) user.exp = req.body.exp;
+      if (req.body.name) newUser.name = req.body.name;
+      user.save().then((user) => {
+        res.send(user);
+      });
+    } else {
+      res.status(404).send({ msg: "User not found" });
+    }
+  });
+})
+
+router.post("/assignment/new", auth.ensureLoggedIn, (req, res) => {
   const newAssignment = new Assignment({
     user_id: req.user._id,
     platform: req.body.platform,
+    course: req.body.course,
     title: req.body.title,
-    createDate: new Date(),
-    dueDate: req.body.dueDate,
-    rating: 5,
+    due: req.body.dueDate,
+    submitted: false,
+    url: req.body.url,
+    create: new Date.now() / 1000,
+    ratingSum: 0,
+    ratingNumber: 0,
+    catType: req.body.catType,
   });
 
   newAssignment.save().then((assignment) => {
@@ -62,12 +93,31 @@ router.post("/assignment", auth.ensureLoggedIn, (req, res) => {
   });
 });
 
-
 router.get("/assignments", (req, res) => {
-  Assignment.find({}).then((assignments) => {
+  Assignment.find({ user_id: req.user._id }).then((assignments) => {
     res.send(assignments);
   });
 });
+
+router.get("/comments", (req, res) => {
+  SoftwareComment.find({}).then((comments) => {
+    res.send(comments);
+  });
+});
+
+router.post("/comments/new", auth.ensureLoggedIn, (req, res) => {
+  const newComment = new SoftwareComment({
+    creator_id: req.user._id,
+    creator_name: req.user.name,
+    content: req.body.content,
+    rating: req.body.rating,
+  });
+
+  newComment.save().then((comment) => {
+    res.send(comment);
+  });
+}
+);
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

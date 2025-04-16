@@ -16,7 +16,7 @@ export default function Landing() {
 
   const { setIsLoading } = useLoading()
 
-  const { unityProvider, isLoaded } = useUnityContext({
+  const { unityProvider, isLoaded, unload } = useUnityContext({
     loaderUrl: "unity/demo/demo.loader.js",
     dataUrl: "unity/demo/demo.data.br",
     frameworkUrl: "unity/demo/demo.framework.js.br",
@@ -35,6 +35,12 @@ export default function Landing() {
     }
     setIsLoading(!isLoaded)
   }, [isLoaded])
+
+  useEffect(() => {
+    return () => {
+      unload();
+    };
+  }, [unload]);
 
   useEffect(() => {
     var hwTemp = [] as HomeworkItem[]

@@ -18,6 +18,7 @@ function App() {
   const { isLoading } = useLoading()
   const [userId, setUserId] = useState(undefined);
   const [userName, setUserName] = useState(undefined);
+  const [user, setUser] = useState(undefined);
 
   useEffect(() => {
     get("/api/whoami").then((user:any) => {
@@ -25,6 +26,7 @@ function App() {
         // they are registed in the database, and currently logged in.
         setUserId(user._id);
         setUserName(user.name);
+        setUser(user);
       }
     });
   }, []);
@@ -52,6 +54,8 @@ function App() {
   const authContextValue = {
     userId,
     userName,
+    user,
+    isLoggedIn: !!userId,
     handleLogin,
     handleLogout,
   };
@@ -82,10 +86,10 @@ function App() {
 
   const NavigatorItems = () => (
     <>
-      <NavLink to="/" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`} >主页</NavLink>
-      <NavLink to="/gallery" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`}>猫窝</NavLink>
-      <NavLink to="/settings" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`}>设置</NavLink>
-      <NavLink to="/about" className={`text-base ${isLoading? "opacity-50 pointer-events-none":""}`}>关于</NavLink>
+      <NavLink to="/" className={`text-base `} >主页</NavLink>
+      <NavLink to="/gallery" className={`text-base `}>猫窝</NavLink>
+      <NavLink to="/settings" className={`text-base `}>设置</NavLink>
+      <NavLink to="/about" className={`text-base `}>关于</NavLink>
     </>
   )
 

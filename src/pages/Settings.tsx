@@ -5,6 +5,7 @@ import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../compon
 import { UserContext } from "../App";
 import { UserContextType } from "../lib/models/context";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { availableBadges } from "../lib/models/badges";
 
 export default function Settings() {
   const [modalType, setModalType] = useState<AccountType | null>(null)
@@ -13,7 +14,7 @@ export default function Settings() {
   const [errMsg, setErrMsg] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const { userId, userName, handleLogin, handleLogout } = useContext<UserContextType>(UserContext);
+  const { userId, userName, user, handleLogin, handleLogout } = useContext<UserContextType>(UserContext);
 
   const Login = useCallback(async () => {
     setIsLoggingIn(true)
@@ -53,16 +54,18 @@ export default function Settings() {
             <div className="flex gap-3">
               <i className="nes-icon github scale-[6] mr-20 mb-20"
               />
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 flex-grow">
                 <div className="flex gap-1">
                   <span className="text-2xl">{userName}</span>
-                  <span>Lv.1</span>
+                  <span>Lv.{user?.level}, EXP.{user?.exp}</span>
                 </div>
-                <div className="flex gap-1 items-center">
-                  <div className="nes-badge">
-                    <span className="is-success">新人出道</span>
+                <div className="flex gap-1 items-center justify-between">
+                  <div className="nes-badge top-0.5">
+                    <span className={`${availableBadges.at(user?.currentBadge || 0)?.color}`}>
+                      {availableBadges.at(user?.currentBadge || 0)?.name}
+                      </span>
                   </div>
-                  {/* <span>共 1 个徽章</span> */}
+                  <span>共 {user?.badges.length || 0} 个徽章</span>
                 </div>
               </div>
             </div>

@@ -1,12 +1,24 @@
 
-import { PixelBorder } from "nes-ui-react";
+import { Button, PixelBorder } from "nes-ui-react";
 import Nyan from "../assets/nyan.webp";
 import "../App.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import HeroImage from "../assets/avatar-50x50.png";
+import { get, post } from "../lib/reqUtils";
+import { UserContext } from "../App";
+
+interface Comment {
+  creator_id: string;
+  creator_name: string;
+  content: string;
+  rating?: number;
+}
 
 export default function About() {
   const [meowText, setMeowText] = useState("=^·.·^=")
+  const [comment, setComment] = useState("")
+  const [comments, setComments] = useState([] as Comment[])
+  const { userId, userName } = useContext(UserContext)
 
   // setTimeout
   useEffect(() => {
@@ -18,6 +30,12 @@ export default function About() {
       setMeowText(meowTexts[Math.floor(Math.random() * meowTexts.length)])
     }, 1000)
     return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    get<Comment[]>("/api/comments").then((res) => {
+      setComments(res)
+    })
   }, [])
 
   return (
@@ -42,18 +60,35 @@ export default function About() {
           }}
         >
           <span className="text-xl">留言版</span>
-          <div className="nes-balloon from-left self-start">
-            <p>非常好 CatLin，使我的 DDL 旋转！爱来自上海</p>
-          </div>
-          <div className="nes-balloon from-right self-end">
-            <p>姐妹们快入手，敏感肌也能用！！！！</p>
-          </div>
+          {comments.map((comment, index) => (
+            <div className="nes-balloon from-left self-start" key={index}>
+              {/* <span className="text-2xl">{comment.rating ? "⭐" : "☆"}</span> */}
+              <span className="text-sm opacity-70">{comment.creator_name}</span>
+              <p>{comment.content}</p>
+            </div>
+          ))}
 
           <a className="nes-balloon from-left self-start">
             <input
               className="text-md bg-inherit"
               placeholder="我也要说……"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
+            <Button onClick={() => {
+              const newComment = {
+                content: comment,
+                creator_id: userId,
+                creator_name: userName || "匿名",
+                rating: -1,
+              } as Comment
+              post("/api/comments/new", newComment).then(() => {
+                setComments([...comments, newComment])
+                setComment("")
+              })
+            }}>
+              发送
+            </Button>
           </a>
         </div>
       </PixelBorder>

@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const CatSchema = new mongoose.Schema({
-  assignment_id: String,
+  user_id: String,
+  catType: String,
   mood: String,
   hp: Number,
 });
