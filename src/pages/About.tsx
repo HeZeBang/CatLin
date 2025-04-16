@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import HeroImage from "../assets/avatar-50x50.png";
 import { get, post } from "../lib/reqUtils";
 import { UserContext } from "../App";
+import { toast } from "sonner";
 
 interface Comment {
   creator_id: string;
@@ -41,7 +42,11 @@ export default function About() {
   return (
     <div className="flex gap-3 items-center justify-center flex-col">
       <div className="flex items-center gap-1 flex-wrap justify-center">
-        <img src={HeroImage} alt="CatLin" className="w-24 h-24 hero-avatar" />
+        <img src={HeroImage} alt="CatLin" className="w-24 h-24 hero-avatar active:scale-90"
+        onClick={() => {
+          toast.info("喵~")
+        }}
+         />
         <h1 className="text-5xl mt-0">CatLin</h1>
       </div>
       <h2 className="text-2xl pb-3">{meowText}</h2>

@@ -7,5 +7,6 @@ export const LoginButton = () => {
     return <GoogleLogin
         onSuccess={handleLogin}
         onError={() => console.log("Error while loggingin.")}
+        useOneTap
     />
 }

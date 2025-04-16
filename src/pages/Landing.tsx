@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { Button } from "nes-ui-react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useLoading } from "../context/LoadingContext";
+import { toast } from "sonner";
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<HomeworkItem[]>([])
@@ -32,6 +33,7 @@ export default function Landing() {
       console.log("Unity loaded")
       // window.scrollTo(0, 0)
       // setDrawerTop("calc(-9em + 100vh)")
+      toast.success("Unity loaded")
     }
     setIsLoading(!isLoaded)
   }, [isLoaded])

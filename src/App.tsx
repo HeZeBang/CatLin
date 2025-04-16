@@ -8,7 +8,7 @@ import { get, post } from './lib/reqUtils'
 import jwt_decode from "jwt-decode";
 import { socket } from './lib/clientSocket'
 import { UserContextType } from './lib/models/context'
-import { LoadUserInfo, SaveUserInfo } from './components/Utils'
+import { Toaster } from 'sonner'
 
 export const UserContext = createContext({} as UserContextType);
 
@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     // LoadUserInfo()
-    get("/api/whoami").then((user:any) => {
+    get("/api/whoami").then((user: any) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
         setUserId(user._id);
@@ -46,7 +46,7 @@ function App() {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken) as { name: string };
     console.log(`Logged in as ${decodedCredential.name}`);
-    post("/api/login", { token: userToken }).then((user:any) => {
+    post("/api/login", { token: userToken }).then((user: any) => {
       setUserId(user._id);
       setUserName(user.name);
       setUser(user);
@@ -104,39 +104,49 @@ function App() {
 
   return (
     <UserContext.Provider value={authContextValue}>
-    <div className="min-h-screen">
-      <div className="sticky w-screen left-0 top-0 z-50">
-        <div className="w-screen left-0 top-0 z-50 p-3 bg-auto toolbar">
-          <div className="max-w-lg flex mx-auto items-center">
-            <span className="text-xl flex-1">CatLin <sup className="text-sm">=^·.·^=</sup></span>
-            <nav className="md:flex gap-3 hidden mr-3">
+      <div className="min-h-screen">
+        <div className="sticky w-screen left-0 top-0 z-50">
+          <div className="w-screen left-0 top-0 z-50 p-3 bg-auto toolbar">
+            <div className="max-w-lg flex mx-auto items-center">
+              <span className="text-xl flex-1">CatLin <sup className="text-sm">=^·.·^=</sup></span>
+              <nav className="md:flex gap-3 hidden mr-3">
+                <NavigatorItems />
+              </nav>
+              <IconButton color="warning" borderInverted onClick={toggleDarkMode}>
+                {darkMode ? <Sun /> : <Moon />}
+              </IconButton>
+              <IconButton color="primary" borderInverted className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+                <MenuIcon />
+              </IconButton>
+            </div>
+            <div className={`max-w-lg mx-auto items-center justify-end mt-1 mr-3 gap-3 ${menuOpen ? 'flex md:hidden' : 'hidden'}`}>
               <NavigatorItems />
-            </nav>
-            <IconButton color="warning" borderInverted onClick={toggleDarkMode}>
-              {darkMode ? <Sun /> : <Moon />}
-            </IconButton>
-            <IconButton color="primary" borderInverted className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-              <MenuIcon />
-            </IconButton>
+            </div>
           </div>
-          <div className={`max-w-lg mx-auto items-center justify-end mt-1 mr-3 gap-3 ${menuOpen ? 'flex md:hidden' : 'hidden'}`}>
-            <NavigatorItems />
-          </div>
+          <Progress value={progressVal} max="100" color="primary"
+            style={{
+              margin: "0",
+              height: "8px",
+              display: "flex",
+              // opacity: progressVal === 0? '0%':'100%',
+              transition: "opacity 200ms ease",
+            }}
+          />
         </div>
-        <Progress value={progressVal} max="100" color="primary"
-          style={{
-            margin: "0",
-            height: "8px",
-            display: "flex",
-            // opacity: progressVal === 0? '0%':'100%',
-            transition: "opacity 200ms ease",
-          }}
-        />
+        <div className={`flex gap-3 items-center justify-center flex-col ${location.pathname === '/' ? 'm-0 h-auto' : 'm-3'}`}>
+          <Outlet />
+          <Toaster
+            visibleToasts={5}
+            toastOptions={{
+              style: {
+                borderImageSource: "var(--pixel-borders-image-2-color-black-absolute)",
+                borderImageSlice: 4,
+                borderWidth: "4px",
+              }
+            }}
+          />
+        </div>
       </div>
-      <div className={`flex gap-3 items-center justify-center flex-col ${location.pathname === '/' ? 'm-0 h-auto' : 'm-3'}`}>
-        <Outlet />
-      </div>
-    </div>
     </UserContext.Provider>
   )
 }

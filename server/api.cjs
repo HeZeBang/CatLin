@@ -176,6 +176,21 @@ router.post("/assignment/reject", auth.ensureLoggedIn, (req, res) => {
   });
 });
 
+router.post("/assignment/match", (req, res) => {
+  Assignment.find({
+    platform: req.body.platform,
+    course: req.body.course,
+    title: req.body.title,
+    due: req.body.due,
+  }).then((assignments) => {
+    if (assignments.length > 0) {
+      res.send(assignments);
+    } else {
+      res.status(404).send({ msg: "No matching assignments found" });
+    }
+  });
+})
+
 router.get("/assignment/comment/:homeworkid", (req, res) => {
   AssignmentComment.find({ parent: req.params.homeworkid }).then((comments) => {
     res.send(comments);
