@@ -26,6 +26,7 @@ export const AssignmentCommentSchema = z.object({
     "is_annonymous": z.boolean(),
     "parent": z.string(),
     "rating": z.number(),
+    "created_at": z.number(),
 });
 
 export type AssignmentComment = z.infer<typeof AssignmentCommentSchema>;

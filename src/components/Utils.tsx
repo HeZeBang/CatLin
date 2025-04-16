@@ -8,6 +8,18 @@ export function WrapUrl(path: string) {
   return `${URL_BASE}${path.startsWith("/") ? path : "/" + path}`
 }
 
+export function SaveUserInfo(loginResponse: any) {
+  localStorage.setItem('userInfo', JSON.stringify(loginResponse));
+}
+
+export function LoadUserInfo(){
+  const userInfo = localStorage.getItem('userInfo');
+  if (userInfo) {
+    return JSON.parse(userInfo);
+  }
+  return null;
+}
+
 export enum AccountType {
   Gradescope = "Gradescope",
   Blackboard = "Blackboard",

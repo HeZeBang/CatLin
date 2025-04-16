@@ -8,6 +8,7 @@ import { UserContext } from "../App";
 import { platform } from "os";
 import { Assignment, AssignmentComment, AssignmentCommentArray } from "../lib/models/assignment";
 import { availableBadges } from "../lib/models/badges";
+import { LoginButton } from "../components/LoginButton";
 
 interface ReplyItem {
   message: string,
@@ -19,7 +20,7 @@ interface ReplyItem {
 const bgColor = ["primary", "success", "warning", "error"] as NamedColor[]
 
 export function HomeworkDetails() {
-  const { userName, user } = useContext(UserContext);
+  const { userName, user, isLoggedIn } = useContext(UserContext);
   const { id } = useParams();
   const [_, setHomeworks] = useState<HomeworkItem[]>([])
   const [currentHomework, setCurrentHomework] = useState<HomeworkItem>()
@@ -222,21 +223,34 @@ export function HomeworkDetails() {
                       </div>
                     </div>
                     <p>{item.content}</p>
+                    <p className="content-center w-full text-end opacity-50">
+                      {`${item.created_at ? new Date(item.created_at * 1000).toLocaleDateString('zh-cn', dateOptions) : ""}`}
+                      {` #${index}`}
+                    </p>
                   </div>
                 </Toast>
               )
             }
+
             <Toast bubblePostion="left" className="w-fit">
               <div className="w-full text-left">
                 <div className="w-full flex gap-3">
-                  <p className="w-fit text-xl">{userName}</p>
-                  <div className="nes-badge">
-                    <span
-                      className={`${availableBadges.at(user?.currentBadge || 0)?.color} text-xs`}
-                    >
-                      {availableBadges.at(user?.currentBadge || 0)?.name || ""}
-                    </span>
-                  </div>
+                  {
+                    isLoggedIn ? (
+                      <>
+                        <p className="w-fit text-xl">{userName}</p>
+                        <div className="nes-badge">
+                          <span
+                            className={`${availableBadges.at(user?.currentBadge || 0)?.color} text-xs`}
+                          >
+                            {availableBadges.at(user?.currentBadge || 0)?.name || ""}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <LoginButton />
+                    )
+                  }
                 </div>
 
                 <input

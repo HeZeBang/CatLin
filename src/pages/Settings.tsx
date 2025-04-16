@@ -6,6 +6,7 @@ import { UserContext } from "../App";
 import { UserContextType } from "../lib/models/context";
 import { GoogleLogin, googleLogout } from "@react-oauth/google";
 import { availableBadges } from "../lib/models/badges";
+import { LoginButton } from "../components/LoginButton";
 
 export default function Settings() {
   const [modalType, setModalType] = useState<AccountType | null>(null)
@@ -107,7 +108,7 @@ export default function Settings() {
         </Container>
       ) : (
         <Container title="登录" className="w-full">
-          <GoogleLogin onSuccess={handleLogin} onError={() => console.log("Error while loggingin.")} />
+          <LoginButton />
         </Container>
       )}
       <Container title="关联账户" className="w-full">

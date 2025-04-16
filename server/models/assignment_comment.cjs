@@ -7,6 +7,7 @@ const AssignmentCommentSchema = new mongoose.Schema({
   is_annonymous: Boolean,
   parent: String, // links to the _id of a parent homework
   content: String,
+  created_at: Number,
   rating: Number,
 });
 

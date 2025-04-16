@@ -153,6 +153,7 @@ router.post("/assignment/comment", auth.ensureLoggedIn, (req, res) => {
     content: req.body.content,
     parent: req.body.parent,
     rating: req.body.rating,
+    created_at: Date.now() / 1000,
   });
 
   if (newComment.parent === null) {
@@ -182,6 +183,7 @@ router.post("/comments/new", auth.ensureLoggedIn, (req, res) => {
     creator_name: req.user.name,
     content: req.body.content,
     rating: req.body.rating,
+    created_at: Date.now() / 1000,
   });
 
   newComment.save().then((comment) => {

@@ -8,6 +8,7 @@ import { get, post } from './lib/reqUtils'
 import jwt_decode from "jwt-decode";
 import { socket } from './lib/clientSocket'
 import { UserContextType } from './lib/models/context'
+import { LoadUserInfo, SaveUserInfo } from './components/Utils'
 
 export const UserContext = createContext({} as UserContextType);
 
@@ -21,12 +22,18 @@ function App() {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
+    // LoadUserInfo()
     get("/api/whoami").then((user:any) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
         setUserId(user._id);
         setUserName(user.name);
         setUser(user);
+      } else {
+        // they are not logged in.
+        setUserId(undefined);
+        setUserName(undefined);
+        setUser(undefined);
       }
     });
   }, []);
@@ -43,6 +50,7 @@ function App() {
       setUserId(user._id);
       setUserName(user.name);
       setUser(user);
+      // SaveUserInfo(user);
       post("/api/initsocket", { socketid: socket.id });
     });
   };
