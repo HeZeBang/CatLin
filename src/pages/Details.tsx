@@ -11,7 +11,7 @@ import { LoginButton } from "../components/LoginButton";
 import { Homework } from "../lib/models/homework";
 
 export function HomeworkDetails() {
-  const { userName, user, isLoggedIn } = useContext(UserContext);
+  const { userName, user, userId } = useContext(UserContext);
   const { id } = useParams();
   const [_, setHomeworks] = useState<HomeworkItem[]>([])
   const [currentHomework, setCurrentHomework] = useState<HomeworkItem>()
@@ -275,7 +275,7 @@ export function HomeworkDetails() {
               <div className="w-full text-left">
                 <div className="w-full flex gap-3">
                   {
-                    isLoggedIn ? (
+                    userId ? (
                       <>
                         <p className="w-fit text-xl">{userName}</p>
                         <div className="nes-badge">
@@ -308,7 +308,7 @@ export function HomeworkDetails() {
                   </div>
                 </div>
                 <input
-                  className="text-md bg-inherit"
+                  className="text-md bg-inherit p-2 my-1 mr-1 focus:border-4"
                   placeholder="我也要说……"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}

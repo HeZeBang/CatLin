@@ -66,16 +66,16 @@ export default function About() {
         >
           <span className="text-xl">留言版</span>
           {comments.map((comment, index) => (
-            <div className="nes-balloon from-left self-start" key={index}>
+            <div className="nes-balloon nes-ui-toast from-left self-start flex-col" key={index}>
               {/* <span className="text-2xl">{comment.rating ? "⭐" : "☆"}</span> */}
               <span className="text-sm opacity-70">{comment.creator_name}</span>
               <p>{comment.content}</p>
             </div>
           ))}
 
-          <a className="nes-balloon from-left self-start">
+          <a className="nes-balloon nes-ui-toast from-left self-start">
             <input
-              className="text-md bg-inherit"
+                  className="text-md bg-inherit p-2 my-1 mr-1 focus:border-4"
               placeholder="我也要说……"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
