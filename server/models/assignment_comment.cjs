@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const AssignmentCommentSchema = new mongoose.Schema({
   creator_id: String,
   creator_name: String,
-  parent: String, // links to the _id of a parent assignment
+  parent: String, // links to the _id of a parent homework
   content: String,
   rating: Number,
 });

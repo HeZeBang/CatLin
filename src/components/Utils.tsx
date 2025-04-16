@@ -12,6 +12,7 @@ export enum AccountType {
   Gradescope = "Gradescope",
   Blackboard = "Blackboard",
   ACM_OJ = "ACM OJ",
+  Custom = "Custom"
 }
 
 function SaveAccount(type: AccountType | null, username: string, password: string) {
@@ -23,6 +24,18 @@ function SaveAccount(type: AccountType | null, username: string, password: strin
 
 export function SaveHomework(type: AccountType, hwList: HomeworkItem[]) {
   localStorage.setItem(`${type.replace(" ", "_")}`, JSON.stringify(hwList))
+}
+
+export function SaveAssignment(type: AccountType, assignment: HomeworkItem) {
+  const homework = LoadHomework(type)
+  const index = homework.findIndex(hw => hw.course === assignment.course && hw.title === assignment.title)
+  if (index !== -1) {
+    homework[index] = assignment
+  } else {
+    homework.push(assignment)
+  }
+  console.log(homework)
+  SaveHomework(type, homework)
 }
 
 export function LoadHomework(type: AccountType) {

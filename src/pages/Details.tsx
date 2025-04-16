@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { HomeworkItem, simpleHash } from "../components/HomeworkUtils";
-import { AccountType, LoadHomework } from "../components/Utils";
+import { AccountType, LoadHomework, SaveAssignment } from "../components/Utils";
 import { Badge, Button, Container, NamedColor, Toast } from "nes-ui-react";
+import { post } from "../lib/reqUtils";
+import { UserContext } from "../App";
+import { platform } from "os";
+import { Assignment } from "../lib/models/assignment";
 
 interface ReplyItem {
   message: string,
@@ -14,6 +18,7 @@ interface ReplyItem {
 const bgColor = ["primary", "success", "warning", "error"] as NamedColor[]
 
 export function HomeworkDetails() {
+  const { userId } = useContext(UserContext);
   const { id } = useParams();
   const [_, setHomeworks] = useState<HomeworkItem[]>([])
   const [currentHomework, setCurrentHomework] = useState<HomeworkItem>()
@@ -58,14 +63,50 @@ export function HomeworkDetails() {
         <span>Invalid ID</span>
       ) : (
         <div className="w-full max-w-md mx-5">
-          <div>
-            <Button className="w-full md:w-16" color="error" borderInverted
-              onClick={() => {
-                window.history.back()
-              }}
-            >
-              返回
-            </Button>
+          <div className="flex justify-between items-center">
+            <div>
+              <Button className="w-full" color="error" borderInverted
+                onClick={() => {
+                  window.history.back()
+                }}
+              >
+                返回
+              </Button>
+            </div>
+            <div>
+              {
+                !currentHomework?.id &&
+                <Button className="w-full" color="primary" borderInverted onClick={() => {
+                  if (currentHomework)
+                    post<Assignment>("/api/assignment/claim", {
+                      platform: currentHomework.platform || "Custom",
+                      course: currentHomework.course,
+                      title: currentHomework.title,
+                      due: currentHomework.due,
+                      submitted: currentHomework.submitted,
+                      url: currentHomework.url,
+                      catType: 0, // TODO: fix it
+                    }).then((res) => {
+                      console.log(res)
+                      const newHomework = {
+                        ...currentHomework,
+                        id: res._id,
+                        catType: res.catType,
+                        platform: res.platform,
+                        course: res.course,
+                        due: res.due,
+                        submitted: res.submitted,
+                        title: res.title,
+                        url: res.url,
+                      } as HomeworkItem
+                      setCurrentHomework(newHomework)
+                      SaveAssignment(res.platform as AccountType || AccountType.Custom, newHomework)
+                    })
+                }}>
+                  认领作业
+                </Button>
+              }
+            </div>
           </div>
           <div className="flex gap-3 md:flex-row flex-col">
             <div className="md:flex-1">

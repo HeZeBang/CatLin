@@ -42,6 +42,7 @@ function App() {
     post("/api/login", { token: userToken }).then((user:any) => {
       setUserId(user._id);
       setUserName(user.name);
+      setUser(user);
       post("/api/initsocket", { socketid: socket.id });
     });
   };

@@ -9,9 +9,9 @@ const AssignmentSchema = new mongoose.Schema({
   submitted: Boolean,
   url: String,
   create: Number,
-  ratingSum: Number,
-  ratingNumber: Number,
-  catType: String,
+  rating: Number,
+  catType: Number,
+  parent: String, // links to the _id of a parent homework
 });
 
 // compile model from schema

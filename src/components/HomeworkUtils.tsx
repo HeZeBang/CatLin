@@ -157,6 +157,7 @@ export function HwItem(props: HomeworkItemProps) {
 }
 
 export interface HomeworkItem {
+  id: string,
   course: string,
   due: number,
   submitted: boolean,
@@ -165,4 +166,6 @@ export interface HomeworkItem {
   latedute?: number,
   raw?: any,
   status: string,
+  platform: string,
+  catType: number,
 }

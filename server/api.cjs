@@ -12,6 +12,7 @@ const express = require("express");
 // import models so we can interact with the database
 const User = require("./models/user.cjs");
 const Assignment = require("./models/assignment.cjs");
+const Homework = require("./models/homework.cjs");
 const Cat = require("./models/cat.cjs");
 const AssignmentComment = require("./models/assignment_comment.cjs");
 const SoftwareComment = require("./models/software_comment.cjs");
@@ -73,24 +74,68 @@ router.post("/user/:userid", (req, res) => {
   });
 })
 
-router.post("/assignment/new", auth.ensureLoggedIn, (req, res) => {
-  const newAssignment = new Assignment({
-    user_id: req.user._id,
-    platform: req.body.platform,
-    course: req.body.course,
+router.post("/assignment/claim", auth.ensureLoggedIn, (req, res) => {
+  // check if homework already exists
+  Homework.findOne({
     title: req.body.title,
-    due: req.body.dueDate,
-    submitted: false,
-    url: req.body.url,
-    create: new Date.now() / 1000,
-    ratingSum: 0,
-    ratingNumber: 0,
-    catType: req.body.catType,
-  });
+    course: req.body.course,
+    platform: req.body.platform,
+  }).then((existingHomework) => {
+    let newAssignment = new Assignment({})
+    if (existingHomework) {
+      newAssignment = Assignment({
+        user_id: req.user._id,
+        platform: existingHomework.platform,
+        course: existingHomework.course,
+        title: existingHomework.title,
+        due: existingHomework.due,
+        submitted: req.body.submitted,
+        url: existingHomework.url,
+        create: Date.now() / 1000,
+        rating: -1,
+        catType: req.body.catType,
+        parent: existingHomework._id,
+      })
 
-  newAssignment.save().then((assignment) => {
-    res.send(assignment);
-  });
+      existingHomework.users.push(req.user._id);
+      existingHomework.save().then(() =>
+        newAssignment.save().then((assignment) => {
+          res.send(assignment);
+        })
+      );
+    } else {
+      newAssignment = new Assignment({
+        user_id: req.user._id,
+        platform: req.body.platform,
+        course: req.body.course,
+        title: req.body.title,
+        due: req.body.due,
+        submitted: req.body.submitted,
+        url: req.body.url,
+        create: Date.now() / 1000,
+        rating: -1,
+        catType: req.body.catType,
+      });
+
+      let newHomework = new Homework({
+        users: [req.user._id],
+        platform: req.body.platform,
+        course: req.body.course,
+        title: req.body.title,
+        due: req.body.due,
+        url: req.body.url,
+        ratingSum: 0,
+        ratingNumber: 0,
+        catType: req.body.catType,
+      });
+
+      newHomework.save().then(() =>
+        newAssignment.save().then((assignment) => {
+          res.send(assignment);
+        })
+      );
+    }
+  })
 });
 
 router.get("/assignments", (req, res) => {
