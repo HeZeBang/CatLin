@@ -9,21 +9,14 @@ import { platform } from "os";
 import { Assignment, AssignmentComment, AssignmentCommentArray } from "../lib/models/assignment";
 import { availableBadges } from "../lib/models/badges";
 import { LoginButton } from "../components/LoginButton";
-
-interface ReplyItem {
-  message: string,
-  name: string,
-  badge: string,
-  rating?: number
-}
-
-const bgColor = ["primary", "success", "warning", "error"] as NamedColor[]
+import { Homework } from "../lib/models/homework";
 
 export function HomeworkDetails() {
   const { userName, user, isLoggedIn } = useContext(UserContext);
   const { id } = useParams();
   const [_, setHomeworks] = useState<HomeworkItem[]>([])
   const [currentHomework, setCurrentHomework] = useState<HomeworkItem>()
+  const [linkedHomework, setLinkedHomework] = useState<Homework>()
   const [comment, setComment] = useState("")
   const [rate, setRate] = useState(5)
   const [comments, setComments] = useState([] as AssignmentCommentArray)
@@ -37,21 +30,6 @@ export function HomeworkDetails() {
     hour12: false
   } as Intl.DateTimeFormatOptions;
 
-  const dummyReplies = [
-    {
-      message: "好难不想写了TT",
-      name: "赶作业的土豆泥",
-      badge: "评论家",
-      rating: 1,
-    },
-    {
-      message: "你这么在意这个评分干嘛？这会把作业给异化掉的！",
-      name: "红烧鸡翅",
-      badge: "准点达人"
-    }
-  ] as ReplyItem[]
-
-
   useEffect(() => {
     var hwTemp = [] as HomeworkItem[]
     Object.values(AccountType).forEach((type) => {
@@ -62,6 +40,17 @@ export function HomeworkDetails() {
     if (!isNaN(Number(id)))
       setCurrentHomework(hwTemp[Number(id)])
   }, [])
+
+  useEffect(() => {
+    // fetch homework info
+    if (currentHomework?.rawAssignment?.parent) {
+      get<Homework>(`/api/homework/${currentHomework.rawAssignment.parent}`)
+        .then((res) => {
+          console.log("Homework: ", res)
+          setLinkedHomework(res)
+        })
+    }
+  }, [currentHomework?.rawAssignment?.parent])
 
   const assignHomework = () => {
     if (currentHomework)
@@ -168,29 +157,34 @@ export function HomeworkDetails() {
               <p className="text-5xl font-bold">{currentHomework?.title}</p>
               <p className="text-xl">{currentHomework?.course}</p>
             </div>
-            <div className="flex gap-3 flex-rows md:flex-col justify-end align-middle">
-              {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
-              <div className="flex gap-1">
-                <i className="nes-icon like is-medium" style={{ marginRight: "40px" }} />
-                <p className="text-xl md:text-2xl text-right items-center flex">多半好评</p>
-              </div>
-              {/* <Badge backgroundColor="success" text="多半好评"
-                className="text-sm"
-                style={{
-                  margin: 0,
-                  alignSelf: "flex-end"
-                }} /> */}
-              <div className="flex flex-row justify-end gap-3 items-center">
-                <span className="flex text-base">5.0</span>
-                <div>
-                  <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
-                  <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
-                  <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
-                  <i className="nes-icon star scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
-                  <i className="nes-icon star is-transparent scale-125" style={{ marginRight: "8px", marginBottom: 0 }} />
+            {
+              linkedHomework &&
+              <div className="flex gap-3 flex-rows md:flex-col justify-end align-middle">
+                {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
+                <div className="flex gap-1">
+                  <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4? "":"is-empty"}`} style={{ marginRight: "35px" }} />
+                  <p className="text-xl md:text-2xl text-right items-center flex">
+                    {linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4
+                      ? "多半好评"
+                      : linkedHomework.ratingSum / linkedHomework.ratingNumber >= 2
+                        ? "褒贬不一"
+                        : "多半差评"}
+                  </p>
+                </div>
+                <div className="flex flex-row justify-end gap-3 items-center">
+                  <span className="flex text-base">{linkedHomework.ratingSum / linkedHomework.ratingNumber}</span>
+                  <div>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <i
+                        key={star}
+                        className={`nes-icon star scale-125 ${star <= linkedHomework.ratingSum / linkedHomework.ratingNumber ? "" : "is-transparent"}`}
+                        style={{ marginRight: "8px", marginBottom: 0 }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            }
           </div>
           <Container title="" className="w-full my-3 flex">
             <div className="flex-grow">

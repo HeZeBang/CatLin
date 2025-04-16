@@ -185,6 +185,16 @@ router.get("/assignments", (req, res) => {
   });
 });
 
+router.get("/homework/:homeworkid", (req, res) => {
+  Homework.findOne({ _id: req.params.homeworkid }).then((homework) => {
+    if (homework) {
+      res.send(homework);
+    } else {
+      res.status(404).send({ msg: "Homework not found" });
+    }
+  });
+});
+
 router.get("/comments", (req, res) => {
   SoftwareComment.find({}).then((comments) => {
     res.send(comments);
