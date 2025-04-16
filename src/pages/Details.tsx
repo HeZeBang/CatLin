@@ -107,8 +107,6 @@ export function HomeworkDetails() {
       })
       .finally(() => {
         setCurrentHomework(newHomework)
-        setLinkedHomework(undefined)
-        setComments([])
         SaveAssignment(currentHomework?.platform as AccountType || AccountType.Custom, newHomework)
       })
   }
@@ -121,7 +119,7 @@ export function HomeworkDetails() {
           console.log("Comments: ", res)
           setComments(res)
         })
-  }, [currentHomework])
+  }, [linkedHomework])
 
   const submitComment = useCallback(() => {
     post<AssignmentComment>("/api/assignment/comment", {
