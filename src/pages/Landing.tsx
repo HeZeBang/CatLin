@@ -123,14 +123,14 @@ export default function Landing() {
                   onClick={() => { setDueSplit(due => due - 7 * 24 * 60 * 60) }}
                   className="text-nowrap"
                 >
-                  -↓-
+                  ▼ 显示更早
                 </Button>
                 <span>截至 {new Date(dueSplit * 1000).toLocaleString()}</span>
                 <Button
                   onClick={() => { setDueSplit(due => Math.min(Date.now() / 1000, due + 7 * 24 * 60 * 60)) }}
                   className="text-nowrap"
                 >
-                  -↑-
+                  显示更晚 ▲
                 </Button>
               </div>
               <div ref={bottomRef} />
