@@ -2,6 +2,7 @@ import { Colors, PixelBorder } from "nes-ui-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Assignment } from "../lib/models/assignment";
+import { GithubIcon } from "./Icons";
 
 interface HomeworkItemProps {
   course: string,
@@ -10,6 +11,7 @@ interface HomeworkItemProps {
   title: string,
   url: string,
   index: number,
+  linked: boolean,
 }
 
 function randomColor(seed: number = 0) {
@@ -119,37 +121,44 @@ export function HwItem(props: HomeworkItemProps) {
       }}>●</span> */}
       <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full ${props.submitted ? "" : ""}`}
         style={
-          props.submitted ? {} : 
-          {
-            backgroundColor: randColor,
-            color: randTextColor
-          }}
+          props.submitted ? {} :
+            {
+              backgroundColor: randColor,
+              color: randTextColor
+            }}
         onClick={() => {
           navigate(`/details/${props.index}`)
         }}
       >
-        <div className="p-2 flex gap-1 items-center w-full flex-wrap">
-          <span className={`text-2xl text-left`}>{props.submitted ? <span>{"☑"}</span> : <span className="box">{"☐"}</span>}</span>
-          <div className="flex flex-col items-start flex-1">
-            <span className={`text-2xl text-left`}>{props.title}</span>
-            <span className="text-sm text-left opacity-70">{props.course}</span>
+        <div className="p-2 flex gap-1 items-center w-full">
+          <div className="text-2xl flex flex-col gap-0 max-w-[1em]">
+            <p className={`text-2xl text-left max-w-[1em] text-wrap`}>
+              {props.submitted ? <span>{"☑"}</span> : <span className="box">{"☐"}</span>}
+            </p>
+            <GithubIcon className={`${props.linked ? "" : "opacity-20"}`} />
           </div>
-          <div className="flex items-end flex-col">
-            <div className={`flex gap-1`}>
-              {props.submitted ?
-                (<span className="text-xl">SUBMITTED</span>) : (
-                  <div className={isPasted ? "text-xl" : "text-4xl"}>
-                    {isPasted ? <span className="text-2xl">PAST</span> : null}
-                    <span>{difference.days}<sup className="text-sm">d</sup></span>
-                    <span>{difference.hours}<sup className="text-sm">h</sup></span>
-                    <span>{difference.minutes}<sup className="text-sm">m</sup></span>
-                  </div>
-                )}
+          <div className="flex-grow flex gap-1 flex-wrap">
+            <div className="flex flex-col items-start flex-1">
+              <span className={`text-2xl text-left`}>{props.title}</span>
+              <span className="text-sm text-left opacity-70">{props.course}</span>
             </div>
-            <span className="flex gap-1">
-              <span>Due:</span>
-              <span>{dateItem.toLocaleString('zh-CN', dateOptions)}</span>
-            </span>
+            <div className="flex items-end flex-col">
+              <div className={`flex gap-1`}>
+                {props.submitted ?
+                  (<span className="text-xl">SUBMITTED</span>) : (
+                    <div className={isPasted ? "text-xl" : "text-4xl"}>
+                      {isPasted ? <span className="text-2xl">PAST</span> : null}
+                      <span>{difference.days}<sup className="text-sm">d</sup></span>
+                      <span>{difference.hours}<sup className="text-sm">h</sup></span>
+                      <span>{difference.minutes}<sup className="text-sm">m</sup></span>
+                    </div>
+                  )}
+              </div>
+              <span className="flex gap-1">
+                <span>Due:</span>
+                <span>{dateItem.toLocaleString('zh-CN', dateOptions)}</span>
+              </span>
+            </div>
           </div>
         </div>
       </button>

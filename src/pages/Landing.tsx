@@ -112,6 +112,7 @@ export default function Landing() {
                       due={hw.due}
                       url={hw.url}
                       index={index}
+                      linked={!!hw.rawAssignment}
                     />
                   ))
               )}

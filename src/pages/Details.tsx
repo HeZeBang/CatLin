@@ -5,7 +5,6 @@ import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../
 import { Badge, Button, Container, NamedColor, Toast } from "nes-ui-react";
 import { get, post } from "../lib/reqUtils";
 import { UserContext } from "../App";
-import { platform } from "os";
 import { Assignment, AssignmentComment, AssignmentCommentArray } from "../lib/models/assignment";
 import { availableBadges } from "../lib/models/badges";
 import { LoginButton } from "../components/LoginButton";
@@ -50,7 +49,7 @@ export function HomeworkDetails() {
           setLinkedHomework(res)
         })
     }
-  }, [currentHomework?.rawAssignment?.parent])
+  }, [currentHomework, comments])
 
   const assignHomework = () => {
     if (currentHomework)
@@ -81,16 +80,26 @@ export function HomeworkDetails() {
       })
   }
 
-  const undoClaim = () => {
+  const rejectClaim = () => {
     const newHomework = {
       ...currentHomework,
       id: "",
       rawAssignment: undefined,
     } as HomeworkItem
-    setCurrentHomework(newHomework)
-    setLinkedHomework(undefined)
-    setComments([])
-    SaveAssignment(currentHomework?.platform as AccountType || AccountType.Custom, newHomework)
+    post<Assignment>("/api/assignment/reject", {
+      title: currentHomework?.title,
+      course: currentHomework?.course,
+      platform: currentHomework?.platform,
+    })
+      .then((res) => {
+        console.log(res)
+      })
+      .finally(() => {
+        setCurrentHomework(newHomework)
+        setLinkedHomework(undefined)
+        setComments([])
+        SaveAssignment(currentHomework?.platform as AccountType || AccountType.Custom, newHomework)
+      })
   }
 
   useEffect(() => {
@@ -112,7 +121,7 @@ export function HomeworkDetails() {
       setComment("")
       setComments([...comments, res])
     })
-  }, [comment, currentHomework, comments])
+  }, [comment, currentHomework, comments, rate])
 
   return (
     <>
@@ -134,7 +143,7 @@ export function HomeworkDetails() {
               {
                 currentHomework?.id ? (
                   <Button className="w-full" color="primary" borderInverted
-                    onClick={undoClaim}
+                    onClick={rejectClaim}
                   >
                     取消认领
                   </Button>
@@ -164,17 +173,21 @@ export function HomeworkDetails() {
               <div className="flex gap-1 flex-rows md:flex-col justify-end align-middle">
                 {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
                 <div className="flex gap-1">
-                  <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4? "":"is-empty"}`} style={{ marginRight: "35px" }} />
+                  <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4 ? "" : "is-empty"}`} style={{ marginRight: "35px" }} />
                   <p className="text-xl md:text-2xl text-right items-center flex">
-                    {linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4
-                      ? "多半好评"
-                      : linkedHomework.ratingSum / linkedHomework.ratingNumber >= 2
-                        ? "褒贬不一"
-                        : "多半差评"}
+                    {linkedHomework.ratingNumber > 0 ?
+                      (linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4
+                        ? "多半好评"
+                        : linkedHomework.ratingSum / linkedHomework.ratingNumber >= 2
+                          ? "褒贬不一"
+                          : "多半差评"
+                      )
+                      : ("人数不足")
+                    }
                   </p>
                 </div>
                 <div className="flex flex-row justify-end gap-3 items-center">
-                  <span className="flex text-base">{linkedHomework.ratingSum / linkedHomework.ratingNumber}</span>
+                  <span className="flex text-base">{(linkedHomework.ratingSum / linkedHomework.ratingNumber).toFixed(1)}</span>
                   <div>
                     {[1, 2, 3, 4, 5].map((star) => (
                       <i
