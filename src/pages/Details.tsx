@@ -42,12 +42,23 @@ export function HomeworkDetails() {
 
   useEffect(() => {
     // fetch homework info
+    console.log("currentHomework: ", currentHomework)
     if (currentHomework?.rawAssignment?.parent) {
       get<Homework>(`/api/homework/${currentHomework.rawAssignment.parent}`)
         .then((res) => {
           console.log("Homework: ", res)
           setLinkedHomework(res)
         })
+    } else if (currentHomework) {
+      post<Homework[]>("/api/homework/match", {
+        platform: currentHomework?.platform || "Custom",
+        course: currentHomework?.course,
+        title: currentHomework?.title,
+        due: currentHomework?.due
+      }).then((res) => {
+        console.log(res)
+        setLinkedHomework(res[0]) // TODO: replace with selection
+      })
     }
   }, [currentHomework, comments])
 

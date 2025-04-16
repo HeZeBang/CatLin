@@ -176,17 +176,17 @@ router.post("/assignment/reject", auth.ensureLoggedIn, (req, res) => {
   });
 });
 
-router.post("/assignment/match", (req, res) => {
-  Assignment.find({
+router.post("/homework/match", (req, res) => {
+  Homework.find({
     platform: req.body.platform,
     course: req.body.course,
     title: req.body.title,
     due: req.body.due,
-  }).then((assignments) => {
-    if (assignments.length > 0) {
-      res.send(assignments);
+  }).then((homework) => {
+    if (homework.length > 0) {
+      res.send(homework);
     } else {
-      res.status(404).send({ msg: "No matching assignments found" });
+      res.status(404).send({ msg: "No matching homework found" });
     }
   });
 })
