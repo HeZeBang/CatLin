@@ -11,6 +11,7 @@ export default function Landing() {
   const [homeworks, setHomeworks] = useState<HomeworkItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
   const [dueSplit, setDueSplit] = useState(0);
+  //@ts-ignore
   const [drawerTop, setDrawerTop] = useState("unset")
   const bottomRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);

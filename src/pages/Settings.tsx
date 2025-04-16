@@ -1,10 +1,10 @@
-import { Button, Container, Footer, Header, Input, Modal, Progress, Spacer } from "nes-ui-react";
+import { Button, Container, Footer, Header, Input, Modal, Spacer } from "nes-ui-react";
 import "../App.css";
 import { useCallback, useState, useContext } from "react";
 import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { UserContext } from "../App";
 import { UserContextType } from "../lib/models/context";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { googleLogout } from "@react-oauth/google";
 import { availableBadges } from "../lib/models/badges";
 import { LoginButton } from "../components/LoginButton";
 
@@ -15,7 +15,7 @@ export default function Settings() {
   const [errMsg, setErrMsg] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const { userId, userName, user, handleLogin, handleLogout } = useContext<UserContextType>(UserContext);
+  const { userId, userName, user, handleLogout } = useContext<UserContextType>(UserContext);
 
   const Login = useCallback(async () => {
     setIsLoggingIn(true)

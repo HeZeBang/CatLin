@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { HomeworkItem, simpleHash } from "../components/HomeworkUtils";
+import { HomeworkItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../components/Utils";
-import { Badge, Button, Container, NamedColor, Toast } from "nes-ui-react";
+import { Button, Container, Toast } from "nes-ui-react";
 import { get, post } from "../lib/reqUtils";
 import { UserContext } from "../App";
 import { Assignment, AssignmentComment, AssignmentCommentArray } from "../lib/models/assignment";

@@ -16,6 +16,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
+  // @ts-ignore
   const { isLoading } = useLoading()
   const [userId, setUserId] = useState(undefined);
   const [userName, setUserName] = useState(undefined);
