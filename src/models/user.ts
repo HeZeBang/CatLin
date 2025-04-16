@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   googleid: String,
   level: Number,
   exp: Number,
+  badges: Array<Number>,
+  current_badge: Number
 });
 
 export default mongoose.models.User || mongoose.model("User", userSchema);

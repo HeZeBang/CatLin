@@ -30,9 +30,12 @@ async function connectToDatabase(): Promise<typeof mongoose> {
     const opts = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      dbName: "catlin"
     } as mongoose.ConnectOptions;
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => mongoose);
+
+    console.log("✅ MongoDB connected:", mongoose.connection.name);
   }
 
   cached.conn = await cached.promise;

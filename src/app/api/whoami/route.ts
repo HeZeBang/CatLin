@@ -1,8 +1,12 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getSession({ req });
-  if (!session) return res.status(200).json({});
-  return res.status(200).json(session.user);
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
+export const dynamic = "force-dynamic";
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (session) {
+    return NextResponse.json(session.user);
+  } else {
+    return NextResponse.json({});
+  }
 }
