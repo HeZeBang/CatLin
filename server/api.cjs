@@ -106,6 +106,18 @@ router.post("/assignment/claim", auth.ensureLoggedIn, (req, res) => {
         })
       );
     } else {
+      let newHomework = new Homework({
+        users: [req.user._id],
+        platform: req.body.platform,
+        course: req.body.course,
+        title: req.body.title,
+        due: req.body.due,
+        url: req.body.url,
+        ratingSum: 0,
+        ratingNumber: 0,
+        catType: req.body.catType,
+      });
+
       newAssignment = new Assignment({
         user_id: req.user._id,
         platform: req.body.platform,
@@ -117,18 +129,7 @@ router.post("/assignment/claim", auth.ensureLoggedIn, (req, res) => {
         create: Date.now() / 1000,
         rating: -1,
         catType: req.body.catType,
-      });
-
-      let newHomework = new Homework({
-        users: [req.user._id],
-        platform: req.body.platform,
-        course: req.body.course,
-        title: req.body.title,
-        due: req.body.due,
-        url: req.body.url,
-        ratingSum: 0,
-        ratingNumber: 0,
-        catType: req.body.catType,
+        parent: newHomework._id,
       });
 
       newHomework.save().then(() =>
