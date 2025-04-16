@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { HomeworkItem, simpleHash } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework } from "../components/Utils";
-import { Badge, Container, NamedColor, Toast } from "nes-ui-react";
+import { Badge, Button, Container, NamedColor, Toast } from "nes-ui-react";
 
 interface ReplyItem {
   message: string,
@@ -58,6 +58,15 @@ export function HomeworkDetails() {
         <span>Invalid ID</span>
       ) : (
         <div className="w-full max-w-md mx-5">
+          <div>
+            <Button className="w-full md:w-16" color="error" borderInverted
+              onClick={() => {
+                window.history.back()
+              }}
+            >
+              返回
+            </Button>
+          </div>
           <div className="flex gap-3 md:flex-row flex-col">
             <div className="md:flex-1">
               <p className="text-5xl font-bold">{currentHomework?.title}</p>
