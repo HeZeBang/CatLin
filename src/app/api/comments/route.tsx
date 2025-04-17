@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ err: "Not logged in" }, { status: 401 });
+  if (!session || !session.user) return NextResponse.json({ err: "Not logged in" }, { status: 401 });
 
   await connectToDatabase();
   const body = await req.json();

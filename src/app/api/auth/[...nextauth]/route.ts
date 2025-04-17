@@ -4,7 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import connectToDatabase from "@/lib/mongodb";
 import User, { UserType } from "@/models/user";
 import { OAuth2Client } from "google-auth-library";
-export const dynamic = "force-dynamic";
+
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -44,7 +44,6 @@ export const authOptions = {
     async jwt({ token, profile }) {
       if (profile) {
         await connectToDatabase();
-        console.log("PROFILE:", profile);
         let user = await User.findOne({ googleid: profile.sub });
         console.log("User found:", user);
         if (!user) {
@@ -59,8 +58,7 @@ export const authOptions = {
           });
           await user.save();
         }
-        console.log("User found or created:", user);
-        token.user = user.toObject(); // Store user data in token
+        token.user = user.toObject() as UserType; // Store user data in token
       }
       return token;
     },
