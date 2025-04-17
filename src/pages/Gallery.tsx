@@ -76,7 +76,7 @@ export default function Gallery() {
   return (
     <div className="columns-1 sm:columns-2 md:columns-4 justify-center gap-4 p-4 min-h-fit">
       {dummyCats.map((item, index) =>
-        <PixelBorder doubleRoundCorners className="w-full mb-2 break-inside-avoid" index={index}
+        <PixelBorder doubleRoundCorners className="w-full mb-2 break-inside-avoid" key={index}
           style={{
             opacity: item.owned ? 1 : 0.4
           }}
