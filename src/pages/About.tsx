@@ -42,7 +42,7 @@ export default function About() {
   return (
     <div className="flex gap-3 items-center justify-center flex-col">
       <div className="flex items-center gap-1 flex-wrap justify-center">
-        <img src={HeroImage} alt="CatLin" className="w-24 h-24 hero-avatar active:scale-90"
+        <img src={HeroImage.src} alt="CatLin" className="w-24 h-24 hero-avatar active:scale-90"
         onClick={() => {
           toast.info("喵~")
         }}
@@ -51,7 +51,7 @@ export default function About() {
       </div>
       <h2 className="text-2xl pb-3">{meowText}</h2>
       <PixelBorder doubleSize doubleRoundCorners>
-        <img src={Nyan} alt="Nyan Cat" className="w-full h-full" />
+        <img src={Nyan.src} alt="Nyan Cat" className="w-full h-full" />
       </PixelBorder>
       <span className="text-2xl scale-50 text-center">
         <span>Made by C4TL1N</span>{' '}
@@ -87,7 +87,7 @@ export default function About() {
                 creator_name: userName || "匿名",
                 rating: -1,
               } as Comment
-              post("/api/comments/new", newComment).then(() => {
+              post("/api/comments", newComment).then(() => {
                 setComments([...comments, newComment])
                 setComment("")
               })
