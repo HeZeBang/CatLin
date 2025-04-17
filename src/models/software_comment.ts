@@ -8,4 +8,4 @@ const softwareCommentSchema = new mongoose.Schema({
   created_at: Number,
 });
 
-export default mongoose.models.SoftwareComment || mongoose.model("SoftwareComment", softwareCommentSchema);
+export default mongoose.models.software_comments || mongoose.model("software_comments", softwareCommentSchema);

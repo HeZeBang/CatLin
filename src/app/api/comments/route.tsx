@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     creator_name: session.user.name,
     content,
     rating,
-    created_at: Date.now() / 1000,
+    created_at: Date.now(),
   });
 
   await newComment.save();

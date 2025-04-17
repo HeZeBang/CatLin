@@ -6,7 +6,7 @@ const homeworkSchema = new mongoose.Schema({
   platform: String,
   course: String,
   title: String,
-  due: Date,
+  due: Number,
   url: String,
   ratingSum: Number,
   ratingNumber: Number,
@@ -16,7 +16,8 @@ const homeworkSchema = new mongoose.Schema({
 
 export default mongoose.models.Homework || mongoose.model("Homework", homeworkSchema);
 
-export const HomeworkSchema = z.object({
+export const HomeworkTSchema = z.object({
+    "_id": z.string(),
     "catType": z.number(),
     "course": z.string(),
     "due": z.number(),
@@ -27,4 +28,4 @@ export const HomeworkSchema = z.object({
     "url": z.string(),
     "users": z.array(z.string()),
 });
-export type Homework = z.infer<typeof HomeworkSchema>;
+export type HomeworkT = z.infer<typeof HomeworkTSchema>;

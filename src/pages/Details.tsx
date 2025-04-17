@@ -1,27 +1,28 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { HomeworkItem } from "../components/HomeworkUtils";
+import { AssignmentItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../components/Utils";
 import { Button, Container, Toast } from "nes-ui-react";
 import { get, post } from "../lib/fetcher";
 import { UserContext } from "../App";
-import { Assignment, AssignmentComment, AssignmentCommentArray } from "../models/assignment";
+import { Assignment } from "../models/assignment";
 import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
-import { Homework } from "../models/homework";
+import { HomeworkT } from "../models/homework";
 import { GithubIcon } from "../components/Icons";
 import { toast } from "sonner";
 import { AuthComponent } from "@/components/Auth";
+import { HomeworkCommentPostT, HomeworkCommentT } from "@/models/homework_comment";
 
 export function HomeworkDetails() {
   const { userName, user, userId } = useContext(UserContext);
   const { id } = useParams();
-  const [_, setHomeworks] = useState<HomeworkItem[]>([])
-  const [currentHomework, setCurrentHomework] = useState<HomeworkItem>()
-  const [linkedHomework, setLinkedHomework] = useState<Homework>()
+  const [_, setHomeworks] = useState<AssignmentItem[]>([])
+  const [currentAssignment, setcurrentAssignment] = useState<AssignmentItem>()
+  const [linkedHomework, setLinkedHomework] = useState<HomeworkT>()
   const [comment, setComment] = useState("")
   const [rate, setRate] = useState(5)
-  const [comments, setComments] = useState([] as AssignmentCommentArray)
+  const [comments, setComments] = useState([] as HomeworkCommentT[])
   const dateOptions = {
     year: 'numeric',
     month: '2-digit',
@@ -33,92 +34,103 @@ export function HomeworkDetails() {
   } as Intl.DateTimeFormatOptions;
 
   useEffect(() => {
-    var hwTemp = [] as HomeworkItem[]
+    var hwTemp = [] as AssignmentItem[]
     Object.values(AccountType).forEach((type) => {
       hwTemp = [...hwTemp, ...LoadHomework(type)]
     })
     hwTemp.sort((a, b) => b.due - a.due)
+    console.log("hwTemp: ", hwTemp)
     setHomeworks(hwTemp)
     if (!isNaN(Number(id)))
-      setCurrentHomework(hwTemp[Number(id)])
+      setcurrentAssignment(hwTemp[Number(id)])
   }, [])
 
   useEffect(() => {
     // fetch homework info
-    console.log("currentHomework: ", currentHomework)
-    if (currentHomework?.rawAssignment?.parent) {
-      get<Homework>(`/api/homework/${currentHomework.rawAssignment.parent}`)
+    console.log("currentAssignment: ", currentAssignment)
+    if (currentAssignment?.parent) {
+      get<HomeworkT>(`/api/homework/${currentAssignment.parent}`)
         .then((res) => {
           console.log("Homework: ", res)
           setLinkedHomework(res)
         })
-    } else if (currentHomework) {
-      post<Homework[]>("/api/homework/match", {
-        platform: currentHomework?.platform || "Custom",
-        course: currentHomework?.course,
-        title: currentHomework?.title,
-        due: currentHomework?.due as number // TODO: replace it with real due date
+    } else if (currentAssignment) {
+      post<HomeworkT[]>("/api/homework/match", {
+        platform: currentAssignment?.platform || "Custom",
+        course: currentAssignment?.course,
+        title: currentAssignment?.title,
+        due: currentAssignment?.due as number // TODO: replace it with real due date
       }).then((res) => {
         setLinkedHomework(res[0]) // TODO: replace with selection
       }).catch((err) => {
         // toast.error(`Error: ${err}`)
       })
     }
-  }, [currentHomework, comments])
+  }, [currentAssignment])
 
   const assignHomework = () => {
-    if (currentHomework)
+    if (currentAssignment)
       post<Assignment>("/api/assignment/claim", {
-        platform: currentHomework.platform || "Custom",
-        course: currentHomework.course,
-        title: currentHomework.title,
-        due: currentHomework.due,
-        submitted: currentHomework.submitted,
-        url: currentHomework.url,
+        platform: currentAssignment.platform || "Custom",
+        course: currentAssignment.course,
+        title: currentAssignment.title,
+        due: currentAssignment.due,
+        submitted: currentAssignment.submitted,
+        url: currentAssignment.url,
         catType: 0, // TODO: replace it with real cat rype
-      }).then((res) => {
-        console.log(res)
-        const newHomework = {
-          ...currentHomework,
-          id: res._id,
-          catType: res.catType,
-          platform: res.platform,
-          course: res.course,
-          due: res.due,
-          submitted: res.submitted,
-          title: res.title,
-          url: res.url,
-          rawAssignment: res,
-        } as HomeworkItem
-        setCurrentHomework(newHomework)
-        SaveAssignment(res.platform as AccountType || AccountType.Custom, newHomework)
       })
+        .then((res) => {
+          console.log("Due: ", res.due, "Current: ", currentAssignment.due)
+          let newAssignment = {
+            ...currentAssignment,
+            id: res._id,
+            catType: res.catType,
+            platform: res.platform,
+            course: res.course,
+            // due: res.due, // FIXME: remove this
+            submitted: res.submitted,
+            title: res.title,
+            url: res.url,
+            parent: res.parent
+          } as AssignmentItem
+          setcurrentAssignment(newAssignment)
+          SaveAssignment(res.platform as AccountType || AccountType.Custom, newAssignment)
+          return res.parent
+        })
+        .then((homeworkId) => get<HomeworkT>(`/api/homework/${homeworkId}`))
+        .then((newHomework) => {
+          console.log("New Homework: ", newHomework)
+          setLinkedHomework(newHomework)
+        })
   }
 
   const rejectClaim = () => {
-    const newHomework = {
-      ...currentHomework,
-      id: "",
-      rawAssignment: undefined,
-    } as HomeworkItem
     post<Assignment>("/api/assignment/reject", {
-      title: currentHomework?.title,
-      course: currentHomework?.course,
-      platform: currentHomework?.platform,
+      title: currentAssignment?.title,
+      course: currentAssignment?.course,
+      platform: currentAssignment?.platform,
     })
       .then((res) => {
         console.log(res)
       })
       .finally(() => {
-        setCurrentHomework(newHomework)
-        SaveAssignment(currentHomework?.platform as AccountType || AccountType.Custom, newHomework)
+        setcurrentAssignment({
+          ...currentAssignment,
+          id: "",
+          parent: "",
+        } as AssignmentItem)
+        SaveAssignment(currentAssignment?.platform as AccountType || AccountType.Custom, {
+          ...currentAssignment,
+          id: "",
+          parent: "",
+        } as AssignmentItem)
       })
   }
 
   useEffect(() => {
     // fetch comments
-    if (currentHomework?.rawAssignment?.parent)
-      get<AssignmentCommentArray>(`/api/assignment/comment/${currentHomework?.rawAssignment?.parent}`)
+    if (linkedHomework)
+      get<HomeworkCommentT[]>(`/api/homework/${linkedHomework._id}/comments`)
         .then((res) => {
           console.log("Comments: ", res)
           setComments(res)
@@ -126,15 +138,22 @@ export function HomeworkDetails() {
   }, [linkedHomework])
 
   const submitComment = useCallback(() => {
-    post<AssignmentComment>("/api/assignment/comment", {
-      content: comment,
-      rating: rate,
-      parent: currentHomework?.rawAssignment?.parent,
-    }).then((res) => {
-      setComment("")
-      setComments([...comments, res])
-    })
-  }, [comment, currentHomework, comments, rate])
+    if (currentAssignment?.parent) {
+      post<HomeworkCommentT>(`/api/homework/${currentAssignment?.parent}/comments`, {
+        creator_name: userName,
+        creator_badge: user?.currentBadge,
+        is_annonymous: false,
+        content: comment,
+        rating: rate,
+        parent: currentAssignment.parent,
+      } as HomeworkCommentPostT).then((res) => {
+        setComment("")
+        setComments([...comments, res])
+      })
+    } else {
+      toast.error("请先认领作业")
+    }
+  }, [userName, comment, currentAssignment, comments, rate])
 
   return (
     <>
@@ -154,7 +173,7 @@ export function HomeworkDetails() {
             </div>
             <div className="flex gap-1">
               {
-                currentHomework?.id ? (
+                currentAssignment?.id ? (
                   <Button className="w-full" color="primary" borderInverted
                     onClick={rejectClaim}
                   >
@@ -168,7 +187,7 @@ export function HomeworkDetails() {
               }
               <Button className="w-full" color="error" borderInverted
                 onClick={() => {
-                  RemoveAssignment(currentHomework?.platform as AccountType || AccountType.Custom, currentHomework as HomeworkItem)
+                  RemoveAssignment(currentAssignment?.platform as AccountType || AccountType.Custom, currentAssignment as AssignmentItem)
                   window.history.back()
                 }}
               >
@@ -178,8 +197,8 @@ export function HomeworkDetails() {
           </div>
           <div className="flex gap-3 md:flex-row flex-col">
             <div className="md:flex-1">
-              <p className="text-5xl font-bold">{currentHomework?.title}</p>
-              <p className="text-xl">{currentHomework?.course}</p>
+              <p className="text-5xl font-bold">{currentAssignment?.title}</p>
+              <p className="text-xl">{currentAssignment?.course}</p>
             </div>
             {
               linkedHomework ? (
@@ -221,27 +240,27 @@ export function HomeworkDetails() {
           <Container title="" className="w-full my-3 flex">
             <div className="flex-grow">
               {
-                currentHomework &&
+                currentAssignment &&
                 <span className="text-lg flex gap-3 mb-2">
                   <span className="flex items-center gap-1">
-                    <span>{currentHomework.submitted ? "☑" : "☐"}</span>
-                    {currentHomework.submitted ? "已提交" : "未提交"}
+                    <span>{currentAssignment.submitted ? "☑" : "☐"}</span>
+                    {currentAssignment.submitted ? "已提交" : "未提交"}
                   </span>
                   {/* <span>{linkedHomework ? <span>{"☑Catlin 已收录"}</span> : <span className="box">{"☐Catlin 未收录"}</span>}</span> */}
                   <span className="flex items-center gap-1">
-                    <GithubIcon className={`${currentHomework.id ? "" : "opacity-20"}`} />
-                    {currentHomework.id ? "已认领" : "未认领"}
+                    <GithubIcon className={`${currentAssignment.id ? "" : "opacity-20"}`} />
+                    {currentAssignment.id ? "已认领" : "未认领"}
                   </span>
                 </span>
               }
-              <p>截止日期：{currentHomework?.due ? new Date(currentHomework.due * 1000).toLocaleDateString('zh-cn', dateOptions) : ""}</p>
-              <p>平台：{currentHomework?.platform}</p>
+              <p>截止日期：{currentAssignment?.due ? new Date(currentAssignment.due).toLocaleDateString('zh-cn', dateOptions) : ""}</p>
+              <p>平台：{currentAssignment?.platform}</p>
               {linkedHomework && <p>共有 {linkedHomework.users.length} 人一起参与</p>}
               {linkedHomework && comments && <p>已有 {comments.length} 条评论和评分</p>}
             </div>
-            <div className={`max-w-24 ${currentHomework?.id ? "" : "opacity-0"}`}>
+            <div className={`max-w-24 ${currentAssignment?.id ? "" : "opacity-0"}`}>
               {
-                currentHomework?.id &&
+                currentAssignment?.id &&
                 <img src={`/avatars/white.png`} /> // TODO: replace with real cat
               }
             </div>
@@ -253,7 +272,7 @@ export function HomeworkDetails() {
               <span className="block w-full text-lg text-center py-5 opacity-50">还没有评论</span>
             ) :
               comments.filter((item) => item.content !== "").map((item, index) =>
-                <Toast bubblePostion={index % 2 ? "right" : "left"} className="w-full">
+                <Toast bubblePostion={index % 2 ? "right" : "left"} className="w-full" key={index}>
                   <div className="w-full text-left">
                     <div className="w-full flex gap-3">
                       <p className="text-xl">{item.creator_name}</p>
@@ -283,7 +302,7 @@ export function HomeworkDetails() {
                     </div>
                     <p>{item.content}</p>
                     <p className="content-center w-full text-end opacity-50">
-                      {`${item.created_at ? new Date(item.created_at * 1000).toLocaleDateString('zh-cn', dateOptions) : ""}`}
+                      {`${item.create_at ? new Date(item.create_at).toLocaleDateString('zh-cn', dateOptions) : ""}`}
                       {` #${index}`}
                     </p>
                   </div>

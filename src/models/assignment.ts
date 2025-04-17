@@ -6,7 +6,7 @@ const assignmentSchema = new mongoose.Schema({
   platform: String,
   course: String,
   title: String,
-  due: Date,
+  due: Number,
   submitted: Boolean,
   url: String,
   create: Number,
@@ -32,9 +32,9 @@ export const AssignmentSchema = z.object({
     "url": z.string(),
     "user_id": z.string(),
 });
-export type Assignment = z.infer<typeof AssignmentSchema>;
+export type Assignment = z.infer<typeof AssignmentSchema>; // TODO: replace with *T
 
-export const AssignmentCommentSchema = z.object({
+export const HomeworkCommentSchema = z.object({
     "content": z.string(),
     "creator_badge": z.number(),
     "creator_id": z.string(),
@@ -45,6 +45,4 @@ export const AssignmentCommentSchema = z.object({
     "created_at": z.number(),
 });
 
-export type AssignmentComment = z.infer<typeof AssignmentCommentSchema>;
-
-export type AssignmentCommentArray = AssignmentComment[];
+export type HomeworkComment = z.infer<typeof HomeworkCommentSchema>;

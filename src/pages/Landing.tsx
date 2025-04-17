@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { HomeworkItem, HwItem } from "../components/HomeworkUtils";
+import { AssignmentItem, HwItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, LoadUsername } from "../components/Utils";
 import { Link } from "react-router";
 import { Button } from "nes-ui-react";
@@ -8,7 +8,7 @@ import { useLoading } from "../context/LoadingContext";
 import { toast } from "sonner";
 
 export default function Landing() {
-  const [homeworks, setHomeworks] = useState<HomeworkItem[]>([])
+  const [homeworks, setHomeworks] = useState<AssignmentItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
   const [dueSplit, setDueSplit] = useState(0);
   //@ts-ignore
@@ -46,14 +46,14 @@ export default function Landing() {
   }, [unload]);
 
   useEffect(() => {
-    var hwTemp = [] as HomeworkItem[]
+    var hwTemp = [] as AssignmentItem[]
     Object.values(AccountType).forEach((type) => {
       if (LoadUsername(type)) setFirstUse(false)
       hwTemp = [...hwTemp, ...LoadHomework(type)]
     })
     hwTemp.sort((a, b) => b.due - a.due)
     setHomeworks(hwTemp)
-    setDueSplit(Date.now() / 1000 - 7 * 24 * 60 * 60)
+    setDueSplit(Date.now() - 7 * 24 * 60 * 60 * 1000)
   }, [])
 
   useEffect(() => {
@@ -115,20 +115,20 @@ export default function Landing() {
                       due={hw.due}
                       url={hw.url}
                       index={index}
-                      linked={!!hw.rawAssignment}
+                      linked={!!hw.parent}
                     />
                   ))
               )}
               <div className="flex gap-3 items-center justify-center">
                 <Button
-                  onClick={() => { setDueSplit(due => due - 7 * 24 * 60 * 60) }}
+                  onClick={() => { setDueSplit(due => due - 7 * 24 * 60 * 60 * 1000) }}
                   className="text-nowrap"
                 >
                   ▼ 显示更早
                 </Button>
-                <span>截至 {new Date(dueSplit * 1000).toLocaleString()}</span>
+                <span>截至 {new Date(dueSplit).toLocaleString()}</span>
                 <Button
-                  onClick={() => { setDueSplit(due => Math.min(Date.now() / 1000, due + 7 * 24 * 60 * 60)) }}
+                  onClick={() => { setDueSplit(due => Math.min(Date.now(), due + 7 * 24 * 60 * 60 * 1000)) }}
                   className="text-nowrap"
                 >
                   显示更晚 ▲

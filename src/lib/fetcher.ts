@@ -38,11 +38,11 @@ function convertToJSON<T>(res: Response): Promise<T> {
   return res
     .clone() // Clone to preserve the original response for debugging
     .json()
-    .catch((error: any) => {
-      return res.text().then((text: string) => {
-        throw new Error(`API request's result could not be converted to a JSON object: \n${text} \n Error: ${error}`);
-      });
-    });
+    // .catch((error: any) => {
+    //   return res.text().then((text: string) => {
+    //     throw new Error(`API request's result could not be converted to a JSON object: \n${text} \n Error: ${error}`);
+    //   });
+    // });
 }
 
 /**
@@ -56,9 +56,9 @@ export function get<T>(endpoint: string, params: QueryParams = {}): Promise<T> {
   const fullPath = endpoint + "?" + formatParams(params);
   return fetch(fullPath)
     .then((res) => convertToJSON<T>(res))
-    .catch((error: any) => {
-      throw new Error(`GET request to ${fullPath} failed with error:\n${error}`);
-    });
+    // .catch((error: any) => {
+    //   throw new Error(`GET request to ${fullPath} failed with error:\n${error}`);
+    // });
 }
 
 /**
@@ -75,7 +75,7 @@ export function post<T>(endpoint: string, params: Record<string, any> = {}): Pro
     body: JSON.stringify(params),
   })
     .then((res) => convertToJSON<T>(res))
-    .catch((error: any) => {
-      throw new Error(`POST request to ${endpoint} failed with error:\n${error}`);
-    });
+    // .catch((error: any) => {
+    //   throw new Error(`POST request to ${endpoint} failed with error:\n${error}`);
+    // });
 }

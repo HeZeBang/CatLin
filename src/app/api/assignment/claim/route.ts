@@ -7,15 +7,15 @@ import Assignment from "@/models/assignment";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ err: "Not logged in" }, { status: 401 });
+  if (!session || !session.user) return NextResponse.json({ err: "Not logged in" }, { status: 401 });
 
   await connectToDatabase();
   const body = await req.json();
-  const { title, course, platform, due, submitted, url, catType } = body;
+  const { title, course, platform, due, submitted, url } = body;
 
   let homework = await Homework.findOne({ title, course, platform });
   if (!homework) {
-    console.log("Not Found")
+    console.log("Homework Not Found")
     homework = new Homework({
       users: [session.user._id],
       platform,
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       url,
       ratingSum: 0,
       ratingNumber: 0,
-      catType,
+      catType: 0, // TODO: Replace with real catType
     });
     await homework.save();
   } else if (!homework.users.includes(session.user._id)) {
@@ -41,9 +41,8 @@ export async function POST(req: NextRequest) {
     due,
     submitted,
     url,
-    create: Date.now() / 1000,
-    rating: -1,
-    catType,
+    create: Date.now(),
+    catType: 0, // TODO: Replace with real catType
     parent: homework._id,
   });
 
