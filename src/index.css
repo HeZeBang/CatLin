@@ -1,8 +1,16 @@
-@import "nes-ui-react";
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer components {
+  @import "nes-ui-react";
+  @import "./nes.min.css";
+}
+
+/* @import "tailwindcss/utilities"; */
+/* @tailwind base; */
+/* @tailwind components; */
+/* @tailwind utilities; */
+
+
 
 /* UniFont Config */
 
@@ -29,13 +37,22 @@ html {
   left: 0;
 }
 
-.nes-balloon, .nes-icon {
+.nes-balloon,
+.nes-icon {
   border-image-repeat: initial !important;
 }
 
+.star{
+  transform: none;
+}
+
+.nes-ui-modal {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @layer base {
-  @font-face
-  {
+  @font-face {
     font-family: 'Unifont';
     src: url('/fonts/unifont.otf');
   }
@@ -44,6 +61,16 @@ html {
     font-family: 'UnifontEX';
     src: url('/fonts/unifontex.ttf');
   }
+}
+
+@font-face {
+  font-family: 'Unifont';
+  src: url('/fonts/unifont.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Fusion';
+  src: url('/fonts/fusion.otf') format('opentype');
 }
 
 .font-ex {
@@ -79,9 +106,11 @@ body {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }

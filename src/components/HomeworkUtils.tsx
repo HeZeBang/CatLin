@@ -1,10 +1,11 @@
 import { Colors, PixelBorder } from "nes-ui-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Assignment } from "../lib/models/assignment";
+import { Assignment } from "../models/assignment";
 import { GithubIcon } from "./Icons";
+import { HomeworkT } from "@/models/homework";
 
-interface HomeworkItemProps {
+interface AssignmentItemProps {
   course: string,
   due: number,
   submitted: boolean,
@@ -85,8 +86,8 @@ function getTimeDifference(timestamp1: number, timestamp2: number) {
   return { days, hours, minutes, seconds, sign: timestamp1 >= timestamp2 };
 }
 
-export function HwItem(props: HomeworkItemProps) {
-  const dateItem = new Date(props.due * 1000)
+export function HwItem(props: AssignmentItemProps) {
+  const dateItem = new Date(props.due)
   const dateOptions = {
     year: 'numeric',
     month: '2-digit',
@@ -96,7 +97,7 @@ export function HwItem(props: HomeworkItemProps) {
     //  second: '2-digit', 
     hour12: false
   } as Intl.DateTimeFormatOptions;
-  const [difference, setDifference] = useState(getTimeDifference(props.due * 1000, Date.now()))
+  const [difference, setDifference] = useState(getTimeDifference(props.due, Date.now()))
   const randColor = randomColor(simpleHash(`${props.course}`))
   const randTextColor = randomTextColor(simpleHash(`${props.course}`))
   const isPasted = !difference.sign
@@ -104,8 +105,8 @@ export function HwItem(props: HomeworkItemProps) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDifference(getTimeDifference(props.due * 1000, Date.now()));
-    }, 30 * 1000); // 30s
+      setDifference(getTimeDifference(props.due, Date.now()));
+    }, 30); // 30s
 
     return () => clearInterval(interval);
   })
@@ -132,7 +133,7 @@ export function HwItem(props: HomeworkItemProps) {
       >
         <div className="p-2 flex gap-1 items-center w-full">
           <div className="text-2xl flex flex-col gap-0 max-w-[1em]">
-            <p className={`text-2xl text-left max-w-[1em] text-wrap`}>
+            <p className={`text-2xl m-0 text-left max-w-[1em] text-wrap`}>
               {props.submitted ? <span>{"☑"}</span> : <span className="box">{"☐"}</span>}
             </p>
             <GithubIcon className={`${props.linked ? "" : "opacity-20"}`} />
@@ -166,7 +167,7 @@ export function HwItem(props: HomeworkItemProps) {
   )
 }
 
-export interface HomeworkItem {
+export interface AssignmentItem {
   id: string,
   course: string,
   due: number,
@@ -178,5 +179,5 @@ export interface HomeworkItem {
   status: string,
   platform: string,
   catType: number,
-  rawAssignment?: Assignment,
+  parent: string,
 }

@@ -15,7 +15,7 @@ def add_cors_headers(response):
     return response
 
 
-@app.route("/api/gradescope", methods=["POST"])
+@app.route("/api/provider/gradescope", methods=["POST"])
 def gsHandler() -> flask.Response:
     # Get payload from request
     payload = flask.request.json
@@ -69,7 +69,7 @@ def eamsExamHandler() -> flask.Response:
 
     return {"status": "success", "data": data}
 
-@app.route("/api/blackboard", methods=["POST"])
+@app.route("/api/provider/blackboard", methods=["POST"])
 def bbHandler() -> flask.Response:
     # Get payload from request
     urllib3.disable_warnings()
@@ -91,7 +91,7 @@ def bbHandler() -> flask.Response:
     return {"status": "success", "data": data}
 
 
-@app.route("/api/hydro", methods=["POST"])
+@app.route("/api/provider/hydro", methods=["POST"])
 def ojHandler() -> flask.Response:
     # Get payload from request
     payload = flask.request.json

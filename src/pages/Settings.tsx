@@ -3,10 +3,12 @@ import "../App.css";
 import { useCallback, useState, useContext } from "react";
 import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { UserContext } from "../App";
-import { UserContextType } from "../lib/models/context";
+import { UserContextType } from "../models/context";
 import { googleLogout } from "@react-oauth/google";
-import { availableBadges } from "../lib/models/badges";
+import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
+import { AuthComponent } from "@/components/Auth";
+import { signOut } from "next-auth/react";
 
 export default function Settings() {
   const [modalType, setModalType] = useState<AccountType | null>(null)
@@ -53,7 +55,7 @@ export default function Settings() {
         <Container title="" className="w-full">
           <div className="flex-col items-center w-full">
             <div className="flex gap-3">
-              <i className="nes-icon github scale-[6] mr-20 mb-20"
+              <i className="nes-icon github scale-[3] mr-20 mb-20"
               />
               <div className="flex flex-col gap-3 flex-grow">
                 <div className="flex gap-1">
@@ -66,7 +68,7 @@ export default function Settings() {
                       {availableBadges.at(user?.currentBadge || 0)?.name}
                     </span>
                   </div>
-                  <span>共 {user?.badges.length || 0} 个徽章</span>
+                  <span>共 {user?.badges?.length || 0} 个徽章</span>
                 </div>
               </div>
             </div>
@@ -97,9 +99,11 @@ export default function Settings() {
             </div> */}
 
             <Button className="w-full mt-3" color="error" borderInverted
-              onClick={() => {
+              onClick={async () => {
+                await signOut()
                 handleLogout()
                 googleLogout()
+                // location.reload()
               }}
             >
               登出
@@ -108,7 +112,7 @@ export default function Settings() {
         </Container>
       ) : (
         <Container title="登录" className="w-full">
-          <LoginButton />
+          <AuthComponent />
         </Container>
       )}
       <Container title="关联账户" className="w-full">

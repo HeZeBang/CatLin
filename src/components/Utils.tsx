@@ -1,10 +1,10 @@
 
 // Production / Development
 
-import { HomeworkItem } from "./HomeworkUtils"
+import { AssignmentItem } from "./HomeworkUtils"
 
 export function WrapUrl(path: string) {
-  const URL_BASE = import.meta.env.MODE === "production" ? "" : "http://localhost:5000"
+  const URL_BASE = process.env.NODE_ENV === "production" ? "" : "http://localhost:5000"
   return `${URL_BASE}${path.startsWith("/") ? path : "/" + path}`
 }
 
@@ -34,11 +34,11 @@ function SaveAccount(type: AccountType | null, username: string, password: strin
   return true
 }
 
-export function SaveHomework(type: AccountType, hwList: HomeworkItem[]) {
+export function SaveHomework(type: AccountType, hwList: AssignmentItem[]) {
   localStorage.setItem(`${type.replace(" ", "_")}`, JSON.stringify(hwList))
 }
 
-export function SaveAssignment(type: AccountType, assignment: HomeworkItem) {
+export function SaveAssignment(type: AccountType, assignment: AssignmentItem) {
   const homework = LoadHomework(type)
   const index = homework.findIndex(hw => hw.course === assignment.course && hw.title === assignment.title)
   if (index !== -1) {
@@ -50,7 +50,7 @@ export function SaveAssignment(type: AccountType, assignment: HomeworkItem) {
   SaveHomework(type, homework)
 }
 
-export function RemoveAssignment(type: AccountType, assignment: HomeworkItem) {
+export function RemoveAssignment(type: AccountType, assignment: AssignmentItem) {
   const homework = LoadHomework(type)
   const index = homework.findIndex(hw => hw.course === assignment.course && hw.title === assignment.title && hw.id === assignment.id)
   if (index !== -1) {
@@ -60,7 +60,7 @@ export function RemoveAssignment(type: AccountType, assignment: HomeworkItem) {
 }
 
 export function LoadHomework(type: AccountType) {
-  const items = JSON.parse(localStorage.getItem(`${type.replace(" ", "_")}`) || "[]") as HomeworkItem[]
+  const items = JSON.parse(localStorage.getItem(`${type.replace(" ", "_")}`) || "[]") as AssignmentItem[]
   items.forEach(item => { item.platform = `${type}` })
   return items
 }

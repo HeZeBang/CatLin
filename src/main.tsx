@@ -1,21 +1,24 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
+import App from './App'
 import { BrowserRouter, Routes, Route } from 'react-router'
-// import Gallery from './pages/Gallery.tsx'
-import Landing from './pages/Landing.tsx'
-import Settings from './pages/Settings.tsx'
-import About from './pages/About.tsx'
-import NotFound from './pages/404.tsx'
-import Gallery from './pages/Gallery.tsx'
-import { HomeworkDetails } from './pages/Details.tsx'
-import { LoadingProvider } from './context/LoadingContext.tsx'
+// import Gallery from './pages/Gallery'
+import Landing from './pages/Landing'
+import Settings from './pages/Settings'
+import About from './pages/About'
+import NotFound from './pages/404'
+import Gallery from './pages/Gallery'
+import { HomeworkDetails } from './pages/Details'
+import { LoadingProvider } from './context/LoadingContext'
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import React from 'react'
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id';
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 'your-google-client-id';
 
-createRoot(document.getElementById('root')!).render(
+// createRoot(document.getElementById('root')!).render(
+export default function Index(){
+  return (
   <StrictMode>
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
@@ -34,4 +37,4 @@ createRoot(document.getElementById('root')!).render(
       </BrowserRouter>
     </GoogleOAuthProvider>
   </StrictMode>
-)
+)}

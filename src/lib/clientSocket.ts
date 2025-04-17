@@ -1,5 +1,5 @@
 import socketIOClient from "socket.io-client";
-import { post } from "./reqUtils";
+import { post } from "./fetcher";
 
 const endpoint = window.location.hostname + ":" + window.location.port;
 

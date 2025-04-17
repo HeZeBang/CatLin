@@ -271,7 +271,7 @@ class Gradescope:
                 
                 dueDate = cells[1].find_all('time', class_='submissionTimeChart--dueDate')
                 if dueDate:
-                    dueDate = list(map(lambda x: datetime.strptime(x.get('datetime'), "%Y-%m-%d %H:%M:%S %z").timestamp(), dueDate))
+                    dueDate = list(map(lambda x: datetime.strptime(x.get('datetime'), "%Y-%m-%d %H:%M:%S %z").timestamp() * 1000, dueDate))
                 
                 assignments.append({
                     'title': title,
