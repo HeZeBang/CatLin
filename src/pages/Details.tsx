@@ -11,6 +11,7 @@ import { LoginButton } from "../components/LoginButton";
 import { Homework } from "../models/homework";
 import { GithubIcon } from "../components/Icons";
 import { toast } from "sonner";
+import { AuthComponent } from "@/components/Auth";
 
 export function HomeworkDetails() {
   const { userName, user, userId } = useContext(UserContext);
@@ -182,11 +183,10 @@ export function HomeworkDetails() {
             </div>
             {
               linkedHomework ? (
-                <div className="flex gap-1 flex-rows md:flex-col justify-end align-middle">
-                  {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
-                  <div className="flex gap-1">
+                <div className="flex gap-2 flex-rows md:flex-col justify-stretch md:justify-center align-middle">
+                  <div className="flex gap-1 justify-center">
                     <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4 ? "" : "is-empty"}`} style={{ marginRight: "35px" }} />
-                    <p className="text-xl md:text-2xl text-right items-center flex">
+                    <p className="text-xl md:text-2xl text-right items-center flex mb-0">
                       {linkedHomework.ratingNumber > 0 ?
                         (linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4
                           ? "多半好评"
@@ -307,7 +307,7 @@ export function HomeworkDetails() {
                         </div>
                       </>
                     ) : (
-                      <LoginButton />
+                      <AuthComponent />
                     )
                   }
                 </div>

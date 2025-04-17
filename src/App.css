@@ -3,6 +3,10 @@
   height: auto;
 }
 
+a {
+  text-underline-offset: 4px;
+}
+
 a.active {
   text-decoration: underline;
   text-underline-offset: 4px;

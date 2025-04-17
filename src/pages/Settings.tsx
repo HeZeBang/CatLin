@@ -55,7 +55,7 @@ export default function Settings() {
         <Container title="" className="w-full">
           <div className="flex-col items-center w-full">
             <div className="flex gap-3">
-              <i className="nes-icon github scale-[6] mr-20 mb-20"
+              <i className="nes-icon github scale-[3] mr-20 mb-20"
               />
               <div className="flex flex-col gap-3 flex-grow">
                 <div className="flex gap-1">
