@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
 
   let homework = await Homework.findOne({ title, course, platform });
   if (!homework) {
+    console.log("Not Found")
     homework = new Homework({
       users: [session.user._id],
       platform,

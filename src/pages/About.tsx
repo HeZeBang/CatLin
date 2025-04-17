@@ -4,7 +4,7 @@ import Nyan from "../assets/nyan.webp";
 import "../App.css";
 import { useContext, useEffect, useState } from "react";
 import HeroImage from "../assets/avatar-50x50.png";
-import { get, post } from "../lib/reqUtils";
+import { get, post } from "../lib/fetcher";
 import { UserContext } from "../App";
 import { toast } from "sonner";
 

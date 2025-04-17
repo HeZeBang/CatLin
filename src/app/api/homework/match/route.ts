@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     const { platform, course, title, due } = await req.json();
+    console.log("Matching homework with:", { platform, course, title, due });
     
     await connectToDatabase();
-    const homework = await Homework.find({ platform, course, title, due });
+    const homework = await Homework.find({ platform, course, title, }); // TODO: fix due matching
     if (homework.length > 0) {
         return NextResponse.json(homework);
     } else {

@@ -4,7 +4,7 @@ import { IconButton, Progress, setDarkModeActivation } from 'nes-ui-react'
 import { NavLink, Outlet, useLocation } from 'react-router'
 import { Sun, Moon, MenuIcon } from './components/Icons'
 import { useLoading } from './context/LoadingContext'
-import { get, post } from './lib/reqUtils'
+import { get, post } from './lib/fetcher'
 import jwt_decode from "jwt-decode";
 import { socket } from './lib/clientSocket'
 import { UserContextType } from './models/context'

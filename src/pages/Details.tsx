@@ -3,13 +3,14 @@ import { useParams } from "react-router";
 import { HomeworkItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../components/Utils";
 import { Button, Container, Toast } from "nes-ui-react";
-import { get, post } from "../lib/reqUtils";
+import { get, post } from "../lib/fetcher";
 import { UserContext } from "../App";
 import { Assignment, AssignmentComment, AssignmentCommentArray } from "../models/assignment";
 import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
 import { Homework } from "../models/homework";
 import { GithubIcon } from "../components/Icons";
+import { toast } from "sonner";
 
 export function HomeworkDetails() {
   const { userName, user, userId } = useContext(UserContext);
@@ -55,10 +56,11 @@ export function HomeworkDetails() {
         platform: currentHomework?.platform || "Custom",
         course: currentHomework?.course,
         title: currentHomework?.title,
-        due: currentHomework?.due
+        due: currentHomework?.due as number // TODO: replace it with real due date
       }).then((res) => {
-        console.log(res)
         setLinkedHomework(res[0]) // TODO: replace with selection
+      }).catch((err) => {
+        // toast.error(`Error: ${err}`)
       })
     }
   }, [currentHomework, comments])
@@ -179,36 +181,41 @@ export function HomeworkDetails() {
               <p className="text-xl">{currentHomework?.course}</p>
             </div>
             {
-              linkedHomework &&
-              <div className="flex gap-1 flex-rows md:flex-col justify-end align-middle">
-                {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
-                <div className="flex gap-1">
-                  <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4 ? "" : "is-empty"}`} style={{ marginRight: "35px" }} />
-                  <p className="text-xl md:text-2xl text-right items-center flex">
-                    {linkedHomework.ratingNumber > 0 ?
-                      (linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4
-                        ? "多半好评"
-                        : linkedHomework.ratingSum / linkedHomework.ratingNumber >= 2
-                          ? "褒贬不一"
-                          : "多半差评"
-                      )
-                      : ("人数不足")
-                    }
-                  </p>
-                </div>
-                <div className="flex flex-row justify-end gap-3 items-center">
-                  <span className="flex text-base">{(linkedHomework.ratingSum / linkedHomework.ratingNumber).toFixed(1)}</span>
-                  <div>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <i
-                        key={star}
-                        className={`nes-icon star scale-125 ${star <= linkedHomework.ratingSum / linkedHomework.ratingNumber ? "" : "is-transparent"}`}
-                        style={{ marginRight: "8px", marginBottom: 0 }}
-                      />
-                    ))}
+              linkedHomework ? (
+                <div className="flex gap-1 flex-rows md:flex-col justify-end align-middle">
+                  {/* <p className="text-md md:text-4xl text-right">5.0</p> */}
+                  <div className="flex gap-1">
+                    <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4 ? "" : "is-empty"}`} style={{ marginRight: "35px" }} />
+                    <p className="text-xl md:text-2xl text-right items-center flex">
+                      {linkedHomework.ratingNumber > 0 ?
+                        (linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4
+                          ? "多半好评"
+                          : linkedHomework.ratingSum / linkedHomework.ratingNumber >= 2
+                            ? "褒贬不一"
+                            : "多半差评"
+                        )
+                        : ("人数不足")
+                      }
+                    </p>
+                  </div>
+                  <div className="flex flex-row justify-end gap-3 items-center">
+                    <span className="flex text-base">{(linkedHomework.ratingSum / linkedHomework.ratingNumber).toFixed(1)}</span>
+                    <div>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <i
+                          key={star}
+                          className={`nes-icon star scale-125 ${star <= linkedHomework.ratingSum / linkedHomework.ratingNumber ? "" : "is-transparent"}`}
+                          style={{ marginRight: "8px", marginBottom: 0 }}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex justify-center items-center">
+                  <span className="text-gray-400">还没有人认领过……</span>
+                </div>
+              )
             }
           </div>
           <Container title="" className="w-full my-3 flex">

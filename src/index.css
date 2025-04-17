@@ -40,6 +40,9 @@ html {
 .nes-balloon,
 .nes-icon {
   border-image-repeat: initial !important;
+}
+
+.star{
   transform: none;
 }
 
