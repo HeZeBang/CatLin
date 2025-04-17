@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth/authOptions";
 import HomeworkComment from "@/models/homework_comment";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ homeworkId: string }> }) {
