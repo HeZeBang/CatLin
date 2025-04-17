@@ -1,12 +1,11 @@
-import type { Config } from 'tailwindcss'
 
-const config: Config = {
+const config = {
   darkMode: 'class',
   important: true,
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './oldpages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}'
   ],

@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { AuthComponent } from "@/components/Auth";
 import { HomeworkCommentPostT, HomeworkCommentT } from "@/models/homework_comment";
 
-export function HomeworkDetails() {
+export default function HomeworkDetails() {
   const { userName, user, userId } = useContext(UserContext);
   const { id } = useParams();
   const [_, setHomeworks] = useState<AssignmentItem[]>([])

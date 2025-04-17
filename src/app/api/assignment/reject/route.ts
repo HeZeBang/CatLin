@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth/authOptions";
 import connectToDatabase from "@/lib/mongodb";
 import Homework from "@/models/homework";
 import Assignment from "@/models/assignment";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ err: "Not logged in" }, { status: 401 });
+  if (!session || !session.user) return NextResponse.json({ err: "Not logged in" }, { status: 401 });
 
   await connectToDatabase();
   const body = await req.json();

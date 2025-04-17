@@ -3,16 +3,17 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App'
 import { BrowserRouter, Routes, Route } from 'react-router'
-// import Gallery from './pages/Gallery'
-import Landing from './pages/Landing'
-import Settings from './pages/Settings'
-import About from './pages/About'
-import NotFound from './pages/404'
-import Gallery from './pages/Gallery'
-import { HomeworkDetails } from './pages/Details'
+// import Gallery from './oldpages/Gallery'
+import Landing from './oldpages/Landing'
+import Settings from './oldpages/Settings'
+import About from './oldpages/About'
+import NotFound from './oldpages/404'
+import Gallery from './oldpages/Gallery'
+import HomeworkDetails from './oldpages/Details'
 import { LoadingProvider } from './context/LoadingContext'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react'
+
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 'your-google-client-id';
 

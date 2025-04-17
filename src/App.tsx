@@ -1,16 +1,16 @@
+"use client";
+
 import { useCallback, useEffect, useState, createContext } from 'react'
 import './App.css'
 import { IconButton, Progress, setDarkModeActivation } from 'nes-ui-react'
 import { NavLink, Outlet, useLocation } from 'react-router'
 import { Sun, Moon, MenuIcon } from './components/Icons'
 import { useLoading } from './context/LoadingContext'
-import { get, post } from './lib/fetcher'
+import { get } from './lib/fetcher'
 import jwt_decode from "jwt-decode";
-import { socket } from './lib/clientSocket'
 import { UserContextType } from './models/context'
 import { toast, Toaster } from 'sonner'
 import { SessionProvider, signIn, signOut } from 'next-auth/react'
-import { GoogleOneTap } from './components/Auth'
 
 export const UserContext = createContext({} as UserContextType);
 
@@ -18,8 +18,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
-  // @ts-ignore
-  const { isLoading } = useLoading()
+  // const { isLoading } = useLoading()
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [userName, setUserName] = useState<string | undefined>(undefined);
   const [user, setUser] = useState();

@@ -1,3 +1,5 @@
+"use client";
+
 import { useLocation, useParams } from "react-router";
 
 export default function NotFound() {
