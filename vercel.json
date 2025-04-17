@@ -2,8 +2,8 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/:uri",
-      "destination": "/api"
+      "source": "/api/provider/:uri",
+      "destination": "https://d.zambar.top/api/:uri"
     }
   ],
   "headers": [
