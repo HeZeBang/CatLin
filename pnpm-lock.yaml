@@ -23,6 +23,9 @@ importers:
       core-js:
         specifier: ^3.8.1
         version: 3.41.0
+      credential:
+        specifier: link:next-auto/providers/credential
+        version: link:next-auto/providers/credential
       dotenv:
         specifier: ^16.0.3
         version: 16.5.0

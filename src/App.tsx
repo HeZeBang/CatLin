@@ -8,9 +8,9 @@ import { get, post } from './lib/reqUtils'
 import jwt_decode from "jwt-decode";
 import { socket } from './lib/clientSocket'
 import { UserContextType } from './models/context'
-import { Toaster } from 'sonner'
-import { SessionProvider } from 'next-auth/react'
-import GoogleOneTap from './components/Auth'
+import { toast, Toaster } from 'sonner'
+import { SessionProvider, signIn, signOut } from 'next-auth/react'
+import { GoogleOneTap } from './components/Auth'
 
 export const UserContext = createContext({} as UserContextType);
 
@@ -20,9 +20,9 @@ function App() {
   const location = useLocation()
   // @ts-ignore
   const { isLoading } = useLoading()
-  const [userId, setUserId] = useState(undefined);
-  const [userName, setUserName] = useState(undefined);
-  const [user, setUser] = useState(undefined);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [userName, setUserName] = useState<string | undefined>(undefined);
+  const [user, setUser] = useState();
 
   useEffect(() => {
     // LoadUserInfo()
@@ -48,19 +48,34 @@ function App() {
     }
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken) as { name: string };
-    console.log(`Logged in as ${decodedCredential.name}`);
-    post("/api/login", { token: userToken }).then((user: any) => {
-      setUserId(user._id);
-      setUserName(user.name);
-      setUser(user);
-      // SaveUserInfo(user);
-      post("/api/initsocket", { socketid: socket.id });
+    signIn("google", {
+      credential: userToken,
+      redirect: false
+    }).then(() => {
+      return get("/api/whoami");
+    }).then((user: any) => {
+      if (user._id) {
+        // they are registed in the database, and currently logged in.
+        setUserId(user._id);
+        setUserName(user.name);
+        setUser(user);
+      } else {
+        // they are not logged in.
+        setUserId(undefined);
+        setUserName(undefined);
+        setUser(undefined);
+      }
+    }
+    ).catch((error) => {
+      toast.error("Error logging in: " + error.message);
     });
   };
 
   const handleLogout = () => {
     setUserId(undefined);
-    post("/api/logout");
+    setUserName(undefined);
+    setUser(undefined);
+    signOut({ redirect: false });
   };
 
   const authContextValue = {
@@ -151,7 +166,7 @@ function App() {
             />
           </div>
         </div>
-        <GoogleOneTap />
+        {/* <GoogleOneTap /> */}
       </SessionProvider>
     </UserContext.Provider>
   )

@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     // Connect to database and find or create user
     await connectToDatabase();
     let user = await User.findOne({ googleid: payload.sub });
-    if (!user) {
+    if (!user) { // FIXME: This should be a separate function
       user = new User({
         name: payload.name,
         googleid: payload.sub,
@@ -31,16 +31,6 @@ export async function POST(req: NextRequest) {
         exp: 0,
       });
       await user.save();
-    }
-
-    // Use NextAuth's signIn to create a session
-    const signInResponse = await signIn("credentials", {
-      redirect: false,
-      googleIdToken: token, // Pass the token to NextAuth
-    });
-
-    if (!signInResponse?.ok) {
-      return NextResponse.json({ err: "Failed to create session" }, { status: 401 });
     }
 
     return NextResponse.json(user.toObject());

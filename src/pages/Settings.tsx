@@ -7,7 +7,7 @@ import { UserContextType } from "../models/context";
 import { googleLogout } from "@react-oauth/google";
 import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
-import AuthComponent from "@/components/Auth";
+import { AuthComponent } from "@/components/Auth";
 import { signOut } from "next-auth/react";
 
 export default function Settings() {
@@ -101,9 +101,9 @@ export default function Settings() {
             <Button className="w-full mt-3" color="error" borderInverted
               onClick={async () => {
                 await signOut()
-                location.reload()
                 handleLogout()
                 googleLogout()
+                // location.reload()
               }}
             >
               登出
@@ -112,7 +112,6 @@ export default function Settings() {
         </Container>
       ) : (
         <Container title="登录" className="w-full">
-          {/* <LoginButton /> */}
           <AuthComponent />
         </Container>
       )}
