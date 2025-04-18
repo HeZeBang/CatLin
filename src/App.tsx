@@ -130,7 +130,7 @@ function App() {
                 <nav className="md:flex gap-3 hidden mr-3">
                   <NavigatorItems />
                 </nav>
-                <IconButton color="warning" borderInverted onClick={toggleDarkMode}>
+                <IconButton color={darkMode ? "warning" : "primary"} borderInverted onClick={toggleDarkMode}>
                   {darkMode ? <Sun /> : <Moon />}
                 </IconButton>
                 <IconButton color="primary" borderInverted className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>

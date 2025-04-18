@@ -178,6 +178,6 @@ export interface AssignmentItem {
   raw?: any,
   status: string,
   platform: string,
-  catType: number,
+  cat_type: number,
   parent: string,
 }

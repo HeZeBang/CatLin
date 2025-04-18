@@ -11,14 +11,14 @@ const homeworkSchema = new mongoose.Schema({
   ratingSum: Number,
   ratingNumber: Number,
   rating: Number,
-  catType: String,
+  cat_type: String,
 });
 
 export default mongoose.models.Homework || mongoose.model("Homework", homeworkSchema);
 
 export const HomeworkTSchema = z.object({
     "_id": z.string(),
-    "catType": z.number(),
+    // "cat_type": z.number(),
     "course": z.string(),
     "due": z.number(),
     "platform": z.string(),

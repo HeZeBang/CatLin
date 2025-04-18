@@ -11,16 +11,16 @@ const assignmentSchema = new mongoose.Schema({
   url: String,
   create: Number,
   rating: Number,
-  catType: String,
+  cat_type: Number,
   parent: { type: mongoose.Schema.Types.ObjectId, ref: "Homework" },
 });
 
 export default mongoose.models.Assignment || mongoose.model("Assignment", assignmentSchema);
 
-export const AssignmentSchema = z.object({
+export const AssignmentTSchema = z.object({
     "__v": z.number(),
     "_id": z.string(),
-    "catType": z.number(),
+    "cat_type": z.number(),
     "course": z.string(),
     "create": z.number(),
     "due": z.number(),
@@ -32,7 +32,7 @@ export const AssignmentSchema = z.object({
     "url": z.string(),
     "user_id": z.string(),
 });
-export type Assignment = z.infer<typeof AssignmentSchema>; // TODO: replace with *T
+export type AssignmentT = z.infer<typeof AssignmentTSchema>; // TODO: replace with *T
 
 export const HomeworkCommentSchema = z.object({
     "content": z.string(),

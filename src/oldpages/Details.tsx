@@ -5,7 +5,7 @@ import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../
 import { Button, Container, Toast } from "nes-ui-react";
 import { get, post } from "../lib/fetcher";
 import { UserContext } from "../App";
-import { Assignment } from "../models/assignment";
+import { AssignmentT } from "../models/assignment";
 import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
 import { HomeworkT } from "../models/homework";
@@ -70,21 +70,21 @@ export default function HomeworkDetails() {
 
   const assignHomework = () => {
     if (currentAssignment)
-      post<Assignment>("/api/assignment/claim", {
+      post<AssignmentT>("/api/assignment/claim", {
         platform: currentAssignment.platform || "Custom",
         course: currentAssignment.course,
         title: currentAssignment.title,
         due: currentAssignment.due,
         submitted: currentAssignment.submitted,
         url: currentAssignment.url,
-        catType: 0, // TODO: replace it with real cat rype
+        cat_type: 0, // TODO: replace it with real cat rype
       })
         .then((res) => {
           console.log("Due: ", res.due, "Current: ", currentAssignment.due)
           let newAssignment = {
             ...currentAssignment,
             id: res._id,
-            catType: res.catType,
+            cat_type: res.cat_type,
             platform: res.platform,
             course: res.course,
             // due: res.due, // FIXME: remove this
@@ -105,7 +105,7 @@ export default function HomeworkDetails() {
   }
 
   const rejectClaim = () => {
-    post<Assignment>("/api/assignment/reject", {
+    post<AssignmentT>("/api/assignment/reject", {
       title: currentAssignment?.title,
       course: currentAssignment?.course,
       platform: currentAssignment?.platform,
@@ -202,7 +202,7 @@ export default function HomeworkDetails() {
             </div>
             {
               linkedHomework ? (
-                <div className="flex gap-2 flex-rows md:flex-col justify-stretch md:justify-center align-middle">
+                <div className="flex gap-2 flex-rows md:flex-col justify-between md:justify-center align-middle">
                   <div className="flex gap-1 justify-center">
                     <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4 ? "" : "is-empty"}`} style={{ marginRight: "35px" }} />
                     <p className="text-xl md:text-2xl text-right items-center flex mb-0">

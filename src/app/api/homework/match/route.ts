@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     console.log("Matching homework with:", { platform, course, title, due });
     
     await connectToDatabase();
-    const homework = await Homework.find({ platform, course, title, }); // TODO: fix due matching
+    const homework = await Homework.find({ platform, course, title, due });
     if (homework.length > 0) {
         return NextResponse.json(homework);
     } else {

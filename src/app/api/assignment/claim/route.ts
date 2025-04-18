@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       url,
       ratingSum: 0,
       ratingNumber: 0,
-      catType: 0, // TODO: Replace with real catType
+      cat_type: 0, // TODO: Replace with real cat_type
     });
     await homework.save();
   } else if (!homework.users.includes(session.user._id)) {
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     submitted,
     url,
     create: Date.now(),
-    catType: 0, // TODO: Replace with real catType
+    cat_type: 0, // TODO: Replace with real cat_type
     parent: homework._id,
   });
 
