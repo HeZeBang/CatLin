@@ -353,7 +353,7 @@ export default function HomeworkDetails() {
                   onChange={(e) => setComment(e.target.value)}
                 />
                 <Button onClick={submitComment}>
-                  {comment ? '发送' : '评论'}
+                  {comment ? '发送' : '评分'}
                 </Button>
               </div>
             </Toast>
