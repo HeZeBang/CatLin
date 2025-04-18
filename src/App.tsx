@@ -151,7 +151,7 @@ function App() {
               }}
             />
           </div>
-          <div className={`flex gap-3 items-center justify-center flex-col ${location.pathname === '/' ? 'm-0 h-auto' : 'm-3 mb-0'}`}>
+          <div className={`flex items-center justify-center flex-col ${location.pathname === '/' ? 'm-0 h-auto' : 'm-3 mb-0'}`}>
             <Outlet />
             <Toaster
               visibleToasts={5}
