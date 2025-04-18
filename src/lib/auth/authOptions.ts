@@ -29,7 +29,7 @@ export const authOptions = {
             level: 1,
             exp: 0,
             badges: [0],
-            currentBadge: 0,
+            current_badge: 0,
           });
           await user.save();
         }

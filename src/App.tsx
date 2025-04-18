@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     // LoadUserInfo()
-    get("/api/user/whoami").then((user: any) => {
+    get("/api/user/config").then((user: any) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
         setUserId(user._id);
@@ -51,7 +51,7 @@ function App() {
       credential: userToken,
       redirect: false
     }).then(() => {
-      return get("/api/user/whoami");
+      return get("/api/user/config");
     }).then((user: any) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.

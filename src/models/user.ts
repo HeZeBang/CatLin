@@ -18,5 +18,5 @@ export interface UserType {
     level: number;
     exp: number;
     badges: number[];
-    currentBadge: number;
+    current_badge: number;
 }

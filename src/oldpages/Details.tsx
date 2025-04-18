@@ -141,7 +141,7 @@ export default function HomeworkDetails() {
     if (currentAssignment?.parent) {
       post<HomeworkCommentT>(`/api/homework/${currentAssignment?.parent}/comments`, {
         creator_name: userName,
-        creator_badge: user?.currentBadge,
+        creator_badge: user?.current_badge,
         is_annonymous: false,
         content: comment,
         rating: rate,
@@ -204,12 +204,12 @@ export default function HomeworkDetails() {
               linkedHomework ? (
                 <div className="flex gap-2 flex-rows md:flex-col justify-between md:justify-center align-middle">
                   <div className="flex gap-1 justify-center">
-                    <i className={`nes-icon like is-medium ${linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4 ? "" : "is-empty"}`} style={{ marginRight: "35px" }} />
+                    <i className={`nes-icon like is-medium ${linkedHomework.rating_sum / linkedHomework.rating_num >= 4 ? "" : "is-empty"}`} style={{ marginRight: "35px" }} />
                     <p className="text-xl md:text-2xl text-right items-center flex mb-0">
-                      {linkedHomework.ratingNumber > 0 ?
-                        (linkedHomework.ratingSum / linkedHomework.ratingNumber >= 4
+                      {linkedHomework.rating_num > 0 ?
+                        (linkedHomework.rating_sum / linkedHomework.rating_num >= 4
                           ? "多半好评"
-                          : linkedHomework.ratingSum / linkedHomework.ratingNumber >= 2
+                          : linkedHomework.rating_sum / linkedHomework.rating_num >= 2
                             ? "褒贬不一"
                             : "多半差评"
                         )
@@ -218,12 +218,12 @@ export default function HomeworkDetails() {
                     </p>
                   </div>
                   <div className="flex flex-row justify-end gap-3 items-center">
-                    <span className="flex text-base">{(linkedHomework.ratingSum / linkedHomework.ratingNumber).toFixed(1)}</span>
+                    <span className="flex text-base">{(linkedHomework.rating_sum / linkedHomework.rating_num).toFixed(1)}</span>
                     <div>
                       {[1, 2, 3, 4, 5].map((star) => (
                         <i
                           key={star}
-                          className={`nes-icon star scale-125 ${star <= linkedHomework.ratingSum / linkedHomework.ratingNumber ? "" : "is-transparent"}`}
+                          className={`nes-icon star scale-125 ${star <= linkedHomework.rating_sum / linkedHomework.rating_num ? "" : "is-transparent"}`}
                           style={{ marginRight: "8px", marginBottom: 0 }}
                         />
                       ))}
@@ -319,9 +319,9 @@ export default function HomeworkDetails() {
                         <p className="w-fit text-xl">{userName}</p>
                         <div className="nes-badge">
                           <span
-                            className={`${availableBadges.at(user?.currentBadge || 0)?.color} text-xs`}
+                            className={`${availableBadges.at(user?.current_badge || 0)?.color} text-xs`}
                           >
-                            {availableBadges.at(user?.currentBadge || 0)?.name || ""}
+                            {availableBadges.at(user?.current_badge || 0)?.name || ""}
                           </span>
                         </div>
                       </>

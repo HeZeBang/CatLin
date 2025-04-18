@@ -63,8 +63,8 @@ export default function Settings() {
                 </div>
                 <div className="flex gap-1 items-center justify-between">
                   <div className="nes-badge top-0.5">
-                    <span className={`${availableBadges.at(user?.currentBadge || 0)?.color}`}>
-                      {availableBadges.at(user?.currentBadge || 0)?.name}
+                    <span className={`${availableBadges.at(user?.current_badge || 0)?.color}`}>
+                      {availableBadges.at(user?.current_badge || 0)?.name}
                     </span>
                   </div>
                   <span>共 {user?.badges?.length || 0} 个徽章</span>

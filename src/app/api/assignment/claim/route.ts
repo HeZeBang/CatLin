@@ -23,8 +23,8 @@ export async function POST(req: NextRequest) {
       title,
       due,
       url,
-      ratingSum: 0,
-      ratingNumber: 0,
+      rating_sum: 0,
+      rating_num: 0,
       cat_type: 0, // TODO: Replace with real cat_type
     });
     await homework.save();
