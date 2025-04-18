@@ -4,7 +4,6 @@ import { useCallback, useState, useContext } from "react";
 import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { UserContext } from "../App";
 import { UserContextType } from "../models/context";
-import { googleLogout } from "@react-oauth/google";
 import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
 import { AuthComponent } from "@/components/Auth";
@@ -100,9 +99,9 @@ export default function Settings() {
 
             <Button className="w-full mt-3" color="error" borderInverted
               onClick={async () => {
-                await signOut()
+                // await signOut()
                 handleLogout()
-                googleLogout()
+                // googleLogout()
                 // location.reload()
               }}
             >

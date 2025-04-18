@@ -11,17 +11,12 @@ import NotFound from './oldpages/404'
 import Gallery from './oldpages/Gallery'
 import HomeworkDetails from './oldpages/Details'
 import { LoadingProvider } from './context/LoadingContext'
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react'
-
-
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || 'your-google-client-id';
 
 // createRoot(document.getElementById('root')!).render(
 export default function Index(){
   return (
   <StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <LoadingProvider>
           <Routes>
@@ -36,6 +31,5 @@ export default function Index(){
           </Routes>
         </LoadingProvider>
       </BrowserRouter>
-    </GoogleOAuthProvider>
   </StrictMode>
 )}
