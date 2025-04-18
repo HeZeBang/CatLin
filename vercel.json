@@ -15,6 +15,10 @@
           "value": "br"
         },
         {
+          "key": "Cache-Control",
+          "value": "max-age=2592000"
+        },
+        {
           "key": "Content-Type",
           "value": "application/octet-stream"
         }
