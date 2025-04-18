@@ -57,40 +57,40 @@ export default function Settings() {
       <h2 className="text-2xl">设置</h2>
       {userId ? (
         <Container title="" className="w-full">
-          <div className="flex-col items-center w-full">
+          <div className="flex flex-col gap-3 items-start justify-stretch w-full">
             <div className="flex gap-3">
-              <i className="nes-icon github scale-[3] mr-20 mb-20"
-              />
-              <div className="flex flex-col gap-3 flex-grow">
+              <i className="nes-icon github scale-[2] mr-10 mb-10" />
+              <div className="flex flex-col flex-grow">
                 <div className="flex gap-1">
                   <span className="text-2xl">{userName}</span>
-                  <span>Lv.{user?.level}, EXP.{user?.exp}</span>
                 </div>
-                <div className="flex gap-3 items-center">
-                  <div className="nes-badge top-0.5">
-                    <span className={`${availableBadges.at(user?.current_badge || 0)?.color}`}>
-                      {availableBadges.at(user?.current_badge || 0)?.name}
-                    </span>
-                  </div>
-                  <Button onClick={() => setModalBadgeOpen(true)}>更换</Button>
-                  <Modal open={modalBadgeOpen} title="更换徽章" className="max-w-sm">
-                    <Header>
-                      <span className="text-lg">更换徽章</span>
-                    </Header>
-                    <div className="flex flex-col gap-1 p-3">
-                      {
-                        availableBadges.map((badge, index) => (
-                          <div key={index} className={`flex flex-col items-center p-2 ${
-                            user?.badges?.includes(index) ?
-                            "hover:backdrop-brightness-75 active:scale-90" : "opacity-50"
-                            }`}>
-                            <div className="nes-badge w-2/3">
-                              <span className={`${availableBadges.at(index)?.color}`}>
-                                {availableBadges.at(index)?.name}
-                              </span>
-                            </div>
-                            <span className="text-sm">{availableBadges.at(index)?.description}</span>
-                            {/* <Button className="text-sm scale-90 mt-1" borderInverted
+                <span>Lv.{user?.level}, EXP.{user?.exp}</span>
+              </div>
+            </div>
+            <div className="flex gap-3 items-center w-full">
+              <div className="nes-badge top-0.5 min-w-fit w-full">
+                <span className={`${availableBadges.at(user?.current_badge || 0)?.color} min-w-fit`}>
+                  {availableBadges.at(user?.current_badge || 0)?.name}
+                </span>
+              </div>
+              <Button onClick={() => setModalBadgeOpen(true)} className="min-w-fit">更换</Button>
+              <Modal open={modalBadgeOpen} title="更换徽章" className="max-w-sm">
+                <Header>
+                  <span className="text-lg">更换徽章</span>
+                </Header>
+                <div className="flex flex-col gap-1 p-3">
+                  {
+                    availableBadges.map((badge, index) => (
+                      <div key={index} className={`flex flex-col items-center p-2 ${user?.badges?.includes(index) ?
+                        "hover:backdrop-brightness-75 active:scale-90" : "opacity-50"
+                        }`}>
+                        <div className="nes-badge w-2/3">
+                          <span className={`${availableBadges.at(index)?.color}`}>
+                            {availableBadges.at(index)?.name}
+                          </span>
+                        </div>
+                        <span className="text-sm">{availableBadges.at(index)?.description}</span>
+                        {/* <Button className="text-sm scale-90 mt-1" borderInverted
                               onClick={() => {
                                 if (user) {
                                   // user.current_badge = badge
@@ -100,19 +100,17 @@ export default function Settings() {
                             >
                               选择
                             </Button> */}
-                          </div>
-                        ))
-                      }
-                      <span>共 {user?.badges?.length || 0} 个徽章</span>
-                    </div>
-                    <Footer>
-                      <Spacer />
-                      <Button color="white" className="mx-1" onClick={() => setModalBadgeOpen(false)}>取消</Button>
-                      <Button color="primary" className="mx-1" onClick={ChangeBadge}>更换</Button>
-                    </Footer>
-                  </Modal>
+                      </div>
+                    ))
+                  }
+                  <span>共 {user?.badges?.length || 0} 个徽章</span>
                 </div>
-              </div>
+                <Footer>
+                  <Spacer />
+                  <Button color="white" className="mx-1" onClick={() => setModalBadgeOpen(false)}>取消</Button>
+                  <Button color="primary" className="mx-1" onClick={ChangeBadge}>更换</Button>
+                </Footer>
+              </Modal>
             </div>
 
             {/* <div className="flex gap-1 flex-col">
@@ -140,7 +138,7 @@ export default function Settings() {
               </div>
             </div> */}
 
-            <Button className="w-full mt-3" color="error" borderInverted
+            <Button className="w-full" color="error" borderInverted
               onClick={async () => {
                 // await signOut()
                 handleLogout()

@@ -161,7 +161,7 @@ export default function HomeworkDetails() {
         <span>Invalid ID</span>
       ) : (
         <div className="w-full max-w-md mx-5">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center pb-3">
             <div>
               <Button className="w-full" borderInverted
                 onClick={() => {
@@ -237,7 +237,7 @@ export default function HomeworkDetails() {
               )
             }
           </div>
-          <Container title="" className="w-full my-3 flex">
+          <Container title="" className="w-full my-3 flex flex-col-reverse md:flex-row">
             <div className="flex-grow">
               {
                 currentAssignment &&
@@ -258,10 +258,10 @@ export default function HomeworkDetails() {
               {linkedHomework && <p>共有 {linkedHomework.users.length} 人一起参与</p>}
               {linkedHomework && comments && <p>已有 {comments.length} 条评论和评分</p>}
             </div>
-            <div className={`max-w-24 ${currentAssignment?.id ? "" : "opacity-0"}`}>
+            <div className={`w-auto flex justify-center ${currentAssignment?.id ? "" : "opacity-0"}`}>
               {
                 currentAssignment?.id &&
-                <img src={`/avatars/white.png`} /> // TODO: replace with real cat
+                <img src={`/avatars/white.png`} className="max-w-24 max-h-24"/> // TODO: replace with real cat
               }
             </div>
           </Container>
@@ -347,7 +347,7 @@ export default function HomeworkDetails() {
                   </div>
                 </div>
                 <input
-                  className="text-md bg-inherit p-2 my-1 mr-1 focus:border-4"
+                  className="text-md bg-inherit p-2 my-1 mr-1 focus:border-4 nes-ui-input"
                   placeholder="我也要说……"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}

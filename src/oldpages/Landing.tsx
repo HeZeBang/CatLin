@@ -56,9 +56,9 @@ export default function Landing() {
     setDueSplit(Date.now() - 7 * 24 * 60 * 60 * 1000)
   }, [])
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [dueSplit])
+  // useEffect(() => {
+  //   bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  // }, [dueSplit])
 
   return (
     <>

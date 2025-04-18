@@ -43,10 +43,10 @@ export default function About() {
     <div className="flex gap-3 items-center justify-center flex-col">
       <div className="flex items-center gap-1 flex-wrap justify-center">
         <img src={HeroImage.src} alt="CatLin" className="w-24 h-24 hero-avatar active:scale-90"
-        onClick={() => {
-          toast.info("喵~")
-        }}
-         />
+          onClick={() => {
+            toast.info("喵~")
+          }}
+        />
         <h1 className="text-5xl mt-0">CatLin</h1>
       </div>
       <h2 className="text-2xl pb-3">{meowText}</h2>
@@ -75,7 +75,7 @@ export default function About() {
 
           <a className="nes-balloon nes-ui-toast from-left self-start">
             <input
-                  className="text-md bg-inherit p-2 my-1 mr-1 focus:border-4"
+              className="text-md bg-inherit p-2 my-1 mr-1 focus:border-4 nes-ui-input"
               placeholder="我也要说……"
               value={comment}
               onChange={(e) => setComment(e.target.value)}

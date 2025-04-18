@@ -131,7 +131,7 @@ export function HwItem(props: AssignmentItemProps) {
           navigate(`/details/${props.index}`)
         }}
       >
-        <div className="p-2 flex gap-1 items-center w-full">
+        <div className="p-2 flex gap-1 items-start w-full">
           <div className="text-2xl flex flex-col gap-0 max-w-[1em]">
             <p className={`text-2xl m-0 text-left max-w-[1em] text-wrap`}>
               {props.submitted ? <span>{"☑"}</span> : <span className="box">{"☐"}</span>}
@@ -139,11 +139,11 @@ export function HwItem(props: AssignmentItemProps) {
             <GithubIcon className={`${props.linked ? "" : "opacity-20"}`} />
           </div>
           <div className="flex-grow flex gap-1 flex-wrap">
-            <div className="flex flex-col items-start flex-1">
+            <div className="flex flex-col items-start flex-grow">
               <span className={`text-2xl text-left`}>{props.title}</span>
               <span className="text-sm text-left opacity-70">{props.course}</span>
             </div>
-            <div className="flex items-end flex-col">
+            <div className="flex items-end flex-col flex-1 min-w-fit">
               <div className={`flex gap-1`}>
                 {props.submitted ?
                   (<span className="text-xl">SUBMITTED</span>) : (
