@@ -1,7 +1,7 @@
 import { Colors, PixelBorder } from "nes-ui-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Assignment } from "../models/assignment";
+import { AssignmentT } from "../models/assignment";
 import { GithubIcon } from "./Icons";
 import { HomeworkT } from "@/models/homework";
 

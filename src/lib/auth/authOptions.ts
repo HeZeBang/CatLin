@@ -16,16 +16,20 @@ export const authOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, profile }) {
+    async jwt({ account, token, profile }) {
+      const providerName = account?.provider;
+      const providerId = account?.providerAccountId;
+      const accountId = `${providerName}:${providerId}`;
+      
       if (profile) {
         await connectToDatabase();
-        let user = await User.findOne({ googleid: profile.sub });
+        let user = await User.findOne({ account_id: accountId });
         console.log("User found:", user);
         if (!user) {
           console.log("Creating new user");
           user = new User({
             name: profile.name,
-            googleid: profile.sub,
+            account_id: accountId,
             level: 1,
             exp: 0,
             badges: [0],
