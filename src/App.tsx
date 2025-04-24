@@ -12,6 +12,7 @@ import { UserContextType } from './models/context'
 import { toast, Toaster } from 'sonner'
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react'
 import useSWR from 'swr';
+import { UserType } from './models/user';
 
 export const UserContext = createContext({} as UserContextType);
 
@@ -22,11 +23,11 @@ function MainApp() {
   const { data: session, update } = useSession();
 
   const fetcher = (...args: [RequestInfo | URL, RequestInit?]) => fetch(...args).then((res) => res.json())
-  const userFetcher = (...args: [RequestInfo | URL, RequestInit?]) => fetch(...args).then((res) => res.json()).then((res) => res.user)
+  const userFetcher = (...args: [RequestInfo | URL, RequestInit?]) => fetch(...args).then((res) => res.json()).then((res) => (res.user) as UserType)
   const useUser = () =>
     useSWR("/api/user/config", userFetcher)
 
-  const { data: user, error, isLoading } = useUser()
+  const { data: user, mutate: userMutate } = useUser()
 
   useEffect(() => {
     if (user) {
@@ -66,6 +67,7 @@ function MainApp() {
   };
 
   const handleLogout = () => {
+    userMutate(undefined, false);
     signOut({ redirect: false });
   };
 
@@ -74,6 +76,7 @@ function MainApp() {
     userName: session?.user?.name,
     user: session?.user,
     isLoggedIn: !!session?.user,
+    useUser,
     handleLogin,
     handleLogout,
   };

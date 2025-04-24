@@ -19,8 +19,8 @@ export default function Settings() {
   const [errMsg, setErrMsg] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const { userId, userName, user, handleLogout } = useContext<UserContextType>(UserContext);
-  const { update } = useSession();
+  const { handleLogout, useUser } = useContext<UserContextType>(UserContext);
+  const { data: user, mutate: userMutate } = useUser();
 
   const Login = useCallback(async () => {
     setIsLoggingIn(true)
@@ -58,14 +58,14 @@ export default function Settings() {
   return (
     <div className="flex gap-1 items-center justify-center flex-col w-full max-w-md">
       <h2 className="text-2xl">设置</h2>
-      {userId ? (
+      {user ? (
         <Container title="" className="w-full">
           <div className="flex flex-col gap-3 items-start justify-stretch w-full">
             <div className="flex gap-3">
               <i className="nes-icon github scale-[2] mr-10 mb-10" />
               <div className="flex flex-col flex-grow">
                 <div className="flex gap-1">
-                  <span className="text-2xl">{userName}</span>
+                  <span className="text-2xl">{user?.name}</span>
                 </div>
                 <span>Lv.{user?.level}, EXP.{user?.exp}</span>
               </div>
@@ -84,25 +84,30 @@ export default function Settings() {
                 <div className="flex flex-col gap-1 p-3">
                   {
                     availableBadges.map((badge, index) => (
-                      <div key={index} className={`flex flex-col items-center p-2 ${user?.badges?.includes(index) ?
-                        "hover:backdrop-brightness-75 active:scale-90" : "opacity-50"
-                        }`}>
+                      <div
+                        key={index}
+                        className={`flex flex-col items-center p-2 ${user?.badges?.includes(index) ?
+                          "hover:backdrop-brightness-75 active:scale-90" : "opacity-50"
+                          }`}
+                        onClick={() => {
+                          if (user?.badges?.includes(index)) {
+                            post("/api/user/config", {
+                              current_badge: index,
+                            })
+                              .then((data: UserType) => {
+                                console.log(data)
+                                userMutate(data, false)
+                                setModalBadgeOpen(false)
+                              })
+                          }
+                        }}
+                      >
                         <div className="nes-badge w-2/3">
                           <span className={`${availableBadges.at(index)?.color}`}>
                             {availableBadges.at(index)?.name}
                           </span>
                         </div>
                         <span className="text-sm">{availableBadges.at(index)?.description}</span>
-                        {/* <Button className="text-sm scale-90 mt-1" borderInverted
-                              onClick={() => {
-                                if (user) {
-                                  // user.current_badge = badge
-                                  // user.save() // TODO: save
-                                }
-                              }}
-                            >
-                              选择
-                            </Button> */}
                       </div>
                     ))
                   }

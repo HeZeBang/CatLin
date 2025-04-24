@@ -19,13 +19,19 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
-  const { userId } = await params;
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return unauthorized();
+  }
+  const userId = session.user._id;
+
   await connectToDatabase();
   const body = await req.json();
   const user = await User.findById(userId);
   if (user) {
-    if (body.current_badge) user.current_badge = body.current_badge;
+    if (body.current_badge !== undefined)
+      user.current_badge = body.current_badge;
     await user.save();
     return NextResponse.json(user);
   } else {
