@@ -19,7 +19,7 @@ export default function About() {
   const [meowText, setMeowText] = useState("=^·.·^=")
   const [comment, setComment] = useState("")
   const [comments, setComments] = useState([] as Comment[])
-  const { userId, userName } = useContext(UserContext)
+  const { userId, userName, addBadge } = useContext(UserContext)
 
   // setTimeout
   useEffect(() => {
@@ -44,7 +44,10 @@ export default function About() {
       <div className="flex items-center gap-1 flex-wrap justify-center">
         <img src={HeroImage.src} alt="CatLin" className="w-24 h-24 hero-avatar active:scale-90"
           onClick={() => {
-            toast.info("喵~")
+            addBadge("M30W~")
+              .finally(() => {
+                toast.info("喵~")
+              })
           }}
         />
         <h1 className="text-5xl mt-0">CatLin</h1>

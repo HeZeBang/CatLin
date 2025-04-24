@@ -1,13 +1,15 @@
 import { Button, Container, Footer, Header, Input, Modal, Spacer } from "nes-ui-react";
 import "../App.css";
-import { useCallback, useState, useContext } from "react";
+import { useCallback, useState, useContext, useEffect } from "react";
 import { AccountType, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { UserContext } from "../App";
 import { UserContextType } from "../models/context";
 import { availableBadges } from "../models/badges";
 import { LoginButton } from "../components/LoginButton";
 import { AuthComponent } from "@/components/Auth";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { get, post } from "@/lib/fetcher";
+import { UserType } from "@/models/user";
 
 export default function Settings() {
   const [modalType, setModalType] = useState<AccountType | null>(null)
@@ -18,6 +20,7 @@ export default function Settings() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const { userId, userName, user, handleLogout } = useContext<UserContextType>(UserContext);
+  const { update } = useSession();
 
   const Login = useCallback(async () => {
     setIsLoggingIn(true)

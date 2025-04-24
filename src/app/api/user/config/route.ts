@@ -6,8 +6,13 @@ import { authOptions } from "@/lib/auth/authOptions";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (session) {
-    return NextResponse.json(session.user);
+  await connectToDatabase();
+  if (!session || !session.user) {
+    return NextResponse.json({ msg: "Unauthorized" }, { status: 401 });
+  }
+  const user = await User.findById(session.user._id);
+  if (user) {
+    return NextResponse.json(user);
   } else {
     return NextResponse.json({});
   }
