@@ -3,18 +3,19 @@ import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/user";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/authOptions";
+import { notFound, success, unauthorized } from "@/lib/response";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   await connectToDatabase();
   if (!session || !session.user) {
-    return NextResponse.json({ msg: "Unauthorized" }, { status: 401 });
+    return unauthorized();
   }
   const user = await User.findById(session.user._id);
   if (user) {
-    return NextResponse.json(user);
+    return success(user, user);
   } else {
-    return NextResponse.json({});
+    return notFound();
   }
 }
 

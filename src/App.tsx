@@ -11,6 +11,7 @@ import jwt_decode from "jwt-decode";
 import { UserContextType } from './models/context'
 import { toast, Toaster } from 'sonner'
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react'
+import useSWR from 'swr';
 
 export const UserContext = createContext({} as UserContextType);
 
@@ -18,22 +19,35 @@ function MainApp() {
   const [darkMode, setDarkMode] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
-  // const { isLoading } = useLoading()
-  // const [user, setUser] = useState();
   const { data: session, update } = useSession();
 
+  const fetcher = (...args: [RequestInfo | URL, RequestInit?]) => fetch(...args).then((res) => res.json())
+  const userFetcher = (...args: [RequestInfo | URL, RequestInit?]) => fetch(...args).then((res) => res.json()).then((res) => res.user)
+  const useUser = () =>
+    useSWR("/api/user/config", userFetcher)
+
+  const { data: user, error, isLoading } = useUser()
+
   useEffect(() => {
-    // LoadUserInfo()
-    get("/api/user/config").then((user: any) => {
-      if (user._id) {
-        // they are registed in the database, and currently logged in.
-        update({ user: user })
-      } else {
-        // they are not logged in.
-        // setUser(undefined);
-      }
-    });
-  }, [location]);
+    if (user) {
+      update({ user: user })
+    }
+  }, [user])
+
+  // useEffect(() => {
+  //   // LoadUserInfo()
+  //   get("/api/user/config")
+  //     .then((res: any) => res.data)
+  //     .then((user: any) => {
+  //       if (user._id) {
+  //         // they are registed in the database, and currently logged in.
+  //         update({ user: user })
+  //       } else {
+  //         // they are not logged in.
+  //         // setUser(undefined);
+  //       }
+  //     });
+  // }, [location]);
 
   const handleLogin = (credentialResponse: { credential?: any }) => {
     if (!credentialResponse.credential) {
@@ -45,50 +59,21 @@ function MainApp() {
     signIn("google", {
       credential: userToken,
       redirect: false
-    }).then(() => {
-      return get("/api/user/config");
-    }).then((user: any) => {
-      if (user._id) {
-        // they are registed in the database, and currently logged in.
-        // setUser(user);
-      } else {
-        // they are not logged in.
-      }
-    }
-    ).catch((error) => {
-      toast.error("Error logging in: " + error.message);
-    });
+    })
+      .catch((error) => {
+        toast.error("Error logging in: " + error.message);
+      });
   };
 
   const handleLogout = () => {
     signOut({ redirect: false });
   };
 
-
-  const addBadge = (task_id: string) =>
-    fetch("/api/task/progress", {
-      method: "POST",
-      body: JSON.stringify({ task_id }),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json()
-        } else {
-          return Promise.reject(new Error("Failed to add badge"));
-        }
-      })
-      .then(res => res.data)
-      .then((new_user) => {
-        if (new_user)
-          update({ user: new_user });
-      })
-
-  const authContextValue = {
+  const authContextValue: UserContextType = {
     userId: session?.user?._id,
     userName: session?.user?.name,
     user: session?.user,
     isLoggedIn: !!session?.user,
-    addBadge,
     handleLogin,
     handleLogout,
   };
@@ -113,9 +98,9 @@ function MainApp() {
   //   }
   // }, [isLoading])
 
-  useEffect(() => {
-    console.log(location)
-  }, [location])
+  // useEffect(() => {
+  //   console.log(location)
+  // }, [location])
 
   const NavigatorItems = () => (
     <>
