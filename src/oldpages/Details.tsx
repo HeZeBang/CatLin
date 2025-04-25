@@ -171,28 +171,33 @@ export default function HomeworkDetails() {
                 返回
               </Button>
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-1 flex-1 max-w-1/2">
               {
                 currentAssignment?.id ? (
-                  <Button className="w-full" color="primary" borderInverted
-                    onClick={rejectClaim}
-                  >
-                    取消认领
-                  </Button>
+                  <>
+                    <Button className="w-full" color="primary" borderInverted
+                      onClick={rejectClaim}
+                    >
+                      取消认领
+                    </Button>
+                    <Button className="w-full" color="success" borderInverted>
+                      提交作业
+                    </Button>
+                  </>
                 ) : (
                   <Button className="w-full" color="primary" borderInverted onClick={assignHomework}>
-                    认领作业
+                    认领并开始
                   </Button>
                 )
               }
-              <Button className="w-full" color="error" borderInverted
+              {/* <Button className="w-full" color="error" borderInverted
                 onClick={() => {
                   RemoveAssignment(currentAssignment?.platform as AccountType || AccountType.Custom, currentAssignment as AssignmentItem)
                   window.history.back()
                 }}
               >
                 删除作业
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className="flex gap-3 md:flex-row flex-col">
@@ -261,7 +266,7 @@ export default function HomeworkDetails() {
             <div className={`w-auto flex justify-center ${currentAssignment?.id ? "" : "opacity-0"}`}>
               {
                 currentAssignment?.id &&
-                <img src={`/avatars/white.png`} className="max-w-24 max-h-24"/> // TODO: replace with real cat
+                <img src={`/avatars/white.png`} className="max-w-24 max-h-24" /> // TODO: replace with real cat
               }
             </div>
           </Container>

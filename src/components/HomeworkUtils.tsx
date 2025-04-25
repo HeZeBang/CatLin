@@ -120,7 +120,7 @@ export function HwItem(props: AssignmentItemProps) {
         lineHeight: "0",
         zIndex: 1,
       }}>●</span> */}
-      <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full ${props.submitted ? "" : ""}`}
+      <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full`}
         style={
           props.submitted ? {} :
             {

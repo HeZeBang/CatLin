@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { AssignmentItem, HwItem } from "../components/HomeworkUtils";
-import { AccountType, LoadHomework, LoadUsername } from "../components/Utils";
+import { AccountType, LoadAccount, LoadHomework, LoadUsername, LoginAndSave } from "../components/Utils";
 import { Link } from "react-router";
-import { Button } from "nes-ui-react";
+import { Button, IconButton } from "nes-ui-react";
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useLoading } from "../context/LoadingContext";
 import { toast } from "sonner";
+import { CloudDownload } from "@/components/Icons";
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<AssignmentItem[]>([])
@@ -62,7 +63,50 @@ export default function Landing() {
 
   return (
     <>
-      <Unity unityProvider={unityProvider} className='fixed w-full h-full m-0 top-0 left-0 z-0' />
+      {/* <Unity unityProvider={unityProvider} className='fixed w-full h-full m-0 top-0 left-0 z-0' /> */}
+      <IconButton className="fixed left-5 bottom-5 z-20" onClick={() => {
+        toast.info("Syncing")
+        Object.values(AccountType).forEach(async (type) => {
+          const { username, password } = LoadAccount(type) || {};
+          // console.log({ username, password})
+          if (username) { // FIXME: replace with real password
+            // @ts-ignore
+            const result = LoginAndSave(type, username, password)
+            if (result instanceof Error) {
+              toast.error("Error logging in: " + result.message);
+            }
+            const data = await result as any[]
+            toast.success("Sync finished: " + type)
+            data.forEach(item => {
+              const index = homeworks.findIndex(hw => hw.course === item.course && hw.title === item.title)
+              const isNew = index === -1
+              if (isNew) {
+                setHomeworks(hw => [...hw, item])
+              } else {
+                // Already exists in the list
+                const isDiff = homeworks[index].submitted !== item.submitted
+                const isTracing = !!homeworks[index].id
+                if (isDiff) {
+                  setHomeworks(hw => {
+                    const newHw = [...hw]
+                    newHw[index] = {
+                      ...homeworks[index],
+                      ...item,
+                    }
+                    return newHw
+                  })
+                  if (isTracing) {
+                    toast.success(`作业 ${item.title} 已完成`)
+                  }
+                }
+              }
+            });
+          }
+        })
+      }}>
+        <CloudDownload />
+        <span className="transition-all w-8 text-nowrap overflow-clip">同步</span>
+      </IconButton>
       <div className="w-full h-auto overflow-scroll drawer flex items-center justify-start flex-col z-10 px-5"
         style={{
           // marginTop: "calc(-9em + 100vh)",
