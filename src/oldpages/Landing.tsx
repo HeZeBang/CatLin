@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AssignmentItem, HwItem } from "../components/HomeworkUtils";
-import { AccountType, LoadAccount, LoadHomework, LoadUsername, LoginAndSave } from "../components/Utils";
+import { AccountType, LoadAccount, LoadHomework, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { Link } from "react-router";
 import { Button, IconButton } from "nes-ui-react";
 import { Unity, useUnityContext } from "react-unity-webgl";
@@ -65,44 +65,53 @@ export default function Landing() {
     <>
       {/* <Unity unityProvider={unityProvider} className='fixed w-full h-full m-0 top-0 left-0 z-0' /> */}
       <IconButton className="fixed left-5 bottom-5 z-20" onClick={() => {
-        toast.info("Syncing")
-        Object.values(AccountType).forEach(async (type) => {
-          const { username, password } = LoadAccount(type) || {};
-          // console.log({ username, password})
-          if (username) { // FIXME: replace with real password
-            // @ts-ignore
-            const result = LoginAndSave(type, username, password)
-            if (result instanceof Error) {
-              toast.error("Error logging in: " + result.message);
-            }
-            const data = await result as any[]
-            toast.success("Sync finished: " + type)
-            data.forEach(item => {
-              const index = homeworks.findIndex(hw => hw.course === item.course && hw.title === item.title)
-              const isNew = index === -1
-              if (isNew) {
-                setHomeworks(hw => [...hw, item])
-              } else {
-                // Already exists in the list
-                const isDiff = homeworks[index].submitted !== item.submitted
-                const isTracing = !!homeworks[index].id
-                if (isDiff) {
-                  setHomeworks(hw => {
-                    const newHw = [...hw]
-                    newHw[index] = {
-                      ...homeworks[index],
-                      ...item,
-                    }
-                    return newHw
-                  })
-                  if (isTracing) {
-                    toast.success(`作业 ${item.title} 已完成`)
-                  }
+        (async () => {
+          const allHomework: AssignmentItem[] = [];
+          for (const type of Object.values(AccountType)) {
+            const { username, password } = LoadAccount(type) || {};
+            if (username) { // FIXME: replace with real password
+              try {
+                // @ts-ignore
+                const result = await LoginAndSave(type, username, password);
+                if (result instanceof Error) {
+                  toast.error("Error logging in: " + result.message);
+                  continue;
                 }
+                const data = result as any[];
+                const oldHw = LoadHomework(type);
+                const newHw = [...oldHw];
+                toast.success("Sync finished: " + type);
+                data.forEach(item => {
+                  const index = oldHw.findIndex(hw => hw.course === item.course && hw.title === item.title);
+                  const isNew = index === -1;
+                  if (isNew) {
+                    newHw.push(item);
+                  } else {
+                    // Already exists in the list
+                    const isDiff = oldHw[index].submitted !== item.submitted;
+                    const isTracing = !!oldHw[index].id;
+                    if (isDiff) {
+                      newHw[index] = {
+                        ...oldHw[index],
+                        ...item,
+                        has_update: true,
+                      };
+                      if (isTracing) {
+                        toast.success(`作业 ${item.title} 已完成`);
+                      }
+                    }
+                  }
+                });
+                SaveHomework(type, newHw);
+                allHomework.push(...newHw);
+              } catch (error) {
+                toast.error("An error occurred: " + error.message);
               }
-            });
+            }
           }
-        })
+          setHomeworks(allHomework.sort((a, b) => b.due - a.due));
+          setIsLoading(false);
+        })();
       }}>
         <CloudDownload />
         <span className="transition-all w-8 text-nowrap overflow-clip">同步</span>
@@ -160,6 +169,7 @@ export default function Landing() {
                       url={hw.url}
                       index={index}
                       linked={!!hw.parent}
+                      indicated={hw.has_update || false}
                     />
                   ))
               )}

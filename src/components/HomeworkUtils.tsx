@@ -13,6 +13,7 @@ interface AssignmentItemProps {
   url: string,
   index: number,
   linked: boolean,
+  indicated: boolean
 }
 
 function randomColor(seed: number = 0) {
@@ -113,13 +114,13 @@ export function HwItem(props: AssignmentItemProps) {
 
   return (
     <PixelBorder doubleRoundCorners className="w-full">
-      {/* <span className="text-xl block text-right w-full text-red-500" style={{
+      {props.indicated && <span className="text-xl block text-right w-full text-red-500" style={{
         top: "-0.2rem",
         right: "-0.5em",
         position: "relative",
         lineHeight: "0",
         zIndex: 1,
-      }}>●</span> */}
+      }}>●</span>}
       <button className={`homework nes-ui-icon-btn nes-ui-is-size-medium w-full`}
         style={
           props.submitted ? {} :
@@ -180,4 +181,5 @@ export interface AssignmentItem {
   platform: string,
   cat_type: number,
   parent: string,
+  has_update?: boolean,
 }

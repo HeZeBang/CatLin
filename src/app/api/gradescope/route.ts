@@ -282,7 +282,7 @@ export async function POST(req: NextRequest) {
             "url": "https://www.gradescope.com/courses/985840"
           },
           "status": "No Submission",
-          "submitted": false,
+          "submitted": true,
           "title": "Proejct 2.1",
           "url": "https://www.gradescope.com/courses/985840"
         },
