@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   account_id: String,
   level: Number,
   exp: Number,
+  food: Number,
+  money: Number,
   badges: Array<Number>,
   current_badge: Number
 });
@@ -17,6 +19,8 @@ export interface UserType {
     name: string;
     level: number;
     exp: number;
+    food: number;
+    money: number;
     badges: number[];
     current_badge: number;
 }

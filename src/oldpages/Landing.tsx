@@ -94,7 +94,7 @@ export default function Landing() {
                       newHw[index] = {
                         ...oldHw[index],
                         ...item,
-                        has_update: true,
+                        finished_task: 10, // TODO: custom gift
                       };
                       if (isTracing) {
                         toast.success(`作业 ${item.title} 已完成`);
@@ -169,7 +169,7 @@ export default function Landing() {
                       url={hw.url}
                       index={index}
                       linked={!!hw.parent}
-                      indicated={hw.has_update || false}
+                      indicated={!!hw.finished_task}
                     />
                   ))
               )}

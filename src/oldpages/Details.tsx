@@ -175,14 +175,17 @@ export default function HomeworkDetails() {
               {
                 currentAssignment?.id ? (
                   <>
-                    <Button className="w-full" color="primary" borderInverted
+                    <Button className="w-full" color="error" borderInverted
                       onClick={rejectClaim}
                     >
                       取消认领
                     </Button>
-                    <Button className="w-full" color="success" borderInverted>
-                      提交作业
-                    </Button>
+                    {
+                      currentAssignment?.finished_task &&
+                      <Button className="w-full" color="success" borderInverted>
+                        领取奖励
+                      </Button>
+                    }
                   </>
                 ) : (
                   <Button className="w-full" color="primary" borderInverted onClick={assignHomework}>

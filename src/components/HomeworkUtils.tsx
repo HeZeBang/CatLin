@@ -181,5 +181,5 @@ export interface AssignmentItem {
   platform: string,
   cat_type: number,
   parent: string,
-  has_update?: boolean,
+  finished_task?: number,
 }
