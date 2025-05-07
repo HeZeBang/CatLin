@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, createContext } from 'react'
+import { useCallback, useEffect, useState, createContext, useRef } from 'react'
 import './App.css'
 import { IconButton, Progress, setDarkModeActivation } from 'nes-ui-react'
 import { NavLink, Outlet, useLocation } from 'react-router'
@@ -13,6 +13,7 @@ import { toast, Toaster } from 'sonner'
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react'
 import useSWR from 'swr';
 import { UserType } from './models/user';
+import { Confetti, type ConfettiRef } from "@/components/magicui/confetti";
 
 export const UserContext = createContext({} as UserContextType);
 
@@ -28,6 +29,8 @@ function MainApp() {
     useSWR("/api/user/config", userFetcher)
 
   const { data: user, mutate: userMutate } = useUser()
+
+  const confettiRef = useRef<ConfettiRef>(null);
 
   useEffect(() => {
     if (user) {
@@ -89,6 +92,7 @@ function MainApp() {
     userName: session?.user?.name,
     user: session?.user,
     isLoggedIn: !!session?.user,
+    confettiRef,
     addBadge,
     useUser,
     handleLogin,
@@ -160,6 +164,16 @@ function MainApp() {
           />
         </div>
         <div className={`flex items-center justify-center flex-col ${location.pathname === '/' ? 'm-0 h-auto' : 'm-3 mb-0'}`}>
+        {/* <Confetti
+        ref={confettiRef}
+        className="absolute left-0 top-0 size-full z-20 pointer-events-none"
+        options={{
+          zIndex: 50,
+        }}
+        // onMouseEnter={() => {
+        //   confettiRef.current?.fire({});
+        // }}
+      /> */}
           <Outlet />
           <Toaster
             visibleToasts={5}

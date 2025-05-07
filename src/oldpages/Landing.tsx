@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AssignmentItem, HwItem } from "../components/HomeworkUtils";
 import { AccountType, LoadAccount, LoadHomework, LoadUsername, LoginAndSave, SaveHomework } from "../components/Utils";
 import { Link } from "react-router";
@@ -7,21 +7,21 @@ import { Unity, useUnityContext } from "react-unity-webgl";
 import { useLoading } from "../context/LoadingContext";
 import { toast } from "sonner";
 import { CloudDownload } from "@/components/Icons";
-import ReactConfetti from 'react-confetti';
+import { UserContext } from "@/App";
+import confetti from "canvas-confetti";
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<AssignmentItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
   const [dueSplit, setDueSplit] = useState(0);
-  const [showConfetti, setShowConfetti] = useState(false);
-  //@ts-ignore
   const [drawerTop, setDrawerTop] = useState("unset")
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
 
   const { setIsLoading } = useLoading()
 
-  const { unityProvider, isLoaded, unload } = useUnityContext({
+  const { unityProvider, isLoaded, unload, sendMessage } = useUnityContext({
     loaderUrl: "unity/demo/demo.loader.js",
     dataUrl: "unity/demo/demo.data.br",
     frameworkUrl: "unity/demo/demo.framework.js.br",
@@ -32,11 +32,40 @@ export default function Landing() {
     window.scrollTo(0, 0)
   }, [])
 
+  const showFireworks = () => {
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 50 };
+ 
+    const randomInRange = (min: number, max: number) =>
+      Math.random() * (max - min) + min;
+ 
+    const interval = window.setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+ 
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+ 
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
+    }, 250);
+  };
+
   useEffect(() => {
     if (isLoaded) {
       console.log("Unity loaded")
       // window.scrollTo(0, 0)
-      // setDrawerTop("calc(-9em + 100vh)")
+      setDrawerTop("calc(-9em + 100vh)")
       toast.success("Unity loaded")
     }
     setIsLoading(!isLoaded)
@@ -59,24 +88,25 @@ export default function Landing() {
     setDueSplit(Date.now() - 7 * 24 * 60 * 60 * 1000)
   }, [])
 
+  const SendTest = useCallback(() => {
+    sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify({
+      n: 3,
+      ids: [1001, 1002, 1003],
+      xs: ["1.5", "3.0", "5.2"],
+      ys: ["2.3", "4.1", "6.4"],
+      types: [0, 1, 0],
+      taskstates: [1, 0, 2],
+    }))
+    // sendMessage("GameManager", "LoadCatDataFromServer", "")
+  }, [sendMessage])
+
   // useEffect(() => {
   //   bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   // }, [dueSplit])
 
   return (
     <>
-      {showConfetti && (
-        <ReactConfetti
-          id="confetti"
-          width={800}
-          height={600}
-          recycle={false}
-          numberOfPieces={600}
-          onConfettiComplete={() => setShowConfetti(false)}
-          className="fixed top-0 left-0 w-full h-full z-40"
-        />
-      )}
-      {/* <Unity unityProvider={unityProvider} className='fixed w-full h-full m-0 top-0 left-0 z-0' /> */}
+      <Unity unityProvider={unityProvider} className='fixed w-full h-full m-0 top-0 left-0 z-0' />
       <IconButton className="fixed left-5 bottom-5 z-20" onClick={() => {
         (async () => {
           const allHomework: AssignmentItem[] = [];
@@ -107,10 +137,12 @@ export default function Landing() {
                       newHw[index] = {
                         ...oldHw[index],
                         ...item,
-                        finished_task: 10, // TODO: custom gift
+                        ...(item.submitted ? { finished_task: 10 } : {}), // TODO: custom gift
                       };
-                      toast.success(`作业 ${item.title} 已完成`);
-                      setShowConfetti(true);
+                      if (item.submitted) {
+                        toast.success(`作业 ${item.title} 已完成`);
+                        showFireworks();
+                      }
                     }
                   }
                 });
@@ -129,11 +161,14 @@ export default function Landing() {
         <span className="transition-all w-8 text-nowrap overflow-clip">同步</span>
       </IconButton>
       <IconButton className="fixed left-5 bottom-20 z-20" onClick={() => {
-        setShowConfetti(true);
         toast.success("测试烟花效果");
+        showFireworks();
       }}>
         <span className="text-2xl">🎆</span>
         <span className="transition-all w-8 text-nowrap overflow-clip">测试烟花</span>
+      </IconButton>
+      <IconButton className="fixed left-5 bottom-35 z-20" onClick={SendTest}>
+        <span className="transition-all w-8 text-nowrap overflow-clip">测试通信</span>
       </IconButton>
       <div className="w-full h-auto overflow-scroll drawer flex items-center justify-start flex-col z-10 px-5"
         style={{

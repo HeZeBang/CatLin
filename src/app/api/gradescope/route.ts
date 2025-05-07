@@ -340,7 +340,7 @@ export async function POST(req: NextRequest) {
             "url": "https://www.gradescope.com/courses/985840"
           },
           "status": "No Submission",
-          "submitted": false,
+          "submitted": true,
           "title": "Homework 5",
           "url": "https://www.gradescope.com/courses/985840"
         },

@@ -186,10 +186,28 @@ export default function HomeworkDetails() {
                       取消认领
                     </Button>
                     {
-                      currentAssignment?.finished_task &&
-                      <Button className="w-full" color="success" borderInverted>
+                      currentAssignment?.finished_task? 
+                      <Button className="w-full" color="success" borderInverted onClick={() => {
+                        addBadge("homework1")
+
+                        // TODO: some logic here
+
+                        // Cancel the indicator
+                        setcurrentAssignment({
+                          ...currentAssignment,
+                          finished_task: 0,
+                        } as AssignmentItem)
+
+                        // Sync
+                        SaveAssignment(currentAssignment?.platform as AccountType || AccountType.Custom, {
+                          ...currentAssignment,
+                          finished_task: 0,
+                        } as AssignmentItem)
+
+                        toast.success("奖励已到账～")
+                      }}>
                         领取奖励
-                      </Button>
+                      </Button> : <></>
                     }
                   </>
                 ) : (
