@@ -10,7 +10,9 @@
 /* @tailwind components; */
 /* @tailwind utilities; */
 
-
+#confetti {
+  z-index: 100 !important;
+}
 
 /* UniFont Config */
 

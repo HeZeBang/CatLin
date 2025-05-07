@@ -7,11 +7,13 @@ import { Unity, useUnityContext } from "react-unity-webgl";
 import { useLoading } from "../context/LoadingContext";
 import { toast } from "sonner";
 import { CloudDownload } from "@/components/Icons";
+import ReactConfetti from 'react-confetti';
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<AssignmentItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
   const [dueSplit, setDueSplit] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
   //@ts-ignore
   const [drawerTop, setDrawerTop] = useState("unset")
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -63,6 +65,17 @@ export default function Landing() {
 
   return (
     <>
+      {showConfetti && (
+        <ReactConfetti
+          id="confetti"
+          width={800}
+          height={600}
+          recycle={false}
+          numberOfPieces={200}
+          onConfettiComplete={() => setShowConfetti(false)}
+          className="fixed top-0 left-0 w-full h-full z-40"
+        />
+      )}
       {/* <Unity unityProvider={unityProvider} className='fixed w-full h-full m-0 top-0 left-0 z-0' /> */}
       <IconButton className="fixed left-5 bottom-5 z-20" onClick={() => {
         (async () => {
@@ -96,9 +109,8 @@ export default function Landing() {
                         ...item,
                         finished_task: 10, // TODO: custom gift
                       };
-                      if (isTracing) {
-                        toast.success(`作业 ${item.title} 已完成`);
-                      }
+                      toast.success(`作业 ${item.title} 已完成`);
+                      setShowConfetti(true);
                     }
                   }
                 });
@@ -115,6 +127,13 @@ export default function Landing() {
       }}>
         <CloudDownload />
         <span className="transition-all w-8 text-nowrap overflow-clip">同步</span>
+      </IconButton>
+      <IconButton className="fixed left-5 bottom-20 z-20" onClick={() => {
+        setShowConfetti(true);
+        toast.success("测试烟花效果");
+      }}>
+        <span className="text-2xl">🎆</span>
+        <span className="transition-all w-8 text-nowrap overflow-clip">测试烟花</span>
       </IconButton>
       <div className="w-full h-auto overflow-scroll drawer flex items-center justify-start flex-col z-10 px-5"
         style={{
