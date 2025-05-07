@@ -71,7 +71,7 @@ export default function Landing() {
           width={800}
           height={600}
           recycle={false}
-          numberOfPieces={200}
+          numberOfPieces={600}
           onConfettiComplete={() => setShowConfetti(false)}
           className="fixed top-0 left-0 w-full h-full z-40"
         />
