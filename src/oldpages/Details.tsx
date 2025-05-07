@@ -13,6 +13,7 @@ import { GithubIcon } from "../components/Icons";
 import { toast } from "sonner";
 import { AuthComponent } from "@/components/Auth";
 import { HomeworkCommentPostT, HomeworkCommentT } from "@/models/homework_comment";
+import confetti from "canvas-confetti";
 
 export default function HomeworkDetails() {
   const { userName, user, userId, addBadge } = useContext(UserContext);
@@ -68,6 +69,36 @@ export default function HomeworkDetails() {
     }
   }, [currentAssignment])
 
+  const showCannon = () => {
+    const end = Date.now() + 1 * 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+ 
+    const frame = () => {
+      if (Date.now() > end) return;
+ 
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+      });
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+      });
+ 
+      requestAnimationFrame(frame);
+    };
+ 
+    frame();
+  };
+
   const assignHomework = () => {
     if (currentAssignment)
       post<AssignmentT>("/api/assignment/claim", {
@@ -101,11 +132,24 @@ export default function HomeworkDetails() {
         .then((newHomework) => {
           console.log("New Homework: ", newHomework)
           setLinkedHomework(newHomework)
-        }).then(() => {
-            addBadge("homework1")
-              .finally(() => {
-                // toast.info("你获得了一个称号")
-              })
+        })
+        .then(() => {
+          // Create a new cat for the user
+          return post("/api/cat", {
+            type: currentAssignment?.cat_type || 0,
+            x: "1.5",
+            y: "2.3",
+            taskState: 0,
+            owned: true
+          });
+        })
+        .then(() => {
+          addBadge("homework1")
+            .finally(() => {
+              // toast.info("你获得了一个称号")
+            })
+          showCannon()
+          toast.success("获得了一只新的猫猫！")
         })
   }
 

@@ -1,16 +1,9 @@
 // import { A, Badge, BadgeSplitted, Button, Checkbox, IconButton, Input, Radio } from "nes-ui-react";
 import { PixelBorder, Progress } from "nes-ui-react";
-import { SVGProps } from "react";
+import { SVGProps, useEffect, useState } from "react";
+import { ICat } from "@/models/cat";
 
-interface Cat {
-  avatar: string,
-  name: string,
-  description?: string,
-  happiness: number,
-  hunger: number,
-  owned: boolean
-}
-
+// Keep dummyCats as templates
 const dummyCats = [
   {
     avatar: "black",
@@ -70,44 +63,71 @@ const dummyCats = [
     owned: true,
     description: "是男孩子哦"
   }
-] as Cat[]
+] as ICat[]
 
 export default function Gallery() {
+  const [cats, setCats] = useState<ICat[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCats = async () => {
+      try {
+        const response = await fetch('/api/cat');
+        if (!response.ok) throw new Error('Failed to fetch cats');
+        const data = await response.json();
+        setCats(data);
+      } catch (error) {
+        console.error('Error fetching cats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCats();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="columns-1 sm:columns-2 md:columns-4 justify-center gap-4 p-4 min-h-fit">
-      {dummyCats.map((item, index) =>
-        <PixelBorder doubleRoundCorners className="w-full mb-2 break-inside-avoid" key={index}
-          style={{
-            opacity: item.owned ? 1 : 0.4
-          }}
-        >
-          <div className="flex flex-row sm:flex-col justify-center items-center active:scale-95">
-            <img src={`/avatars/${item.avatar}.png`} className="max-w-28 m-5"
-            />
-            <div className="flex flex-col mx-2 my-2">
-              <p className="text-2xl flex align-middle">{item.name}{item.owned ? "" : "（未获得）"}</p>
-              {item.description && <span className="text-base opacity-80">{item.description}</span>}
-              <div className="text-md flex justify-center items-center">
-                <span className="flex-auto min-w-[3.5em] text-nowrap">心情</span>
-                <Progress value={item.happiness}
-                  style={{
-                    maxHeight: "10px"
-                  }} />
-              </div>
-              <div className="text-md flex justify-center items-center">
-                <span className="flex-auto min-w-[3.5em] text-nowrap">饱食度</span>
-                <Progress value={item.hunger}
-                  style={{
-                    maxHeight: "10px"
-                  }} />
+      {dummyCats.map((template, index) => {
+        const userCat = cats.find(cat => cat.avatar === template.avatar);
+        const displayCat = userCat || template;
+        
+        return (
+          <PixelBorder doubleRoundCorners className="w-full mb-2 break-inside-avoid" key={index}
+            style={{
+              opacity: displayCat.owned ? 1 : 0.4
+            }}
+          >
+            <div className="flex flex-row sm:flex-col justify-center items-center active:scale-95">
+              <img src={`/avatars/${displayCat.avatar}.png`} className="max-w-28 m-5" />
+              <div className="flex flex-col mx-2 my-2">
+                <p className="text-2xl flex align-middle">{displayCat.name}{displayCat.owned ? "" : "（未获得）"}</p>
+                {displayCat.description && <span className="text-base opacity-80">{displayCat.description}</span>}
+                <div className="text-md flex justify-center items-center">
+                  <span className="flex-auto min-w-[3.5em] text-nowrap">心情</span>
+                  <Progress value={displayCat.happiness}
+                    style={{
+                      maxHeight: "10px"
+                    }} />
+                </div>
+                <div className="text-md flex justify-center items-center">
+                  <span className="flex-auto min-w-[3.5em] text-nowrap">饱食度</span>
+                  <Progress value={displayCat.hunger}
+                    style={{
+                      maxHeight: "10px"
+                    }} />
+                </div>
               </div>
             </div>
-          </div>
-        </PixelBorder>
-      )
-      }
+          </PixelBorder>
+        );
+      })}
     </div>
-  )
+  );
 }
 
 export function Android(props: SVGProps<SVGSVGElement>) {

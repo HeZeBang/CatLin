@@ -114,8 +114,8 @@ export function AuthComponent() {
   if (session && session.user) {
     return (
       <>
-        Signed in as {session.user.email} <br />
-        <Button className='w-full' onClick={() => signOut()}>Sign out</Button>
+        {/* Signed in as {session.user.email} <br /> */}
+        {/* <Button className='w-full' onClick={() => signOut()}>Sign out</Button> */}
       </>
     )
   }
