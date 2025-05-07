@@ -15,7 +15,7 @@ import { AuthComponent } from "@/components/Auth";
 import { HomeworkCommentPostT, HomeworkCommentT } from "@/models/homework_comment";
 
 export default function HomeworkDetails() {
-  const { userName, user, userId } = useContext(UserContext);
+  const { userName, user, userId, addBadge } = useContext(UserContext);
   const { id } = useParams();
   const [_, setHomeworks] = useState<AssignmentItem[]>([])
   const [currentAssignment, setcurrentAssignment] = useState<AssignmentItem>()
@@ -101,6 +101,11 @@ export default function HomeworkDetails() {
         .then((newHomework) => {
           console.log("New Homework: ", newHomework)
           setLinkedHomework(newHomework)
+        }).then(() => {
+            addBadge("homework1")
+              .finally(() => {
+                // toast.info("你获得了一个称号")
+              })
         })
   }
 
@@ -231,8 +236,8 @@ export default function HomeworkDetails() {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <i
                           key={star}
-                          className={`nes-icon star scale-125 ${star <= linkedHomework.rating_sum / linkedHomework.rating_num ? "" : "is-transparent"}`}
-                          style={{ marginRight: "8px", marginBottom: 0 }}
+                          className={`nes-icon star scale-150 ${star <= linkedHomework.rating_sum / linkedHomework.rating_num ? "" : "is-transparent"}`}
+                          style={{ marginRight: "10px", marginBottom: "3px" }}
                         />
                       ))}
                     </div>
@@ -299,8 +304,8 @@ export default function HomeworkDetails() {
                               [1, 2, 3, 4, 5].map((star) => (
                                 <i
                                   key={star}
-                                  className={`nes-icon star scale-125 ${star <= item.rating ? "" : "is-transparent"}`}
-                                  style={{ marginRight: "8px", marginBottom: 0 }}
+                                  className={`nes-icon star scale-150 ${star <= item.rating ? "" : "is-transparent"}`}
+                                  style={{ marginRight: "10px", marginBottom: "3px" }}
                                 />
                               ))
                             }
@@ -346,8 +351,8 @@ export default function HomeworkDetails() {
                       [1, 2, 3, 4, 5].map((star) => (
                         <i
                           key={star}
-                          className={`nes-icon star scale-125 ${star <= rate ? "" : "is-transparent"}`}
-                          style={{ marginRight: "8px", marginBottom: 0 }}
+                          className={`nes-icon star scale-150 ${star <= rate ? "" : "is-transparent"}`}
+                          style={{ marginRight: "10px", marginBottom: "3px" }}
                           onMouseEnter={() => setRate(star)}
                         />
                       ))

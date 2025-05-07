@@ -29,7 +29,7 @@ export const availableBadges: BadgeType[] = [
     {
         task_id: "homework1",
         name: "NyaNya~",
-        description: "完成第一个作业",
+        description: "认领第一个作业",
         color: "is-primary",
     },
 ]

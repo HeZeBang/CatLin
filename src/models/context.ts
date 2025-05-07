@@ -6,6 +6,7 @@ export interface UserContextType {
     userName?: string;
     user: UserType | undefined;
     isLoggedIn: boolean;
+    addBadge: (badge: string) => Promise<void>;
     useUser: () => SWRResponse<UserType, any, boolean>; //TODO: fix this type
     handleLogin: (credentialResponse: { credential?: any }) => void;
     handleLogout: () => void;

@@ -35,6 +35,19 @@ function MainApp() {
     }
   }, [user])
 
+  const addBadge = (task_id: string) =>
+    fetch("/api/task/progress", {
+      method: "POST",
+      body: JSON.stringify({ task_id }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json()
+        } else {
+          return Promise.reject(new Error("Failed to add badge"));
+        }
+      })
+
   // useEffect(() => {
   //   // LoadUserInfo()
   //   get("/api/user/config")
@@ -76,6 +89,7 @@ function MainApp() {
     userName: session?.user?.name,
     user: session?.user,
     isLoggedIn: !!session?.user,
+    addBadge,
     useUser,
     handleLogin,
     handleLogout,

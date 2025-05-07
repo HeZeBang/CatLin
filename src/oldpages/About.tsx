@@ -19,7 +19,7 @@ export default function About() {
   const [meowText, setMeowText] = useState("=^·.·^=")
   const [comment, setComment] = useState("")
   const [comments, setComments] = useState([] as Comment[])
-  const { userId, userName } = useContext(UserContext)
+  const { userId, userName, addBadge } = useContext(UserContext)
 
   // setTimeout
   useEffect(() => {
@@ -39,20 +39,6 @@ export default function About() {
     })
   }, [])
 
-
-  const addBadge = (task_id: string) =>
-    fetch("/api/task/progress", {
-      method: "POST",
-      body: JSON.stringify({ task_id }),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json()
-        } else {
-          return Promise.reject(new Error("Failed to add badge"));
-        }
-      })
-
   return (
     <div className="flex gap-3 items-center justify-center flex-col">
       <div className="flex items-center gap-1 flex-wrap justify-center">
@@ -60,7 +46,7 @@ export default function About() {
           onClick={() => {
             addBadge("M30W~")
               .finally(() => {
-                toast.info("喵~")
+                toast.info("喵~ (你获得了一个隐藏称号)")
               })
           }}
         />
