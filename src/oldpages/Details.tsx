@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AssignmentItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../components/Utils";
-import { Button, Container, Toast } from "nes-ui-react";
+import { Button, Container, Toast, Modal, Header, Footer, Spacer } from "nes-ui-react";
 import { get, post } from "../lib/fetcher";
 import { UserContext } from "../App";
 import { AssignmentT } from "../models/assignment";
@@ -15,6 +15,76 @@ import { AuthComponent } from "@/components/Auth";
 import { HomeworkCommentPostT, HomeworkCommentT } from "@/models/homework_comment";
 import confetti from "canvas-confetti";
 
+interface ICat {
+  avatar: string;
+  name: string;
+  happiness: number;
+  hunger: number;
+  owned?: boolean;
+  description?: string;
+}
+
+const dummyCats = [
+  {
+    avatar: "black",
+    name: "煤炭",
+    happiness: 0.5,
+    hunger: 0.2,
+    owned: true,
+    description: "好黑啊，像煤炭一样"
+  },
+  {
+    avatar: "xl",
+    name: "豆沙包",
+    happiness: 0.8,
+    hunger: 0.6,
+    owned: false,
+    description: "味道怎么样呢～"
+  },
+  {
+    avatar: "orange",
+    name: "胖橘",
+    happiness: 0.8,
+    hunger: 0.1,
+    owned: true,
+  },
+  {
+    avatar: "blue",
+    name: "蓝猫",
+    happiness: 0.1,
+    hunger: 0.9,
+  },
+  {
+    avatar: "pattern",
+    name: "花岗岩",
+    happiness: 0.7,
+    hunger: 0.3,
+    owned: false,
+  },
+  {
+    avatar: "white",
+    name: "白猫",
+    happiness: 0.9,
+    hunger: 0.4,
+    owned: true,
+  },
+  {
+    avatar: "gray",
+    name: "灰猫",
+    happiness: 0.6,
+    hunger: 0.5,
+    owned: false,
+  },
+  {
+    avatar: "yellow",
+    name: "罗勒",
+    happiness: 0.8,
+    hunger: 0.2,
+    owned: true,
+    description: "是男孩子哦"
+  }
+] as ICat[]
+
 export default function HomeworkDetails() {
   const { userName, user, userId, addBadge } = useContext(UserContext);
   const { id } = useParams();
@@ -24,6 +94,8 @@ export default function HomeworkDetails() {
   const [comment, setComment] = useState("")
   const [rate, setRate] = useState(5)
   const [comments, setComments] = useState([] as HomeworkCommentT[])
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedCat, setSelectedCat] = useState<ICat | null>(null)
   const dateOptions = {
     year: 'numeric',
     month: '2-digit',
@@ -100,7 +172,13 @@ export default function HomeworkDetails() {
   };
 
   const assignHomework = () => {
-    if (currentAssignment)
+    if (currentAssignment) {
+      setModalOpen(true)
+    }
+  }
+
+  const confirmAssignHomework = () => {
+    if (currentAssignment && selectedCat) {
       post<AssignmentT>("/api/assignment/claim", {
         platform: currentAssignment.platform || "Custom",
         course: currentAssignment.course,
@@ -108,17 +186,16 @@ export default function HomeworkDetails() {
         due: currentAssignment.due,
         submitted: currentAssignment.submitted,
         url: currentAssignment.url,
-        cat_type: 0, // TODO: replace it with real cat rype
+        cat_type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar)
       })
         .then((res) => {
           console.log("Due: ", res.due, "Current: ", currentAssignment.due)
           let newAssignment = {
             ...currentAssignment,
             id: res._id,
-            cat_type: res.cat_type,
+            cat_type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar),
             platform: res.platform,
             course: res.course,
-            // due: res.due, // FIXME: remove this
             submitted: res.submitted,
             title: res.title,
             url: res.url,
@@ -136,7 +213,7 @@ export default function HomeworkDetails() {
         .then(() => {
           // Create a new cat for the user
           return post("/api/cat", {
-            type: currentAssignment?.cat_type || 0,
+            type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar),
             x: "1.5",
             y: "2.3",
             taskState: 0,
@@ -150,7 +227,9 @@ export default function HomeworkDetails() {
             })
           showCannon()
           toast.success("获得了一只新的猫猫！")
+          setModalOpen(false)
         })
+    }
   }
 
   const rejectClaim = () => {
@@ -336,7 +415,7 @@ export default function HomeworkDetails() {
             <div className={`w-auto flex justify-center ${currentAssignment?.id ? "" : "opacity-0"}`}>
               {
                 currentAssignment?.id &&
-                <img src={`/avatars/white.png`} className="max-w-24 max-h-24" /> // TODO: replace with real cat
+                <img src={`/avatars/${dummyCats[currentAssignment.cat_type]?.avatar || "white"}.png`} className="max-w-24 max-h-24" />
               }
             </div>
           </Container>
@@ -433,6 +512,38 @@ export default function HomeworkDetails() {
               </div>
             </Toast>
           </div>
+
+          <Modal open={modalOpen} title="选择猫猫" className="max-w-sm">
+            <Header>
+              <span className="text-lg">选择一只猫猫来陪伴你完成作业</span>
+            </Header>
+            <div className="flex flex-col gap-1 p-3 max-h-[60vh] overflow-y-auto">
+              {dummyCats.map((cat, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col items-center p-2 hover:backdrop-brightness-75 active:scale-90 ${selectedCat === cat ? "border-4 border-primary" : ""}`}
+                  onClick={() => {
+                    // if (cat.owned) {
+                      setSelectedCat(cat)
+                    // }
+                  }}
+                >
+                  <img src={`/avatars/${cat.avatar}.png`} className="w-16 h-16" />
+                  <div className="nes-badge w-2/3">
+                    <span className="is-primary">
+                      {cat.name}
+                    </span>
+                  </div>
+                  {cat.description && <span className="text-sm">{cat.description}</span>}
+                </div>
+              ))}
+            </div>
+            <Footer>
+              <Spacer />
+              <Button color="white" className="mx-1" onClick={() => setModalOpen(false)}>取消</Button>
+              <Button color="primary" className="mx-1" disabled={!selectedCat} onClick={confirmAssignHomework}>确认</Button>
+            </Footer>
+          </Modal>
         </div>
       )}
     </>

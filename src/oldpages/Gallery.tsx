@@ -1,5 +1,5 @@
 // import { A, Badge, BadgeSplitted, Button, Checkbox, IconButton, Input, Radio } from "nes-ui-react";
-import { PixelBorder, Progress } from "nes-ui-react";
+import { PixelBorder, Progress, Modal, Header, Footer, Spacer } from "nes-ui-react";
 import { SVGProps, useEffect, useState } from "react";
 import { ICat } from "@/models/cat";
 
@@ -65,9 +65,17 @@ const dummyCats = [
   }
 ] as ICat[]
 
+const getProgressColor = (value: number) => {
+  if (value >= 0.7) return "success";
+  if (value >= 0.4) return "warning";
+  return "error";
+}
+
 export default function Gallery() {
   const [cats, setCats] = useState<ICat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCat, setSelectedCat] = useState<ICat | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCats = async () => {
@@ -102,7 +110,12 @@ export default function Gallery() {
               opacity: displayCat.owned ? 1 : 0.4
             }}
           >
-            <div className="flex flex-row sm:flex-col justify-center items-center active:scale-95">
+            <div className="flex flex-row sm:flex-col justify-center items-center active:scale-95"
+              onClick={() => {
+                setSelectedCat(displayCat);
+                setModalOpen(true);
+              }}
+            >
               <img src={`/avatars/${displayCat.avatar}.png`} className="max-w-28 m-5" />
               <div className="flex flex-col mx-2 my-2">
                 <p className="text-2xl flex align-middle">{displayCat.name}{displayCat.owned ? "" : "（未获得）"}</p>
@@ -110,6 +123,7 @@ export default function Gallery() {
                 <div className="text-md flex justify-center items-center">
                   <span className="flex-auto min-w-[3.5em] text-nowrap">心情</span>
                   <Progress value={displayCat.happiness}
+                    color={getProgressColor(displayCat.happiness)}
                     style={{
                       maxHeight: "10px"
                     }} />
@@ -117,6 +131,7 @@ export default function Gallery() {
                 <div className="text-md flex justify-center items-center">
                   <span className="flex-auto min-w-[3.5em] text-nowrap">饱食度</span>
                   <Progress value={displayCat.hunger}
+                    color={getProgressColor(displayCat.hunger)}
                     style={{
                       maxHeight: "10px"
                     }} />
@@ -126,6 +141,60 @@ export default function Gallery() {
           </PixelBorder>
         );
       })}
+
+      <Modal open={modalOpen} title="猫猫详情" className="max-w-sm">
+        <Header>
+          <span className="text-lg">猫猫详细信息</span>
+        </Header>
+        <div className="flex flex-col gap-3 p-3">
+          {selectedCat && (
+            <>
+              <div className="flex justify-center">
+                <img src={`/avatars/${selectedCat.avatar}.png`} className="max-w-32" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xl font-bold">{selectedCat.name}</span>
+                  <span className={`nes-badge ${selectedCat.owned ? "is-primary" : "is-error"}`}>
+                    <span>{selectedCat.owned ? "已获得" : "未获得"}</span>
+                  </span>
+                </div>
+                {selectedCat.description && (
+                  <p className="text-base opacity-80">{selectedCat.description}</p>
+                )}
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span>心情</span>
+                      <span>{Math.round(selectedCat.happiness * 100)}%</span>
+                    </div>
+                    <Progress value={selectedCat.happiness}
+                      color={getProgressColor(selectedCat.happiness)}
+                      style={{
+                        maxHeight: "10px"
+                      }} />
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span>饱食度</span>
+                      <span>{Math.round(selectedCat.hunger * 100)}%</span>
+                    </div>
+                    <Progress value={selectedCat.hunger}
+                      color={getProgressColor(selectedCat.hunger)}
+                      style={{
+                        maxHeight: "10px"
+                      }} />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        <Footer>
+          <Spacer />
+          <button className="nes-btn" onClick={() => setModalOpen(false)}>关闭</button>
+        </Footer>
+      </Modal>
     </div>
   );
 }

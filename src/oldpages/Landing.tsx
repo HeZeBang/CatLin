@@ -14,7 +14,8 @@ export default function Landing() {
   const [homeworks, setHomeworks] = useState<AssignmentItem[]>([])
   const [firstUse, setFirstUse] = useState(true)
   const [dueSplit, setDueSplit] = useState(0);
-  const [drawerTop, setDrawerTop] = useState("unset")
+  const [drawerTop, setDrawerTop] = useState("100vh")
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -64,8 +65,7 @@ export default function Landing() {
   useEffect(() => {
     if (isLoaded) {
       console.log("Unity loaded")
-      // window.scrollTo(0, 0)
-      setDrawerTop("calc(-9em + 100vh)")
+      // setDrawerOpen(true)
       toast.success("Unity loaded")
     }
     setIsLoading(!isLoaded)
@@ -92,8 +92,8 @@ export default function Landing() {
     sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify({
       n: 3,
       ids: [1001, 1002, 1003],
-      xs: ["1.5", "3.0", "5.2"],
-      ys: ["2.3", "4.1", "6.4"],
+      xs: ["1.5", "3.0", "3.2"],
+      ys: ["2.3", "4.1", "3.4"],
       types: [0, 1, 0],
       taskstates: [1, 0, 2],
     }))
@@ -141,7 +141,6 @@ export default function Landing() {
                       };
                       if (item.submitted) {
                         toast.success(`作业 ${item.title} 已完成`);
-                        showFireworks();
                       }
                     }
                   }
@@ -154,6 +153,11 @@ export default function Landing() {
             }
           }
           setHomeworks(allHomework.sort((a, b) => b.due - a.due));
+          if (allHomework.every(hw => hw.submitted)) {
+            showFireworks();
+          }
+          const audio = new Audio('/sound/applepay.mp3');
+          audio.play();
           setIsLoading(false);
         })();
       }}>
@@ -172,8 +176,7 @@ export default function Landing() {
       </IconButton>
       <div className="w-full h-auto overflow-scroll drawer flex items-center justify-start flex-col z-10 px-5"
         style={{
-          // marginTop: "calc(-9em + 100vh)",
-          marginTop: drawerTop,
+          marginTop: drawerOpen ? "calc(-9em + 100vh)" : "",
           minHeight: "100vh",
           transition: "margin-top 1s cubic-bezier(0.3, 0, 0.5, 1)",
         }}
@@ -181,8 +184,12 @@ export default function Landing() {
         <div className="nes-ui-toolbar -mx-5 w-full mb-5 mt-2"
           style={{
             minHeight: "2em",
-          }}>
-          <span className="text-xl w-full justify-center">TODOs</span>
+          }}
+          onClick={() => isLoaded && setDrawerOpen(!drawerOpen)}
+        >
+            <span className="text-xl justify-center w-full">
+              {isLoaded ? (drawerOpen ? "返回作业列表" : "前往猫窝") : "猫窝加载中..."}
+            </span>
         </div>
         <div ref={topRef} />
         <div className="flex gap-3 items-center justify-center flex-col w-full max-w-md">
