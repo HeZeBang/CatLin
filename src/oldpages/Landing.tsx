@@ -48,10 +48,10 @@ export default function Landing() {
   } , [homeworks]);
 
   const { unityProvider, isLoaded, unload, sendMessage } = useUnityContext({
-    loaderUrl: "unity/demo/demo.v3.loader.js",
-    dataUrl: "unity/demo/demo.v3.data.br",
-    frameworkUrl: "unity/demo/demo.v3.framework.js.br",
-    codeUrl: "unity/demo/demo.v3.wasm.br",
+    loaderUrl: "unity/demo/demo.v4.loader.js",
+    dataUrl: "unity/demo/demo.v4.data.br",
+    frameworkUrl: "unity/demo/demo.v4.framework.js.br",
+    codeUrl: "unity/demo/demo.v4.wasm.br",
   })
 
   useEffect(() => {
@@ -244,7 +244,7 @@ export default function Landing() {
           }}
           onClick={() => {
             if (isLoaded) {
-              if(!drawerOpen)
+              // if(!drawerOpen)
                 SendTest()
               setDrawerOpen(!drawerOpen)
             }
