@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { CloudDownload } from "@/components/Icons";
 import { UserContext } from "@/App";
 import confetti from "canvas-confetti";
+import { ICatDocument } from "@/models/cat";
 
 export default function Landing() {
   const [homeworks, setHomeworks] = useState<AssignmentItem[]>([])
@@ -16,6 +17,7 @@ export default function Landing() {
   const [dueSplit, setDueSplit] = useState(0);
   const [drawerTop, setDrawerTop] = useState("100vh")
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [cats, setCats] = useState<ICatDocument[]>([])
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -33,21 +35,50 @@ export default function Landing() {
     window.scrollTo(0, 0)
   }, [])
 
+  useEffect(() => {
+    const fetchCats = async () => {
+      try {
+        const response = await fetch('/api/cat');
+        if (!response.ok) throw new Error('Failed to fetch cats');
+        const data = await response.json();
+        setCats(data);
+      } catch (error) {
+        console.error('Error fetching cats:', error);
+      }
+    };
+
+    fetchCats();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded)
+      return
+    sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify({
+      n: cats.length,
+      ids: cats.map(cat => cat._id),
+      xs: cats.map(cat => cat.x),
+      ys: cats.map(cat => cat.y),
+      types: cats.map(cat => cat.type),
+      taskstates: cats.map(cat => cat.taskState),
+    }))
+    // sendMessage("GameManager", "LoadCatDataFromServer", "")
+  }, [sendMessage, isLoaded])
+
   const showFireworks = () => {
     const duration = 5 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 50 };
- 
+
     const randomInRange = (min: number, max: number) =>
       Math.random() * (max - min) + min;
- 
+
     const interval = window.setInterval(() => {
       const timeLeft = animationEnd - Date.now();
- 
+
       if (timeLeft <= 0) {
         return clearInterval(interval);
       }
- 
+
       const particleCount = 50 * (timeLeft / duration);
       confetti({
         ...defaults,
@@ -89,16 +120,18 @@ export default function Landing() {
   }, [])
 
   const SendTest = useCallback(() => {
+    if (!isLoaded)
+      return
     sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify({
-      n: 3,
-      ids: [1001, 1002, 1003],
-      xs: ["1.5", "3.0", "3.2"],
-      ys: ["2.3", "4.1", "3.4"],
-      types: [0, 1, 0],
-      taskstates: [1, 0, 2],
+      n: cats.length,
+      ids: cats.map(cat => cat._id),
+      xs: cats.map(cat => cat.x),
+      ys: cats.map(cat => cat.y),
+      types: cats.map(cat => cat.type),
+      taskstates: cats.map(cat => cat.taskState),
     }))
     // sendMessage("GameManager", "LoadCatDataFromServer", "")
-  }, [sendMessage])
+  }, [sendMessage, isLoaded])
 
   // useEffect(() => {
   //   bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -187,9 +220,9 @@ export default function Landing() {
           }}
           onClick={() => isLoaded && setDrawerOpen(!drawerOpen)}
         >
-            <span className="text-xl justify-center w-full">
-              {isLoaded ? (drawerOpen ? "返回作业列表" : "前往猫窝") : "猫窝加载中..."}
-            </span>
+          <span className="text-xl justify-center w-full">
+            {isLoaded ? (drawerOpen ? "返回作业列表" : "前往猫窝") : "猫窝加载中..."}
+          </span>
         </div>
         <div ref={topRef} />
         <div className="flex gap-3 items-center justify-center flex-col w-full max-w-md">

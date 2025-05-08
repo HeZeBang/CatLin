@@ -21,6 +21,7 @@ export async function GET() {
           ...template,
           ...userCat.toObject(),
           name: userCat.name || template.name,
+          _id: userCat._id,
         };
       }
       // If no user data exists, create default values
@@ -29,8 +30,8 @@ export async function GET() {
         happiness: 0.5,
         hunger: 0.5,
         owned: false,
-        x: "0",
-        y: "0",
+        x: (Math.random() * 10 - 5).toFixed(1),
+        y: (Math.random() * 4 - 2).toFixed(1),
         taskState: 0,
         userId: session.user?._id
       };
@@ -106,6 +107,7 @@ export async function POST(request: Request) {
       ...template,
       ...cat.toObject(),
       name: cat.name || template.name,
+      _id: cat._id,
     });
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error', details: error }, { status: 500 });
