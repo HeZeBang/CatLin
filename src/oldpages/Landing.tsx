@@ -27,20 +27,31 @@ export default function Landing() {
   const getCatTaskState = useCallback((catType: number) => {
     // Find all homeworks assigned to this cat type
     const catHomeworks = homeworks.filter(hw => hw.cat_type === catType);
-    // If homework has parent, check submission status
-    if (catHomeworks.some(hw => hw.parent)) {
-      // If any homework is submitted, return 3, otherwise return 2
-      return catHomeworks.some(hw => hw.submitted) ? 3 : 2;
-    }
-    // If no parent (not claimed), check for finished_task
-    return catHomeworks.some(hw => hw.finished_task && hw.finished_task > 0) ? 1 : 0;
+    
+    // If no homeworks for this cat type, return 0 (not claimed)
+    if (catHomeworks.length === 0) return 0;
+
+    // Check if any homework is claimed (has parent)
+    const hasClaimed = catHomeworks.some(hw => hw.parent);
+    if (!hasClaimed) return 0;
+
+    // Check if any homework is submitted
+    const hasSubmitted = catHomeworks.some(hw => hw.submitted);
+    
+    // Check if any homework has finished task
+    const hasFinishedTask = catHomeworks.some(hw => hw.finished_task && hw.finished_task > 0);
+
+    // Return appropriate state based on conditions
+    if (hasSubmitted && hasFinishedTask) return 1;  // Claimed, Submitted and has Finished task
+    if (!hasSubmitted) return 2;                    // Claimed, Not submitted
+    return 3;                                       // Claimed, Submitted
   } , [homeworks]);
 
   const { unityProvider, isLoaded, unload, sendMessage } = useUnityContext({
-    loaderUrl: "unity/demo/demo.v4.loader.js",
-    dataUrl: "unity/demo/demo.v4.data.br",
-    frameworkUrl: "unity/demo/demo.v4.framework.js.br",
-    codeUrl: "unity/demo/demo.v4.wasm.br",
+    loaderUrl: "unity/demo/demo.v3.loader.js",
+    dataUrl: "unity/demo/demo.v3.data.br",
+    frameworkUrl: "unity/demo/demo.v3.framework.js.br",
+    codeUrl: "unity/demo/demo.v3.wasm.br",
   })
 
   useEffect(() => {
@@ -119,11 +130,11 @@ export default function Landing() {
 
   useEffect(() => {
     if (isLoaded) {
-      setTimeout(() => {
+      // setTimeout(() => {
         console.log("Unity loaded")
         // setDrawerOpen(true)
         toast.success("Unity loaded")
-      }, 1000)
+      // }, 1000)
     }
     setIsLoading(!isLoaded)
   }, [isLoaded])
