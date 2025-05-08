@@ -24,18 +24,23 @@ export default function Landing() {
 
   const { setIsLoading } = useLoading()
 
-  const getCatTaskState = (catType: number) => {
+  const getCatTaskState = useCallback((catType: number) => {
     // Find all homeworks assigned to this cat type
     const catHomeworks = homeworks.filter(hw => hw.cat_type === catType);
-    // If any homework has finished_task > 0 (has unclaimed reward), return 1
+    // If homework has parent, check submission status
+    if (catHomeworks.some(hw => hw.parent)) {
+      // If any homework is submitted, return 3, otherwise return 2
+      return catHomeworks.some(hw => hw.submitted) ? 3 : 2;
+    }
+    // If no parent (not claimed), check for finished_task
     return catHomeworks.some(hw => hw.finished_task && hw.finished_task > 0) ? 1 : 0;
-  };
+  } , [homeworks]);
 
   const { unityProvider, isLoaded, unload, sendMessage } = useUnityContext({
-    loaderUrl: "unity/demo/demo.v3.loader.js",
-    dataUrl: "unity/demo/demo.v3.data.br",
-    frameworkUrl: "unity/demo/demo.v3.framework.js.br",
-    codeUrl: "unity/demo/demo.v3.wasm.br",
+    loaderUrl: "unity/demo/demo.v4.loader.js",
+    dataUrl: "unity/demo/demo.v4.data.br",
+    frameworkUrl: "unity/demo/demo.v4.framework.js.br",
+    codeUrl: "unity/demo/demo.v4.wasm.br",
   })
 
   useEffect(() => {
@@ -57,21 +62,31 @@ export default function Landing() {
     fetchCats();
   }, []);
 
-  useEffect(() => {
+
+  const SendTest = useCallback(() => {
     if (!isLoaded)
       return
     const data = {
-      n: cats.length,
-      ids: cats.map(cat => cat._id),
-      xs: cats.map(cat => cat.x),
-      ys: cats.map(cat => cat.y),
-      types: cats.map(cat => cat.type),
-      taskstates: cats.map(cat => getCatTaskState(cat.type)),
+      n: cats.filter(cat => getCatTaskState(cat.type) !== 0).length,
+      ids: cats.filter(cat => getCatTaskState(cat.type) !== 0).map(cat => cat._id),
+      xs: cats.filter(cat => getCatTaskState(cat.type) !== 0).map(cat => cat.x),
+      ys: cats.filter(cat => getCatTaskState(cat.type) !== 0).map(cat => cat.y),
+      types: cats.filter(cat => getCatTaskState(cat.type) !== 0).map(cat => cat.type),
+      taskstates: cats.filter(cat => getCatTaskState(cat.type) !== 0).map(cat => getCatTaskState(cat.type)),
     }
-    console.log("Sending cat data:", data)
-    sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify(data))
+    // setTimeout(() => {
+      console.log("Sending cat data:", data)
+      sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify(data))
+    // }, 1000)
+      
     // sendMessage("GameManager", "LoadCatDataFromServer", "")
-  }, [sendMessage, isLoaded, cats, homeworks])
+  }, [sendMessage, isLoaded, homeworks, cats])
+
+  // Trigger SendTest when homeworks or cats change
+  // useEffect(() => {
+  //   if (isLoaded)
+  //     SendTest()
+  // }, [homeworks, cats, sendMessage, isLoaded])
 
   const showFireworks = () => {
     const duration = 5 * 1000;
@@ -104,15 +119,18 @@ export default function Landing() {
 
   useEffect(() => {
     if (isLoaded) {
-      console.log("Unity loaded")
-      // setDrawerOpen(true)
-      toast.success("Unity loaded")
+      setTimeout(() => {
+        console.log("Unity loaded")
+        // setDrawerOpen(true)
+        toast.success("Unity loaded")
+      }, 1000)
     }
     setIsLoading(!isLoaded)
   }, [isLoaded])
 
   useEffect(() => {
     return () => {
+      setIsLoading(false);
       unload();
     };
   }, [unload]);
@@ -127,20 +145,6 @@ export default function Landing() {
     setHomeworks(hwTemp)
     setDueSplit(Date.now() - 7 * 24 * 60 * 60 * 1000)
   }, [])
-
-  const SendTest = useCallback(() => {
-    if (!isLoaded)
-      return
-    sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify({
-      n: 3,
-      ids: [1001, 1002, 1003],
-      xs: ["1.5", "3.0", "3.2"],
-      ys: ["2.3", "4.1", "3.4"],
-      types: [0, 1, 0],
-      taskstates: [2, 2, 2],
-    }))
-    // sendMessage("GameManager", "LoadCatDataFromServer", "")
-  }, [sendMessage, isLoaded])
 
   // useEffect(() => {
   //   bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -227,7 +231,13 @@ export default function Landing() {
           style={{
             minHeight: "2em",
           }}
-          onClick={() => isLoaded && setDrawerOpen(!drawerOpen)}
+          onClick={() => {
+            if (isLoaded) {
+              if(!drawerOpen)
+                SendTest()
+              setDrawerOpen(!drawerOpen)
+            }
+          }}
         >
           <span className="text-xl justify-center w-full">
             {isLoaded ? (drawerOpen ? "返回作业列表" : "前往猫窝") : "猫窝加载中..."}
