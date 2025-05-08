@@ -22,7 +22,7 @@ export interface ICatDocument extends ICat, Document {}
 const catSchema = new Schema<ICatDocument>({
   // Template properties are not stored in DB
   avatar: { type: String, required: true, select: false },
-  name: { type: String, required: true, select: false },
+  name: { type: String, required: true },
   description: { type: String, select: false },
   // Dynamic properties
   happiness: { type: Number, required: true, default: 0.5 },

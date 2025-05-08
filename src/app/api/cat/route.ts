@@ -2,53 +2,7 @@ import { NextResponse } from 'next/server';
 import { Cat, ICat } from '@/models/cat';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/authOptions';
-
-// Import dummy cats as templates - only static properties
-const dummyCats: (Pick<ICat, 'avatar' | 'name' | 'description'> & { type: number })[] = [
-  {
-    avatar: "black",
-    name: "煤炭",
-    description: "好黑啊，像煤炭一样",
-    type: 0
-  },
-  {
-    avatar: "xl",
-    name: "豆沙包",
-    description: "味道怎么样呢～",
-    type: 1
-  },
-  {
-    avatar: "orange",
-    name: "胖橘",
-    type: 2
-  },
-  {
-    avatar: "blue",
-    name: "蓝猫",
-    type: 3
-  },
-  {
-    avatar: "pattern",
-    name: "花岗岩",
-    type: 4
-  },
-  {
-    avatar: "white",
-    name: "白猫",
-    type: 5
-  },
-  {
-    avatar: "gray",
-    name: "灰猫",
-    type: 6
-  },
-  {
-    avatar: "yellow",
-    name: "罗勒",
-    description: "是男孩子哦",
-    type: 7
-  }
-];
+import { dummyCats } from '@/data/cats';
 
 export async function GET() {
   try {
@@ -66,6 +20,7 @@ export async function GET() {
         return {
           ...template,
           ...userCat.toObject(),
+          name: userCat.name || template.name,
         };
       }
       // If no user data exists, create default values
@@ -107,21 +62,29 @@ export async function POST(request: Request) {
       console.log("Existing cat found: ", existingCat)
       // Update existing cat's values
       const updateData = {
+        name: data.name,
         happiness: Math.min(1, existingCat.happiness + 0.1),
         hunger: Math.max(0, existingCat.hunger - 0.1),
-        ...data
       };
+
+      console.log("Update data: ", updateData)
+      console.log("Updating cat with ID: ", existingCat._id)
 
       cat = await Cat.findOneAndUpdate(
         { _id: existingCat._id },
-        updateData,
+        { $set: updateData },
         { new: true }
       );
+
+      console.log("Updated cat: ", cat.toObject())
+
+      await cat.save();
     } else {
       // Create new cat if it doesn't exist
       cat = new Cat({
         ...dummyCats.find(t => t.type === data.type),
         ...data,
+        name: data.name || dummyCats.find(t => t.type === data.type)?.name,
         happiness: 0.5, // Default values
         hunger: 0.5,
         owned: true,
@@ -132,9 +95,17 @@ export async function POST(request: Request) {
 
     // Merge with template data before returning
     const template = dummyCats.find(t => t.type === cat.type);
+    if (!template) {
+      return NextResponse.json({ error: 'Template not found' }, { status: 404 });
+    }
+    console.log("New cat:", {
+      ...template,
+      ...cat.toObject(),
+    })
     return NextResponse.json({
       ...template,
       ...cat.toObject(),
+      name: cat.name || template.name,
     });
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error', details: error }, { status: 500 });
@@ -144,7 +115,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (!session?.user?._id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -152,7 +123,7 @@ export async function PUT(request: Request) {
     const { id, avatar, name, description, ...updateData } = data; // Remove template data
 
     const cat = await Cat.findOneAndUpdate(
-      { _id: id, userId: session.user.email },
+      { _id: id, userId: session.user._id },
       updateData,
       { new: true }
     );

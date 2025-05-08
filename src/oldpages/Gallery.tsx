@@ -1,69 +1,8 @@
 // import { A, Badge, BadgeSplitted, Button, Checkbox, IconButton, Input, Radio } from "nes-ui-react";
-import { PixelBorder, Progress, Modal, Header, Footer, Spacer } from "nes-ui-react";
+import { PixelBorder, Progress, Modal, Header, Footer, Spacer, Input } from "nes-ui-react";
 import { SVGProps, useEffect, useState } from "react";
 import { ICat } from "@/models/cat";
-
-// Keep dummyCats as templates
-const dummyCats = [
-  {
-    avatar: "black",
-    name: "煤炭",
-    happiness: 0.5,
-    hunger: 0.2,
-    owned: true,
-    description: "好黑啊，像煤炭一样"
-  },
-  {
-    avatar: "xl",
-    name: "豆沙包",
-    happiness: 0.8,
-    hunger: 0.6,
-    owned: false,
-    description: "味道怎么样呢～"
-  },
-  {
-    avatar: "orange",
-    name: "胖橘",
-    happiness: 0.8,
-    hunger: 0.1,
-    owned: true,
-  },
-  {
-    avatar: "blue",
-    name: "蓝猫",
-    happiness: 0.1,
-    hunger: 0.9,
-  },
-  {
-    avatar: "pattern",
-    name: "花岗岩",
-    happiness: 0.7,
-    hunger: 0.3,
-    owned: false,
-  },
-  {
-    avatar: "white",
-    name: "白猫",
-    happiness: 0.9,
-    hunger: 0.4,
-    owned: true,
-  },
-  {
-    avatar: "gray",
-    name: "灰猫",
-    happiness: 0.6,
-    hunger: 0.5,
-    owned: false,
-  },
-  {
-    avatar: "yellow",
-    name: "罗勒",
-    happiness: 0.8,
-    hunger: 0.2,
-    owned: true,
-    description: "是男孩子哦"
-  }
-] as ICat[]
+import { dummyCats } from "@/data/cats";
 
 const getProgressColor = (value: number) => {
   if (value >= 0.7) return "success";
@@ -76,6 +15,8 @@ export default function Gallery() {
   const [loading, setLoading] = useState(true);
   const [selectedCat, setSelectedCat] = useState<ICat | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [isRenaming, setIsRenaming] = useState(false);
 
   useEffect(() => {
     const fetchCats = async () => {
@@ -93,6 +34,39 @@ export default function Gallery() {
 
     fetchCats();
   }, []);
+
+  const handleRename = async () => {
+    if (!selectedCat || !newName.trim()) return;
+    
+    try {
+      const response = await fetch('/api/cat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar),
+          name: newName.trim()
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to rename cat');
+
+      const updatedCat = await response.json();
+      
+      // Update local state
+      setCats(cats.map(cat => 
+        cat.avatar === selectedCat.avatar 
+          ? { ...cat, name: updatedCat.name }
+          : cat
+      ));
+      setSelectedCat({ ...selectedCat, name: updatedCat.name });
+      setIsRenaming(false);
+      setNewName("");
+    } catch (error) {
+      console.error('Error renaming cat:', error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -119,23 +93,27 @@ export default function Gallery() {
               <img src={`/avatars/${displayCat.avatar}.png`} className="max-w-28 m-5" />
               <div className="flex flex-col mx-2 my-2">
                 <p className="text-2xl flex align-middle">{displayCat.name}{displayCat.owned ? "" : "（未获得）"}</p>
-                {displayCat.description && <span className="text-base opacity-80">{displayCat.description}</span>}
-                <div className="text-md flex justify-center items-center">
-                  <span className="flex-auto min-w-[3.5em] text-nowrap">心情</span>
-                  <Progress value={displayCat.happiness}
-                    color={getProgressColor(displayCat.happiness)}
-                    style={{
-                      maxHeight: "10px"
-                    }} />
-                </div>
-                <div className="text-md flex justify-center items-center">
-                  <span className="flex-auto min-w-[3.5em] text-nowrap">饱食度</span>
-                  <Progress value={displayCat.hunger}
-                    color={getProgressColor(displayCat.hunger)}
-                    style={{
-                      maxHeight: "10px"
-                    }} />
-                </div>
+                {/* {displayCat.description && <span className="text-base opacity-80">{displayCat.description}</span>} */}
+                {displayCat.owned && (
+                  <>
+                    <div className="text-md flex justify-center items-center">
+                      <span className="flex-auto min-w-[3.5em] text-nowrap">心情</span>
+                      <Progress value={displayCat.happiness}
+                        color={getProgressColor(displayCat.happiness)}
+                        style={{
+                          maxHeight: "10px"
+                        }} />
+                    </div>
+                    <div className="text-md flex justify-center items-center">
+                      <span className="flex-auto min-w-[3.5em] text-nowrap">饱食度</span>
+                      <Progress value={displayCat.hunger}
+                        color={getProgressColor(displayCat.hunger)}
+                        style={{
+                          maxHeight: "10px"
+                        }} />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </PixelBorder>
@@ -154,38 +132,66 @@ export default function Gallery() {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-xl font-bold">{selectedCat.name}</span>
-                  <span className={`nes-badge ${selectedCat.owned ? "is-primary" : "is-error"}`}>
-                    <span>{selectedCat.owned ? "已获得" : "未获得"}</span>
-                  </span>
+                  {isRenaming ? (
+                    <div className="flex gap-2 items-center flex-1">
+                      <Input
+                        type="text"
+                        value={newName}
+                        onChange={(value) => setNewName(value)}
+                        className="flex-1"
+                      />
+                      <button className="nes-btn is-success" onClick={handleRename}>确认</button>
+                      <button className="nes-btn is-error" onClick={() => {
+                        setIsRenaming(false);
+                        setNewName("");
+                      }}>取消</button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="text-xl font-bold">{selectedCat.name}</span>
+                      <div className="flex gap-2">
+                        {selectedCat.owned && (
+                          <button className="nes-btn" onClick={() => {
+                            setIsRenaming(true);
+                            setNewName(selectedCat.name);
+                          }}>改名</button>
+                        )}
+                        <span className={`nes-badge ${selectedCat.owned ? "is-primary" : "is-error"}`}>
+                          <span>{selectedCat.owned ? "已获得" : "未获得"}</span>
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
                 {selectedCat.description && (
                   <p className="text-base opacity-80">{selectedCat.description}</p>
                 )}
-                <div className="flex flex-col gap-2">
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span>心情</span>
-                      <span>{Math.round(selectedCat.happiness * 100)}%</span>
+                {selectedCat.owned && (
+                  <div className="flex flex-col gap-2">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span>心情</span>
+                        <span>{Math.round(selectedCat.happiness * 100)}%</span>
+                      </div>
+                      <Progress value={selectedCat.happiness}
+                        color={getProgressColor(selectedCat.happiness)}
+                        style={{
+                          maxHeight: "10px"
+                        }} />
                     </div>
-                    <Progress value={selectedCat.happiness}
-                      color={getProgressColor(selectedCat.happiness)}
-                      style={{
-                        maxHeight: "10px"
-                      }} />
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span>饱食度</span>
-                      <span>{Math.round(selectedCat.hunger * 100)}%</span>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span>饱食度</span>
+                        <span>{Math.round(selectedCat.hunger * 100)}%</span>
+                      </div>
+                      <Progress value={selectedCat.hunger}
+                        color={getProgressColor(selectedCat.hunger)}
+                        style={{
+                          maxHeight: "10px"
+                        }} />
                     </div>
-                    <Progress value={selectedCat.hunger}
-                      color={getProgressColor(selectedCat.hunger)}
-                      style={{
-                        maxHeight: "10px"
-                      }} />
                   </div>
-                </div>
+                )}
               </div>
             </>
           )}
@@ -197,21 +203,4 @@ export default function Gallery() {
       </Modal>
     </div>
   );
-}
-
-export function Android(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="1em"
-      height="1em"
-      {...props}
-    >
-      <path
-        fill="currentColor"
-        d="M2 5h2v2H2zm4 4H4V7h2zm2 0H6v2H4v2H2v6h20v-6h-2v-2h-2V9h2V7h2V5h-2v2h-2v2h-2V7H8zm0 0h8v2h2v2h2v4H4v-4h2v-2h2zm2 4H8v2h2zm4 0h2v2h-2z"
-      ></path>
-    </svg>
-  )
 }

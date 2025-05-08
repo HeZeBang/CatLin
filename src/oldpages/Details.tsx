@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { AuthComponent } from "@/components/Auth";
 import { HomeworkCommentPostT, HomeworkCommentT } from "@/models/homework_comment";
 import confetti from "canvas-confetti";
+import { dummyCats } from "@/data/cats";
 
 interface ICat {
   avatar: string;
@@ -23,67 +24,6 @@ interface ICat {
   owned?: boolean;
   description?: string;
 }
-
-const dummyCats = [
-  {
-    avatar: "black",
-    name: "煤炭",
-    happiness: 0.5,
-    hunger: 0.2,
-    owned: true,
-    description: "好黑啊，像煤炭一样"
-  },
-  {
-    avatar: "xl",
-    name: "豆沙包",
-    happiness: 0.8,
-    hunger: 0.6,
-    owned: false,
-    description: "味道怎么样呢～"
-  },
-  {
-    avatar: "orange",
-    name: "胖橘",
-    happiness: 0.8,
-    hunger: 0.1,
-    owned: true,
-  },
-  {
-    avatar: "blue",
-    name: "蓝猫",
-    happiness: 0.1,
-    hunger: 0.9,
-  },
-  {
-    avatar: "pattern",
-    name: "花岗岩",
-    happiness: 0.7,
-    hunger: 0.3,
-    owned: false,
-  },
-  {
-    avatar: "white",
-    name: "白猫",
-    happiness: 0.9,
-    hunger: 0.4,
-    owned: true,
-  },
-  {
-    avatar: "gray",
-    name: "灰猫",
-    happiness: 0.6,
-    hunger: 0.5,
-    owned: false,
-  },
-  {
-    avatar: "yellow",
-    name: "罗勒",
-    happiness: 0.8,
-    hunger: 0.2,
-    owned: true,
-    description: "是男孩子哦"
-  }
-] as ICat[]
 
 export default function HomeworkDetails() {
   const { userName, user, userId, addBadge } = useContext(UserContext);
