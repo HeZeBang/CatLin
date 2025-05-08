@@ -32,10 +32,10 @@ export default function Landing() {
   };
 
   const { unityProvider, isLoaded, unload, sendMessage } = useUnityContext({
-    loaderUrl: "unity/demo/demo.loader.js",
-    dataUrl: "unity/demo/demo.data.br",
-    frameworkUrl: "unity/demo/demo.framework.js.br",
-    codeUrl: "unity/demo/demo.wasm.br",
+    loaderUrl: "unity/demo/demo.v3.loader.js",
+    dataUrl: "unity/demo/demo.v3.data.br",
+    frameworkUrl: "unity/demo/demo.v3.framework.js.br",
+    codeUrl: "unity/demo/demo.v3.wasm.br",
   })
 
   useEffect(() => {
