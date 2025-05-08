@@ -24,6 +24,13 @@ export default function Landing() {
 
   const { setIsLoading } = useLoading()
 
+  const getCatTaskState = (catType: number) => {
+    // Find all homeworks assigned to this cat type
+    const catHomeworks = homeworks.filter(hw => hw.cat_type === catType);
+    // If any homework has finished_task > 0 (has unclaimed reward), return 1
+    return catHomeworks.some(hw => hw.finished_task && hw.finished_task > 0) ? 1 : 0;
+  };
+
   const { unityProvider, isLoaded, unload, sendMessage } = useUnityContext({
     loaderUrl: "unity/demo/demo.loader.js",
     dataUrl: "unity/demo/demo.data.br",
@@ -53,16 +60,18 @@ export default function Landing() {
   useEffect(() => {
     if (!isLoaded)
       return
-    sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify({
+    const data = {
       n: cats.length,
       ids: cats.map(cat => cat._id),
       xs: cats.map(cat => cat.x),
       ys: cats.map(cat => cat.y),
       types: cats.map(cat => cat.type),
-      taskstates: cats.map(cat => cat.taskState),
-    }))
+      taskstates: cats.map(cat => getCatTaskState(cat.type)),
+    }
+    console.log("Sending cat data:", data)
+    sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify(data))
     // sendMessage("GameManager", "LoadCatDataFromServer", "")
-  }, [sendMessage, isLoaded])
+  }, [sendMessage, isLoaded, cats, homeworks])
 
   const showFireworks = () => {
     const duration = 5 * 1000;
@@ -123,12 +132,12 @@ export default function Landing() {
     if (!isLoaded)
       return
     sendMessage("GameManager", "LoadCatDataFromServer", JSON.stringify({
-      n: cats.length,
-      ids: cats.map(cat => cat._id),
-      xs: cats.map(cat => cat.x),
-      ys: cats.map(cat => cat.y),
-      types: cats.map(cat => cat.type),
-      taskstates: cats.map(cat => cat.taskState),
+      n: 3,
+      ids: [1001, 1002, 1003],
+      xs: ["1.5", "3.0", "3.2"],
+      ys: ["2.3", "4.1", "3.4"],
+      types: [0, 1, 0],
+      taskstates: [2, 2, 2],
     }))
     // sendMessage("GameManager", "LoadCatDataFromServer", "")
   }, [sendMessage, isLoaded])

@@ -154,8 +154,8 @@ export default function HomeworkDetails() {
           // Create a new cat for the user
           return post("/api/cat", {
             type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar),
-            x: "1.5",
-            y: "2.3",
+            x: (Math.random() * 10 - 5).toFixed(1).toString(),
+            y: (Math.random() * 4 - 2).toFixed(1).toString(),
             taskState: 0,
             owned: true
           });
