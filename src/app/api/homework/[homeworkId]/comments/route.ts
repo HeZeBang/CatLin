@@ -3,6 +3,7 @@ import connectToDatabase from "@/lib/mongodb";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth/authOptions";
 import HomeworkComment from "@/models/homework_comment";
+import Homework from "@/models/homework";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ homeworkId: string }> }) {
     const { homeworkId } = await params;
@@ -34,5 +35,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ hom
     });
 
     await newComment.save();
+
+    const homework = await Homework.findById(homeworkId);
+    if (!homework) return NextResponse.json({ err: "Homework not found" }, { status: 404 });
+
+    homework.rating_num += 1;
+    homework.rating_sum += rating;
+
+    await homework.save();
+
     return NextResponse.json(newComment);
 }

@@ -4,7 +4,7 @@
 import { AssignmentItem } from "./HomeworkUtils"
 
 export function WrapUrl(path: string) {
-  const URL_BASE = process.env.NODE_ENV === "production" ? "" : "http://localhost:5000"
+  const URL_BASE = process.env.NODE_ENV === "production" ? "" : ""
   return `${URL_BASE}${path.startsWith("/") ? path : "/" + path}`
 }
 
@@ -77,6 +77,7 @@ export function LoadAccount(type: AccountType | null) {
   return { username, password: passwordDecoded }
 }
 
+// Login and Save account, returns a Promise
 export function LoginAndSave(type: AccountType | null, username: string, password: string) {
   switch (type) {
     case AccountType.Gradescope:

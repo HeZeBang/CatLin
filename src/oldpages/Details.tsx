@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AssignmentItem } from "../components/HomeworkUtils";
 import { AccountType, LoadHomework, RemoveAssignment, SaveAssignment } from "../components/Utils";
-import { Button, Container, Toast } from "nes-ui-react";
+import { Button, Container, Toast, Modal, Header, Footer, Spacer } from "nes-ui-react";
 import { get, post } from "../lib/fetcher";
 import { UserContext } from "../App";
 import { AssignmentT } from "../models/assignment";
@@ -13,9 +13,20 @@ import { GithubIcon } from "../components/Icons";
 import { toast } from "sonner";
 import { AuthComponent } from "@/components/Auth";
 import { HomeworkCommentPostT, HomeworkCommentT } from "@/models/homework_comment";
+import confetti from "canvas-confetti";
+import { dummyCats } from "@/data/cats";
+
+interface ICat {
+  avatar: string;
+  name: string;
+  happiness: number;
+  hunger: number;
+  owned?: boolean;
+  description?: string;
+}
 
 export default function HomeworkDetails() {
-  const { userName, user, userId } = useContext(UserContext);
+  const { userName, user, userId, addBadge } = useContext(UserContext);
   const { id } = useParams();
   const [_, setHomeworks] = useState<AssignmentItem[]>([])
   const [currentAssignment, setcurrentAssignment] = useState<AssignmentItem>()
@@ -23,6 +34,8 @@ export default function HomeworkDetails() {
   const [comment, setComment] = useState("")
   const [rate, setRate] = useState(5)
   const [comments, setComments] = useState([] as HomeworkCommentT[])
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedCat, setSelectedCat] = useState<ICat | null>(null)
   const dateOptions = {
     year: 'numeric',
     month: '2-digit',
@@ -68,8 +81,44 @@ export default function HomeworkDetails() {
     }
   }, [currentAssignment])
 
+  const showCannon = () => {
+    const end = Date.now() + 1 * 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+ 
+    const frame = () => {
+      if (Date.now() > end) return;
+ 
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+      });
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+      });
+ 
+      requestAnimationFrame(frame);
+    };
+ 
+    frame();
+  };
+
   const assignHomework = () => {
-    if (currentAssignment)
+    if (currentAssignment) {
+      setModalOpen(true)
+    }
+  }
+
+  const confirmAssignHomework = () => {
+    if (currentAssignment && selectedCat) {
       post<AssignmentT>("/api/assignment/claim", {
         platform: currentAssignment.platform || "Custom",
         course: currentAssignment.course,
@@ -77,17 +126,16 @@ export default function HomeworkDetails() {
         due: currentAssignment.due,
         submitted: currentAssignment.submitted,
         url: currentAssignment.url,
-        cat_type: 0, // TODO: replace it with real cat rype
+        cat_type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar)
       })
         .then((res) => {
           console.log("Due: ", res.due, "Current: ", currentAssignment.due)
           let newAssignment = {
             ...currentAssignment,
             id: res._id,
-            cat_type: res.cat_type,
+            cat_type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar),
             platform: res.platform,
             course: res.course,
-            // due: res.due, // FIXME: remove this
             submitted: res.submitted,
             title: res.title,
             url: res.url,
@@ -102,6 +150,26 @@ export default function HomeworkDetails() {
           console.log("New Homework: ", newHomework)
           setLinkedHomework(newHomework)
         })
+        .then(() => {
+          // Create a new cat for the user
+          return post("/api/cat", {
+            type: dummyCats.findIndex(cat => cat.avatar === selectedCat.avatar),
+            x: (Math.random() * 10 - 5).toFixed(1).toString(),
+            y: (Math.random() * 4 - 2).toFixed(1).toString(),
+            taskState: 0,
+            owned: true
+          });
+        })
+        .then(() => {
+          addBadge("homework1")
+            .finally(() => {
+              // toast.info("你获得了一个称号")
+            })
+          showCannon()
+          toast.success("获得了一只新的猫猫！")
+          setModalOpen(false)
+        })
+    }
   }
 
   const rejectClaim = () => {
@@ -171,28 +239,54 @@ export default function HomeworkDetails() {
                 返回
               </Button>
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-1 flex-1 max-w-1/2">
               {
                 currentAssignment?.id ? (
-                  <Button className="w-full" color="primary" borderInverted
-                    onClick={rejectClaim}
-                  >
-                    取消认领
-                  </Button>
+                  <>
+                    <Button className="w-full" color="error" borderInverted
+                      onClick={rejectClaim}
+                    >
+                      取消认领
+                    </Button>
+                    {
+                      currentAssignment?.finished_task? 
+                      <Button className="w-full" color="success" borderInverted onClick={() => {
+                        addBadge("homework1")
+
+                        // TODO: some logic here
+
+                        // Cancel the indicator
+                        setcurrentAssignment({
+                          ...currentAssignment,
+                          finished_task: 0,
+                        } as AssignmentItem)
+
+                        // Sync
+                        SaveAssignment(currentAssignment?.platform as AccountType || AccountType.Custom, {
+                          ...currentAssignment,
+                          finished_task: 0,
+                        } as AssignmentItem)
+
+                        toast.success("奖励已到账～")
+                      }}>
+                        领取奖励
+                      </Button> : <></>
+                    }
+                  </>
                 ) : (
                   <Button className="w-full" color="primary" borderInverted onClick={assignHomework}>
-                    认领作业
+                    认领并开始
                   </Button>
                 )
               }
-              <Button className="w-full" color="error" borderInverted
+              {/* <Button className="w-full" color="error" borderInverted
                 onClick={() => {
                   RemoveAssignment(currentAssignment?.platform as AccountType || AccountType.Custom, currentAssignment as AssignmentItem)
                   window.history.back()
                 }}
               >
                 删除作业
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className="flex gap-3 md:flex-row flex-col">
@@ -223,8 +317,8 @@ export default function HomeworkDetails() {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <i
                           key={star}
-                          className={`nes-icon star scale-125 ${star <= linkedHomework.rating_sum / linkedHomework.rating_num ? "" : "is-transparent"}`}
-                          style={{ marginRight: "8px", marginBottom: 0 }}
+                          className={`nes-icon star scale-150 ${star <= linkedHomework.rating_sum / linkedHomework.rating_num ? "" : "is-transparent"}`}
+                          style={{ marginRight: "10px", marginBottom: "3px" }}
                         />
                       ))}
                     </div>
@@ -261,7 +355,7 @@ export default function HomeworkDetails() {
             <div className={`w-auto flex justify-center ${currentAssignment?.id ? "" : "opacity-0"}`}>
               {
                 currentAssignment?.id &&
-                <img src={`/avatars/white.png`} className="max-w-24 max-h-24"/> // TODO: replace with real cat
+                <img src={`/avatars/${dummyCats[currentAssignment.cat_type]?.avatar || "white"}.png`} className="max-w-24 max-h-24" />
               }
             </div>
           </Container>
@@ -291,8 +385,8 @@ export default function HomeworkDetails() {
                               [1, 2, 3, 4, 5].map((star) => (
                                 <i
                                   key={star}
-                                  className={`nes-icon star scale-125 ${star <= item.rating ? "" : "is-transparent"}`}
-                                  style={{ marginRight: "8px", marginBottom: 0 }}
+                                  className={`nes-icon star scale-150 ${star <= item.rating ? "" : "is-transparent"}`}
+                                  style={{ marginRight: "10px", marginBottom: "3px" }}
                                 />
                               ))
                             }
@@ -338,8 +432,8 @@ export default function HomeworkDetails() {
                       [1, 2, 3, 4, 5].map((star) => (
                         <i
                           key={star}
-                          className={`nes-icon star scale-125 ${star <= rate ? "" : "is-transparent"}`}
-                          style={{ marginRight: "8px", marginBottom: 0 }}
+                          className={`nes-icon star scale-150 ${star <= rate ? "" : "is-transparent"}`}
+                          style={{ marginRight: "10px", marginBottom: "3px" }}
                           onMouseEnter={() => setRate(star)}
                         />
                       ))
@@ -358,6 +452,38 @@ export default function HomeworkDetails() {
               </div>
             </Toast>
           </div>
+
+          <Modal open={modalOpen} title="选择猫猫" className="max-w-sm">
+            <Header>
+              <span className="text-lg">选择一只猫猫来陪伴你完成作业</span>
+            </Header>
+            <div className="flex flex-col gap-1 p-3 max-h-[60vh] overflow-y-auto">
+              {dummyCats.map((cat, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col items-center p-2 hover:backdrop-brightness-75 active:scale-90 ${selectedCat === cat ? "border-4 border-primary" : ""}`}
+                  onClick={() => {
+                    // if (cat.owned) {
+                      setSelectedCat(cat)
+                    // }
+                  }}
+                >
+                  <img src={`/avatars/${cat.avatar}.png`} className="w-16 h-16" />
+                  <div className="nes-badge w-2/3">
+                    <span className="is-primary">
+                      {cat.name}
+                    </span>
+                  </div>
+                  {cat.description && <span className="text-sm">{cat.description}</span>}
+                </div>
+              ))}
+            </div>
+            <Footer>
+              <Spacer />
+              <Button color="white" className="mx-1" onClick={() => setModalOpen(false)}>取消</Button>
+              <Button color="primary" className="mx-1" disabled={!selectedCat} onClick={confirmAssignHomework}>确认</Button>
+            </Footer>
+          </Modal>
         </div>
       )}
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, createContext } from 'react'
+import { useCallback, useEffect, useState, createContext, useRef } from 'react'
 import './App.css'
 import { IconButton, Progress, setDarkModeActivation } from 'nes-ui-react'
 import { NavLink, Outlet, useLocation } from 'react-router'
@@ -10,35 +10,61 @@ import { get } from './lib/fetcher'
 import jwt_decode from "jwt-decode";
 import { UserContextType } from './models/context'
 import { toast, Toaster } from 'sonner'
-import { SessionProvider, signIn, signOut } from 'next-auth/react'
+import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react'
+import useSWR from 'swr';
+import { UserType } from './models/user';
+import { Confetti, type ConfettiRef } from "@/components/magicui/confetti";
 
 export const UserContext = createContext({} as UserContextType);
 
-function App() {
+function MainApp() {
   const [darkMode, setDarkMode] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
-  // const { isLoading } = useLoading()
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const [userName, setUserName] = useState<string | undefined>(undefined);
-  const [user, setUser] = useState();
+  const { data: session, update } = useSession();
+
+  const fetcher = (...args: [RequestInfo | URL, RequestInit?]) => fetch(...args).then((res) => res.json())
+  const userFetcher = (...args: [RequestInfo | URL, RequestInit?]) => fetch(...args).then((res) => res.json()).then((res) => (res.user) as UserType)
+  const useUser = () =>
+    useSWR("/api/user/config", userFetcher)
+
+  const { data: user, mutate: userMutate } = useUser()
+
+  const confettiRef = useRef<ConfettiRef>(null);
 
   useEffect(() => {
-    // LoadUserInfo()
-    get("/api/user/config").then((user: any) => {
-      if (user._id) {
-        // they are registed in the database, and currently logged in.
-        setUserId(user._id);
-        setUserName(user.name);
-        setUser(user);
-      } else {
-        // they are not logged in.
-        setUserId(undefined);
-        setUserName(undefined);
-        setUser(undefined);
-      }
-    });
-  }, []);
+    if (user) {
+      update({ user: user })
+    }
+  }, [user])
+
+  const addBadge = (task_id: string) =>
+    fetch("/api/task/progress", {
+      method: "POST",
+      body: JSON.stringify({ task_id }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json()
+        } else {
+          return Promise.reject(new Error("Failed to add badge"));
+        }
+      })
+
+  // useEffect(() => {
+  //   // LoadUserInfo()
+  //   get("/api/user/config")
+  //     .then((res: any) => res.data)
+  //     .then((user: any) => {
+  //       if (user._id) {
+  //         // they are registed in the database, and currently logged in.
+  //         update({ user: user })
+  //       } else {
+  //         // they are not logged in.
+  //         // setUser(undefined);
+  //       }
+  //     });
+  // }, [location]);
 
   const handleLogin = (credentialResponse: { credential?: any }) => {
     if (!credentialResponse.credential) {
@@ -50,38 +76,25 @@ function App() {
     signIn("google", {
       credential: userToken,
       redirect: false
-    }).then(() => {
-      return get("/api/user/config");
-    }).then((user: any) => {
-      if (user._id) {
-        // they are registed in the database, and currently logged in.
-        setUserId(user._id);
-        setUserName(user.name);
-        setUser(user);
-      } else {
-        // they are not logged in.
-        setUserId(undefined);
-        setUserName(undefined);
-        setUser(undefined);
-      }
-    }
-    ).catch((error) => {
-      toast.error("Error logging in: " + error.message);
-    });
+    })
+      .catch((error) => {
+        toast.error("Error logging in: " + error.message);
+      });
   };
 
   const handleLogout = () => {
-    setUserId(undefined);
-    setUserName(undefined);
-    setUser(undefined);
+    userMutate(undefined, false);
     signOut({ redirect: false });
   };
 
-  const authContextValue = {
-    userId,
-    userName,
-    user,
-    isLoggedIn: !!userId,
+  const authContextValue: UserContextType = {
+    userId: session?.user?._id,
+    userName: session?.user?.name,
+    user: session?.user,
+    isLoggedIn: !!session?.user,
+    confettiRef,
+    addBadge,
+    useUser,
     handleLogin,
     handleLogout,
   };
@@ -106,9 +119,9 @@ function App() {
   //   }
   // }, [isLoading])
 
-  useEffect(() => {
-    console.log(location)
-  }, [location])
+  // useEffect(() => {
+  //   console.log(location)
+  // }, [location])
 
   const NavigatorItems = () => (
     <>
@@ -121,53 +134,69 @@ function App() {
 
   return (
     <UserContext.Provider value={authContextValue}>
-      <SessionProvider>
-        <div className="min-h-screen">
-          <div className="sticky w-screen left-0 top-0 z-50">
-            <div className="w-screen left-0 top-0 z-50 p-3 bg-auto toolbar">
-              <div className="max-w-lg flex mx-auto items-center">
-                <span className="text-xl flex-1">CatLin <sup className="text-sm">=^·.·^=</sup></span>
-                <nav className="md:flex gap-3 hidden mr-3">
-                  <NavigatorItems />
-                </nav>
-                <IconButton color={darkMode ? "warning" : "primary"} borderInverted onClick={toggleDarkMode}>
-                  {darkMode ? <Sun /> : <Moon />}
-                </IconButton>
-                <IconButton color="primary" borderInverted className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-                  <MenuIcon />
-                </IconButton>
-              </div>
-              <div className={`max-w-lg mx-auto items-center justify-end mt-1 mr-3 gap-3 ${menuOpen ? 'flex md:hidden' : 'hidden'}`}>
+      <div className="min-h-screen">
+        <div className="sticky w-screen left-0 top-0 z-50">
+          <div className="w-screen left-0 top-0 z-50 p-3 bg-auto toolbar">
+            <div className="max-w-lg flex mx-auto items-center">
+              <span className="text-xl flex-1">CatLin <sup className="text-sm">=^·.·^=</sup></span>
+              <nav className="md:flex gap-3 hidden mr-3">
                 <NavigatorItems />
-              </div>
+              </nav>
+              <IconButton color={darkMode ? "warning" : "primary"} borderInverted onClick={toggleDarkMode}>
+                {darkMode ? <Sun /> : <Moon />}
+              </IconButton>
+              <IconButton color="primary" borderInverted className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+                <MenuIcon />
+              </IconButton>
             </div>
-            <Progress value={progressVal} max="100" color="primary"
-              style={{
-                margin: "0",
-                height: "8px",
-                display: "flex",
-                // opacity: progressVal === 0? '0%':'100%',
-                transition: "opacity 200ms ease",
-              }}
-            />
+            <div className={`max-w-lg mx-auto items-center justify-end mt-1 mr-3 gap-3 ${menuOpen ? 'flex md:hidden' : 'hidden'}`}>
+              <NavigatorItems />
+            </div>
           </div>
-          <div className={`flex items-center justify-center flex-col ${location.pathname === '/' ? 'm-0 h-auto' : 'm-3 mb-0'}`}>
-            <Outlet />
-            <Toaster
-              visibleToasts={5}
-              toastOptions={{
-                style: {
-                  borderImageSource: "var(--pixel-borders-image-2-color-black-absolute)",
-                  borderImageSlice: 4,
-                  borderWidth: "4px",
-                }
-              }}
-            />
-          </div>
+          <Progress value={progressVal} max="100" color="primary"
+            style={{
+              margin: "0",
+              height: "8px",
+              display: "flex",
+              // opacity: progressVal === 0? '0%':'100%',
+              transition: "opacity 200ms ease",
+            }}
+          />
         </div>
-        {/* <GoogleOneTap /> */}
-      </SessionProvider>
+        <div className={`flex items-center justify-center flex-col ${location.pathname === '/' ? 'm-0 h-auto' : 'm-3 mb-0'}`}>
+        {/* <Confetti
+        ref={confettiRef}
+        className="absolute left-0 top-0 size-full z-20 pointer-events-none"
+        options={{
+          zIndex: 50,
+        }}
+        // onMouseEnter={() => {
+        //   confettiRef.current?.fire({});
+        // }}
+      /> */}
+          <Outlet />
+          <Toaster
+            visibleToasts={5}
+            toastOptions={{
+              style: {
+                borderImageSource: "var(--pixel-borders-image-2-color-black-absolute)",
+                borderImageSlice: 4,
+                borderWidth: "4px",
+              }
+            }}
+          />
+        </div>
+      </div>
+      {/* <GoogleOneTap /> */}
     </UserContext.Provider>
+  )
+}
+
+function App() {
+  return (
+    <SessionProvider session={undefined}>
+      <MainApp />
+    </SessionProvider>
   )
 }
 

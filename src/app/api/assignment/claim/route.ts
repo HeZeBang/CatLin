@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
   await connectToDatabase();
   const body = await req.json();
-  const { title, course, platform, due, submitted, url } = body;
+  const { title, course, platform, due, submitted, url, cat_type } = body;
 
   let homework = await Homework.findOne({ title, course, platform });
   if (!homework) {
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       url,
       rating_sum: 0,
       rating_num: 0,
-      cat_type: 0, // TODO: Replace with real cat_type
+      cat_type,
     });
     await homework.save();
   } else if (!homework.users.includes(session.user._id)) {
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     submitted,
     url,
     create: Date.now(),
-    cat_type: 0, // TODO: Replace with real cat_type
+    cat_type,
     parent: homework._id,
   });
 

@@ -4,7 +4,6 @@ import { useSession, signIn, signOut } from 'next-auth/react'
 import { useEffect, useCallback, useState } from "react";
 import Script from "next/script";
 import { Button, Hr } from 'nes-ui-react';
-import { LoginButton } from './LoginButton';
 
 declare global {
   interface Window {
@@ -115,8 +114,8 @@ export function AuthComponent() {
   if (session && session.user) {
     return (
       <>
-        Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
+        {/* Signed in as {session.user.email} <br /> */}
+        {/* <Button className='w-full' onClick={() => signOut()}>Sign out</Button> */}
       </>
     )
   }
