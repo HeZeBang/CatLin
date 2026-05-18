@@ -29,7 +29,7 @@
     "lucide-react": "^0.507.0",
     "mongoose": "^7.8.6",
     "nes-ui-react": "file:package\\nes-ui-react-v0.3.1.tgz",
-    "next": "^15.3.0",
+    "next": "15.3.8",
     "next-auth": "^4.24.11",
     "nodemon": "^3.1.9",
     "pixelarticons": "1.8.0",
